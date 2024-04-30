@@ -1,8 +1,20 @@
-import { Handle, Position } from '@xyflow/react'
+import {
+  Handle,
+  Position,
+  useHandleConnections,
+  useNodesData,
+} from '@xyflow/react'
 import { useState, useEffect } from 'react'
 
 const CustomNode = ({ data }) => {
   const [label, setLabel] = useState(data.label)
+
+  const connections = useHandleConnections({
+    type: 'target',
+  })
+  const nodesData = useNodesData(
+    connections.map(connection => connection.source)
+  )
 
   useEffect(() => {
     setLabel(data.label)
@@ -11,12 +23,13 @@ const CustomNode = ({ data }) => {
   const classNames = [
     'text-xs',
     'border',
-    'border-gray-700',
+    'border-[#444]',
     'px-2',
     'py-3',
-    'bg-white',
+    'text-white',
+    'bg-[#222]',
     'rounded',
-    'hover:shadow',
+    'hover:border-[#666]',
   ]
 
   const handleInputChange = event => {
@@ -28,10 +41,12 @@ const CustomNode = ({ data }) => {
     <div className={classNames.join(' ')}>
       {label && <div>{label}</div>}
       <input
-        className="w-full p-1 border border-gray-400 rounded"
+        className="w-full p-1 border border-[#222] bg-[#111] rounded"
         value={label}
         onChange={handleInputChange}
       />
+      {/* {JSON.stringify(nodesData)}
+      {JSON.stringify(connections)} */}
 
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />

@@ -103,6 +103,7 @@ const App = () => {
         edgeTypes={edgeTypes}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        colorMode="dark"
         // selectionOnDrag
         // panOnDrag={panOnDrag}
         // selectionMode={SelectionMode.Partial}
@@ -112,7 +113,7 @@ const App = () => {
         {/* <Controls /> */}
         <Panel position="top-right">
           <button
-            className="bg-gray-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-gray-800 text-gray-500 font-bold py-2 px-4 rounded"
             onClick={() => onLayout('TB')}>
             vertical layout
           </button>
