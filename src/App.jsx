@@ -15,30 +15,7 @@ import {
 } from '@xyflow/react'
 import CustomNode from './CustomNode'
 
-import Dagre from '@dagrejs/dagre'
-const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
-
-const getLayoutedElements = (nodes, edges, options) => {
-  g.setGraph({
-    rankdir: options.direction,
-    nodesep: 250,
-    ranksep: 150,
-  })
-
-  edges.forEach(edge => g.setEdge(edge.source, edge.target))
-  nodes.forEach(node => g.setNode(node.id, node))
-
-  Dagre.layout(g)
-
-  return {
-    nodes: nodes.map(node => {
-      const { x, y } = g.node(node.id)
-
-      return { ...node, position: { x, y } }
-    }),
-    edges,
-  }
-}
+import getLayoutedElements from './getLayoutedElements'
 
 const initialNodes = [
   { id: 'a', type: 'input', position: { x: 0, y: 0 }, data: { label: 'wire' } },
