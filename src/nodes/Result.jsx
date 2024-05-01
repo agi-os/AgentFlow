@@ -4,26 +4,18 @@ import {
   useHandleConnections,
   useNodesData,
 } from '@xyflow/react'
+import classNames from './classNames'
 
 const ResultNode = ({ id }) => {
+  // Get all connections that are connected to this node
   const connections = useHandleConnections({
     type: 'target',
   })
+
+  // Get the data of all nodes that are connected to this node
   const nodesData = useNodesData(
     connections.map(connection => connection.source)
   )
-
-  const classNames = [
-    'text-xs',
-    'border',
-    'border-[#444]',
-    'px-2',
-    'py-3',
-    'text-white',
-    'bg-[#222]',
-    'rounded',
-    'hover:border-[#666]',
-  ]
 
   return (
     <div className={classNames.join(' ')}>

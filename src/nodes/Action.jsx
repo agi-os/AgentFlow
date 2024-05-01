@@ -3,66 +3,63 @@ import {
   Position,
   useHandleConnections,
   useNodesData,
-  useReactFlow,
 } from '@xyflow/react'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { SocketContext } from '../Socket'
 import classNames from './classNames'
 
-const EmitNode = ({ id }) => {
+const ActionNode = ({ id, data }) => {
+  // track the response
+  const [response, setResponse] = useState(null)
+
   // get a handle on the websocket
   const socket = useContext(SocketContext)
 
-  const { updateNodeData } = useReactFlow()
-
+  // Get all connections that are connected to this node
   const connections = useHandleConnections({
     type: 'target',
   })
 
+  // Get the data of all nodes that are connected to this node
   const nodesData = useNodesData(
     connections.map(connection => connection.source)
   )
 
-  // get the data from the first node data text available
-  const incomingText = nodesData?.find(
-    nodeData => nodeData.data.text !== undefined
-  )?.data.text
+  // Extracts the tool from incoming nodes
+  const tool = nodesData?.find(nodeData => nodeData?.data?.tool !== undefined)
+    ?.data?.tool
 
-  // get the schemaId from the first node data schemaId available
-  const schemaId = nodesData?.find(
-    nodeData => nodeData.data.schemaId !== undefined
-  )?.data.schemaId
+  // Extracts the args from incoming nodes
+  const args = nodesData?.find(nodeData => nodeData?.data?.args !== undefined)
+    ?.data?.args
 
   // prepare emission
-  const emission = { content: incomingText, schemaId }
+  const emission = { tool, args }
 
   // handle the click event
   const handleClick = () => {
     // emit the event to the server
-    socket.emit('message', { content: incomingText, schemaId }, response => {
+    socket.emit('action', emission, response => {
       console.log('response', response)
       // update the node data
-      updateNodeData(id, {
-        text: JSON.stringify(response, null, 2),
-        tool: response.tool,
-        args: response.args,
-      })
+      setResponse(response)
     })
   }
 
   return (
     <div className={classNames.join(' ')}>
+      <div>Action node [{id}]</div>
       <Handle type="target" position={Position.Top} />
-      <div>Emission node [{id}]</div>
-      <pre>{JSON.stringify(emission, null, 2)}</pre>
+      <pre>{JSON.stringify(emission, null, 2) || 'none'}</pre>
       <button
         className="bg-[#444] text-white px-2 py-1 rounded text-left"
         onClick={handleClick}>
         emit
       </button>
+      <pre>response: {JSON.stringify(response, null, 2) || 'none'}</pre>
       <Handle type="source" position={Position.Bottom} />
     </div>
   )
 }
 
-export default EmitNode
+export default ActionNode

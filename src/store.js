@@ -1,7 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import { addEdge, applyNodeChanges, applyEdgeChanges } from '@xyflow/react'
+import {
+  addEdge,
+  applyNodeChanges,
+  applyEdgeChanges,
+  getConnectedEdges,
+} from '@xyflow/react'
 
 const loadedSchema = {
   noSchema: {
@@ -32,6 +37,13 @@ const initialNodes = [
     data: { text: 'result node' },
   },
 
+  {
+    id: 'action',
+    type: 'action',
+    position: { x: 400, y: 600 },
+    data: { text: 'action node' },
+  },
+
   { id: 'emit', type: 'emit', position: { x: 600, y: 600 } },
 ]
 
@@ -39,6 +51,7 @@ const initialEdges = [
   { id: 'schema->emit', source: 'schema', target: 'emit' },
   { id: 'd->emit', source: 'content', target: 'emit' },
   { id: 'emit->r', source: 'emit', target: 'result' },
+  { id: 'emit->a', source: 'emit', target: 'action' },
 ]
 
 const useStore = create(
@@ -67,11 +80,11 @@ const useStore = create(
       setEdges: edges => {
         set({ edges })
       },
-      updateNodeColor: (nodeId, color) => {
+      updateNodeData: (nodeId, data) => {
         set({
           nodes: get().nodes.map(node => {
             if (node.id === nodeId) {
-              node.data = { ...node.data, color }
+              node.data = { ...node.data, ...data }
             }
 
             return node

@@ -25,8 +25,65 @@ const schema = {
   },
 }
 
+const searchSchema = {
+  title: {
+    type: 'string',
+    description: 'Concise purpose of the search',
+  },
+  query: {
+    type: 'string',
+    description: 'Search query to be executed',
+  },
+  type: {
+    type: 'enum',
+    constraints: {
+      values: ['VIDEO', 'EMAIL'],
+    },
+    description: 'Type of search to be executed',
+  },
+}
+
+const multiSearchSchema = {
+  searches: {
+    type: 'array',
+    items: searchSchema,
+    description: 'Array of searches to be executed',
+  },
+}
+
+const toolkitSchema = {
+  purpose: {
+    type: 'string',
+    description: 'Reason for using the chosen tool',
+  },
+  tool: {
+    type: 'enum',
+    constraints: {
+      values: ['Web search', 'Scrape url', 'Scrape email', 'Video transcript'],
+    },
+    description: 'The tool to be used',
+  },
+  args: {
+    type: 'string',
+    description: 'Argument to be passed to the tool',
+  },
+}
+
 import { useContext } from 'react'
 import { SocketContext } from '../Socket'
+
+const classNames = [
+  'bg-gray-900',
+  'hover:bg-gray-800',
+  'text-gray-400',
+  'font-semibold',
+  'py-2',
+  'px-4',
+  'border',
+  'border-gray-400',
+  'rounded',
+  'shadow',
+]
 
 /**
  * Component generates a button which will emit the schema on ws provided by hook from socket context
@@ -34,11 +91,23 @@ import { SocketContext } from '../Socket'
 const SchemaButton = () => {
   const socket = useContext(SocketContext)
   return (
-    <button
-      className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-      onClick={() => socket.emit('schema', JSON.stringify(schema))}>
-      Send schema
-    </button>
+    <>
+      <button
+        className={classNames.join(' ')}
+        onClick={() => socket.emit('schema', JSON.stringify(schema))}>
+        Send schema
+      </button>
+      <button
+        className={classNames.join(' ')}
+        onClick={() => socket.emit('schema', JSON.stringify(searchSchema))}>
+        Send search schema
+      </button>
+      <button
+        className={classNames.join(' ')}
+        onClick={() => socket.emit('schema', JSON.stringify(toolkitSchema))}>
+        Send toolkit schema
+      </button>
+    </>
   )
 }
 
