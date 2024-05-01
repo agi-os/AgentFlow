@@ -1,32 +1,18 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
 
 import { addEdge, applyNodeChanges, applyEdgeChanges } from '@xyflow/react'
 
 const loadedSchema = {
-  age: {
+  noSchema: {
     _def: {
-      checks: [
-        {
-          kind: 'min',
-          value: 0,
-          inclusive: true,
-        },
-        {
-          kind: 'max',
-          value: 120,
-          inclusive: true,
-        },
-      ],
-      typeName: 'ZodNumber',
-      coerce: false,
-      description: 'The age of the user',
+      description: 'No schema loaded',
     },
   },
 }
 const initialNodes = [
   {
-    id: 'd',
+    id: 'content',
     type: 'entry',
     position: { x: 0, y: 0 },
     data: { text: 'John Doe born 1999' },
@@ -40,7 +26,7 @@ const initialNodes = [
   },
 
   {
-    id: 'r',
+    id: 'result',
     type: 'result',
     position: { x: 400, y: 400 },
     data: { text: 'result node' },
@@ -51,11 +37,9 @@ const initialNodes = [
 
 const initialEdges = [
   { id: 'schema->emit', source: 'schema', target: 'emit' },
-  { id: 'd->emit', source: 'd', target: 'emit' },
-  { id: 'emit->r', source: 'emit', target: 'r' },
+  { id: 'd->emit', source: 'content', target: 'emit' },
+  { id: 'emit->r', source: 'emit', target: 'result' },
 ]
-
-// this is our useStore hook that we can use in our components to get parts of the store and call actions
 
 const useStore = create(
   persist(

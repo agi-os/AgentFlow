@@ -1,36 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useCallback, useContext, useEffect } from 'react'
-import {
-  Background,
-  ReactFlow,
-  addEdge,
-  useNodesState,
-  useEdgesState,
-  Panel,
-  useReactFlow,
-} from '@xyflow/react'
-import CustomNode from './CustomNode'
+import { Background, ReactFlow, Panel, useReactFlow } from '@xyflow/react'
 
 import getArrangedElements from './getArrangedElements'
 
 import SchemaButton from './tmp/schema'
-import SchemaNode from './nodes/Schema'
-import EntryNode from './nodes/Entry'
-import ResultNode from './nodes/Result'
 
 import { SocketContext } from './Socket'
-import EmitNode from './nodes/Emit'
-
-const nodeTypes = {
-  custom: CustomNode,
-  schema: SchemaNode,
-  entry: EntryNode,
-  result: ResultNode,
-  emit: EmitNode,
-}
 
 import useStore from './store'
 import { useShallow } from 'zustand/react/shallow'
+import nodeTypes from './nodes/nodeTypes'
+
 const selector = state => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -101,13 +82,7 @@ const App = () => {
     return () => {
       socket.off('schema loaded')
     }
-  }, [socket, setNodes, onLayout])
-
-  // // handle edge connections
-  // const onConnect = useCallback(
-  //   connection => setEdges(edges => addEdge(connection, edges)),
-  //   [setEdges]
-  // )
+  }, [socket, setNodes, onLayout, nodes])
 
   return (
     <>
