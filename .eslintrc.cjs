@@ -17,5 +17,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'react/prop-types': 'off',
+    'prefer-arrow-callback': 'error',
+    'func-style': ['error', 'expression'], // use arrow functions everywhere
   },
 }

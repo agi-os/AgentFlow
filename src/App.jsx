@@ -1,69 +1,90 @@
 /* eslint-disable react/prop-types */
-import { useCallback } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import {
   Background,
-  Controls,
-  MiniMap,
   ReactFlow,
   addEdge,
   useNodesState,
   useEdgesState,
-  useNodes,
   Panel,
-  SelectionMode,
   useReactFlow,
 } from '@xyflow/react'
 import CustomNode from './CustomNode'
 
-import getLayoutedElements from './getLayoutedElements'
+import getArrangedElements from './getArrangedElements'
 
-const initialNodes = [
-  { id: 'a', type: 'input', position: { x: 0, y: 0 }, data: { label: 'wire' } },
-  {
-    id: 'b',
-    type: 'custom',
-    position: { x: -100, y: 100 },
-    data: { label: 'drag me!' },
-  },
-  { id: 'c', position: { x: 100, y: 100 }, data: { label: 'your ideas' } },
-  {
-    id: 'd',
-    type: 'output',
-    position: { x: 0, y: 200 },
-    data: { label: 'with React Flow' },
-  },
-]
+import SchemaButton from './tmp/schema'
+import SchemaNode from './SchemaNode'
+import EntryNode from './EntryNode'
+import ResultNode from './ResultNode'
+
+import { SocketContext } from './Socket'
+import EmitNode from './EmitNode'
 
 const nodeTypes = {
   custom: CustomNode,
+  schema: SchemaNode,
+  entry: EntryNode,
+  result: ResultNode,
+  emit: EmitNode,
 }
 
-const initialEdges = [
-  { id: 'a->c', source: 'a', target: 'c' },
-  { id: 'b->d', source: 'b', target: 'd' },
-  { id: 'c->d', source: 'c', target: 'd' },
+const loadedSchema = {
+  age: {
+    _def: {
+      checks: [
+        {
+          kind: 'min',
+          value: 0,
+          inclusive: true,
+        },
+        {
+          kind: 'max',
+          value: 120,
+          inclusive: true,
+        },
+      ],
+      typeName: 'ZodNumber',
+      coerce: false,
+      description: 'The age of the user',
+    },
+  },
+}
+
+const initialNodes = [
+  {
+    id: 'd',
+    type: 'entry',
+    position: { x: 0, y: 0 },
+    data: { text: 'John Doe born 1999' },
+  },
+
+  {
+    id: 'schema',
+    type: 'schema',
+    position: { x: 200, y: 200 },
+    data: { schema: loadedSchema },
+  },
+
+  {
+    id: 'r',
+    type: 'result',
+    position: { x: 400, y: 400 },
+    data: { text: 'result node' },
+  },
+
+  { id: 'emit', type: 'emit', position: { x: 600, y: 600 } },
 ]
 
-const edgeTypes = {
-  // Add your custom edge types here!
-}
-
-// function Sidebar() {
-//   const nodes = useNodes()
-
-//   return (
-//     <aside>
-//       {nodes.map(node => (
-//         <div key={node.id}>
-//           Node {node.id} - x: {node.position.x.toFixed(2)}, y:{' '}
-//           {node.position.y.toFixed(2)}
-//         </div>
-//       ))}
-//     </aside>
-//   )
-// }
+const initialEdges = [
+  { id: 'schema->emit', source: 'schema', target: 'emit' },
+  { id: 'd->emit', source: 'd', target: 'emit' },
+  { id: 'emit->r', source: 'emit', target: 'r' },
+]
 
 const App = () => {
+  const socket = useContext(SocketContext)
+
   const { fitView } = useReactFlow()
 
   // handle nodes
@@ -72,18 +93,13 @@ const App = () => {
   // handle edges
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
-  // handle edge connections
-  const onConnect = useCallback(
-    connection => setEdges(edges => addEdge(connection, edges)),
-    [setEdges]
-  )
-
+  // layout the nodes
   const onLayout = useCallback(
     direction => {
-      const layouted = getLayoutedElements(nodes, edges, { direction })
+      const arranged = getArrangedElements(nodes, edges, { direction })
 
-      setNodes([...layouted.nodes])
-      setEdges([...layouted.edges])
+      setNodes([...arranged.nodes])
+      setEdges([...arranged.edges])
 
       window.requestAnimationFrame(() => {
         fitView()
@@ -92,15 +108,46 @@ const App = () => {
     [nodes, edges, setNodes, setEdges, fitView]
   )
 
+  // load schema
+  useEffect(() => {
+    if (!socket) return
+
+    // when schema is loaded to the server
+    socket.on('schema loaded', schemaId => {
+      // emit the get schema event with schema id and use callback to get the schema
+      socket.emit('get schema', schemaId, schema => {
+        // update the schema in the schema node
+        setNodes(nodes => {
+          const schemaNode = nodes.find(node => node.type === 'schema')
+          schemaNode.data.schema = schema
+          schemaNode.data.schemaId = schemaId
+          return [...nodes]
+        })
+        // trigger 2x, once to repaint and get measurements, once to layout
+        onLayout('TB')
+        setTimeout(() => onLayout('TB'), 50)
+      })
+    })
+
+    // cleanup
+    return () => {
+      socket.off('schema loaded')
+    }
+  }, [socket, setNodes, onLayout])
+
+  // handle edge connections
+  const onConnect = useCallback(
+    connection => setEdges(edges => addEdge(connection, edges)),
+    [setEdges]
+  )
+
   return (
     <>
-      {/* <Sidebar /> */}
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         edges={edges}
-        edgeTypes={edgeTypes}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         colorMode="dark"
@@ -111,6 +158,9 @@ const App = () => {
         <Background />
         {/* <MiniMap /> */}
         {/* <Controls /> */}
+        <Panel position="top-left">
+          <SchemaButton />
+        </Panel>
         <Panel position="top-right">
           <button
             className="bg-gray-800 text-gray-500 font-bold py-2 px-4 rounded"

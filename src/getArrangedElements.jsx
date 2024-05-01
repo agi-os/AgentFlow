@@ -1,12 +1,12 @@
 import Dagre from '@dagrejs/dagre'
 
-const getLayoutedElements = (nodes, edges, options) => {
+const getArrangedElements = (nodes, edges, options) => {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}))
 
   g.setGraph({
     rankdir: options.direction,
-    nodesep: 250,
-    ranksep: 150,
+    nodesep: 450,
+    ranksep: 250,
   })
 
   edges.forEach(edge => g.setEdge(edge.source, edge.target))
@@ -24,4 +24,4 @@ const getLayoutedElements = (nodes, edges, options) => {
   }
 }
 
-export default getLayoutedElements
+export default getArrangedElements
