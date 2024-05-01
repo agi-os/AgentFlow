@@ -5,9 +5,10 @@ import {
   useNodesData,
   useReactFlow,
 } from '@xyflow/react'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { SocketContext } from '../Socket'
 import classNames from './classNames'
+import Title from '../components/Title'
 
 const ActionNode = ({ id, data }) => {
   // get a handle on the updateNodeData function
@@ -49,7 +50,7 @@ const ActionNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <div>Action node [{id}]</div>
+      <Title id={id}>Action node</Title>
       <Handle type="target" position={Position.Top} />
       <pre>{JSON.stringify(emission, null, 2) || 'none'}</pre>
       <button

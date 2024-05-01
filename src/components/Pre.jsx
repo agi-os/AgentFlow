@@ -4,7 +4,7 @@ const Input = ({
     'leading-none',
     'overflow-auto',
     'max-h-36',
-    'max-w-xl',
+    'max-w-96',
   ],
   children,
 }) => {

@@ -81,7 +81,7 @@ import { useContext, useCallback } from 'react'
 import { SocketContext } from '../Socket'
 import { useReactFlow } from '@xyflow/react'
 
-const classNames = [
+export const classNames = [
   'bg-gray-900',
   'hover:bg-gray-800',
   'text-gray-400',

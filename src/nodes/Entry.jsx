@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { Position, Handle, useReactFlow } from '@xyflow/react'
 import Input from '../components/Input'
 import classNames from './classNames'
+import Title from '../components/Title'
 
 /**
  * Text entry node
@@ -21,7 +22,7 @@ const EntryNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <div>Entry node [{id}]</div>
+      <Title id={id}>Entry node</Title>
       <Input
         onChange={event => onChange(event.target.value)}
         text={data.text}

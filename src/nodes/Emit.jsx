@@ -8,6 +8,8 @@ import {
 import { useContext } from 'react'
 import { SocketContext } from '../Socket'
 import classNames from './classNames'
+import Title from '../components/Title'
+import Pre from '../components/Pre'
 
 const EmitNode = ({ id }) => {
   // get a handle on the websocket
@@ -52,10 +54,8 @@ const EmitNode = ({ id }) => {
   return (
     <div className={classNames.join(' ')}>
       <Handle type="target" position={Position.Top} />
-      <div>Emission node [{id}]</div>
-      <pre className="text-xs leading-none overflow-auto max-h-36">
-        {JSON.stringify(emission, null, 2)}
-      </pre>
+      <Title id={id}>Emission node</Title>
+      <Pre>{emission}</Pre>
       <button
         className="bg-[#444] text-white px-2 py-1 rounded text-left"
         onClick={handleClick}>

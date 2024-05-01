@@ -20,6 +20,8 @@ import SchemaButton from './tmp/schema'
 import { SocketContext } from './Socket'
 
 import nodeTypes from './nodes/nodeTypes'
+import { classNames } from './tmp/schema'
+const buttonClassNames = classNames
 
 const loadedSchema = {
   noSchema: {
@@ -145,11 +147,6 @@ const App = () => {
     [nodes, edges]
   )
 
-  // const onConnect = useCallback(
-  //   connection => setEdges(eds => addEdge(connection, eds)),
-  //   [setEdges]
-  // )
-
   const { fitView } = useReactFlow()
 
   // layout the nodes
@@ -223,7 +220,7 @@ const App = () => {
         </Panel>
         <Panel position="top-right">
           <button
-            className="bg-gray-800 text-gray-500 font-bold py-2 px-4 rounded"
+            className={buttonClassNames.join(' ')}
             onClick={() => onLayout('TB')}>
             update layout
           </button>

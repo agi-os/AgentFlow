@@ -8,6 +8,7 @@ import {
 import classNames from './classNames'
 
 import Pre from '../components/Pre'
+import Title from '../components/Title'
 
 const ResultNode = ({ id }) => {
   // get a handle on the updateNodeData function
@@ -30,10 +31,23 @@ const ResultNode = ({ id }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <div>Result node [{id}]</div>
+      <Title id={id}>Result node</Title>
       <Handle type="target" position={Position.Top} />
       <Pre>{mergedData}</Pre>
-      <Handle type="source" position={Position.Bottom} />
+
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="l"
+        style={{ left: '33%' }}
+      />
+
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="r"
+        style={{ left: '66%' }}
+      />
     </div>
   )
 }
