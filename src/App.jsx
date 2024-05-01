@@ -102,6 +102,7 @@ const App = () => {
             x: event.clientX,
             y: event.clientY,
           }),
+          type: 'result',
           data: { label: `Node ${id}` },
           origin: [0.5, 0.0],
         }
@@ -179,12 +180,9 @@ const App = () => {
     // when schema is loaded to the server
     socket.on('schema loaded', ({ schemaId, schemaJson }) => {
       console.log('schema loaded', schemaId, schemaJson)
-      // emit the get schema event with schema id and use callback to get the schema
-      // socket.emit('get schema', schemaId,  schema => {
+
       // update the schema in the schema node
       const schemaNode = nodes.find(node => node.type === 'schema')
-      // schemaNode.data.schema = schema
-      // schemaNode.data.schemaId = schemaId
       schemaNode.data.schema = JSON.parse(schemaJson)
       setNodes([...nodes])
 
