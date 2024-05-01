@@ -102,7 +102,7 @@ const App = () => {
             x: event.clientX,
             y: event.clientY,
           }),
-          type: 'result',
+          type: prompt('Enter node type', 'result'),
           data: { label: `Node ${id}` },
           origin: [0.5, 0.0],
         }

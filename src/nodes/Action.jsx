@@ -54,9 +54,11 @@ const ActionNode = ({ id, data }) => {
       <button
         className="bg-[#444] text-white px-2 py-1 rounded text-left"
         onClick={handleClick}>
-        emit
+        run: {`${tool}('${args}')`}
       </button>
-      <pre>response: {JSON.stringify(response, null, 2) || 'none'}</pre>
+      <pre className="text-xs leading-none overflow-auto max-h-36">
+        response: {JSON.stringify(response, null, 2) || 'none'}
+      </pre>
       <Handle type="source" position={Position.Bottom} />
     </div>
   )
