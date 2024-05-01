@@ -26,9 +26,9 @@ const schema = {
 }
 
 const searchSchema = {
-  title: {
+  purpose: {
     type: 'string',
-    description: 'Concise purpose of the search',
+    description: 'Reason for executing the search',
   },
   query: {
     type: 'string',
@@ -69,6 +69,14 @@ const toolkitSchema = {
   },
 }
 
+const multiToolkitSchema = {
+  actions: {
+    type: 'array',
+    items: toolkitSchema,
+    description: 'Array of actions to be executed',
+  },
+}
+
 import { useContext } from 'react'
 import { SocketContext } from '../Socket'
 
@@ -104,8 +112,22 @@ const SchemaButton = () => {
       </button>
       <button
         className={classNames.join(' ')}
+        onClick={() =>
+          socket.emit('schema', JSON.stringify(multiSearchSchema))
+        }>
+        Send multi search schema
+      </button>
+      <button
+        className={classNames.join(' ')}
         onClick={() => socket.emit('schema', JSON.stringify(toolkitSchema))}>
         Send toolkit schema
+      </button>
+      <button
+        className={classNames.join(' ')}
+        onClick={() =>
+          socket.emit('schema', JSON.stringify(multiToolkitSchema))
+        }>
+        Send multi toolkit schema
       </button>
     </>
   )

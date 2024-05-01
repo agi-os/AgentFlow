@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect, useRef } from 'react'
 
 import {
   Background,
@@ -8,6 +8,9 @@ import {
   useEdgesState,
   addEdge,
   useReactFlow,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges,
 } from '@xyflow/react'
 
 import getArrangedElements from './getArrangedElements'
@@ -65,16 +68,86 @@ const initialEdges = [
   { id: 'emit->a', source: 'emit', target: 'action' },
 ]
 
-const App = () => {
-  const socket = useContext(SocketContext)
+let id = 1
+const getId = () => `${id++}`
 
+const App = () => {
+  const connectingNodeId = useRef(null)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const { screenToFlowPosition } = useReactFlow()
 
-  const onConnect = useCallback(
-    connection => setEdges(eds => addEdge(connection, eds)),
-    [setEdges]
+  const onConnect = useCallback(params => {
+    // reset the start node on connections
+    connectingNodeId.current = null
+    setEdges(eds => addEdge(params, eds))
+  }, [])
+
+  const onConnectStart = useCallback((_, { nodeId }) => {
+    connectingNodeId.current = nodeId
+  }, [])
+
+  const onConnectEnd = useCallback(
+    event => {
+      if (!connectingNodeId.current) return
+
+      const targetIsPane = event.target.classList.contains('react-flow__pane')
+
+      if (targetIsPane) {
+        // we need to remove the wrapper bounds, in order to get the correct position
+        const id = getId()
+        const newNode = {
+          id,
+          position: screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY,
+          }),
+          data: { label: `Node ${id}` },
+          origin: [0.5, 0.0],
+        }
+
+        setNodes(nds => nds.concat(newNode))
+        setEdges(eds =>
+          eds.concat({ id, source: connectingNodeId.current, target: id })
+        )
+      }
+    },
+    [screenToFlowPosition, setEdges, setNodes]
   )
+
+  const socket = useContext(SocketContext)
+
+  const onNodesDelete = useCallback(
+    deleted => {
+      setEdges(
+        deleted.reduce((acc, node) => {
+          const incomers = getIncomers(node, nodes, edges)
+          const outgoers = getOutgoers(node, nodes, edges)
+          const connectedEdges = getConnectedEdges([node], edges)
+
+          const remainingEdges = acc.filter(
+            edge => !connectedEdges.includes(edge)
+          )
+
+          const createdEdges = incomers.flatMap(({ id: source }) =>
+            outgoers.map(({ id: target }) => ({
+              id: `${source}->${target}`,
+              source,
+              target,
+            }))
+          )
+
+          return [...remainingEdges, ...createdEdges]
+        }, edges)
+      )
+    },
+    [nodes, edges]
+  )
+
+  // const onConnect = useCallback(
+  //   connection => setEdges(eds => addEdge(connection, eds)),
+  //   [setEdges]
+  // )
 
   const { fitView } = useReactFlow()
 
@@ -104,19 +177,21 @@ const App = () => {
     if (!socket) return
 
     // when schema is loaded to the server
-    socket.on('schema loaded', schemaId => {
+    socket.on('schema loaded', ({ schemaId, schemaJson }) => {
+      console.log('schema loaded', schemaId, schemaJson)
       // emit the get schema event with schema id and use callback to get the schema
-      socket.emit('get schema', schemaId, schema => {
-        // update the schema in the schema node
-        const schemaNode = nodes.find(node => node.type === 'schema')
-        schemaNode.data.schema = schema
-        schemaNode.data.schemaId = schemaId
-        setNodes([...nodes])
+      // socket.emit('get schema', schemaId,  schema => {
+      // update the schema in the schema node
+      const schemaNode = nodes.find(node => node.type === 'schema')
+      // schemaNode.data.schema = schema
+      // schemaNode.data.schemaId = schemaId
+      schemaNode.data.schema = JSON.parse(schemaJson)
+      setNodes([...nodes])
 
-        // trigger 2x, once to repaint and get measurements, once to layout
-        onLayout('TB')
-        setTimeout(() => onLayout('TB'), 50)
-      })
+      // trigger 2x, once to repaint and get measurements, once to layout
+      onLayout('TB')
+      setTimeout(() => onLayout('TB'), 50)
+      // })
     })
 
     // cleanup
@@ -132,9 +207,12 @@ const App = () => {
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         edges={edges}
+        onNodesDelete={onNodesDelete}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         colorMode="dark"
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
         // selectionOnDrag
         // panOnDrag={panOnDrag}
         // selectionMode={SelectionMode.Partial}

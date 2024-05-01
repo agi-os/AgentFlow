@@ -24,9 +24,7 @@ const EntryNode = ({ id, data }) => {
   return (
     <div className={classNames.join(' ')}>
       <div>Content node [{id}]</div>
-      <div>
-        <Input updateText={updateText} text={text} />
-      </div>
+      <Input updateText={updateText} text={text} />
       <Handle type="source" position={Position.Bottom} />
     </div>
   )
