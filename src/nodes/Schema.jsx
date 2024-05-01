@@ -1,7 +1,7 @@
 import { Handle, Position } from '@xyflow/react'
 import { useState, useEffect } from 'react'
 
-const SchemaNode = ({ data }) => {
+const SchemaNode = ({ id, data }) => {
   const [schema, setSchema] = useState(data.schema)
 
   useEffect(() => {
@@ -35,6 +35,9 @@ const SchemaNode = ({ data }) => {
 
   return (
     <div className={classNames.join(' ')}>
+      <div>
+        Schema node [{id}] [{data.schemaId}]
+      </div>
       {Object.keys(schema).map(key => (
         <div key={key} className="grid grid-cols-4 items-center gap-1">
           <div className="col-span-full">{schema[key]._def.description}</div>

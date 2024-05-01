@@ -45,9 +45,6 @@ const CustomNode = ({ data }) => {
         value={label}
         onChange={handleInputChange}
       />
-      {/* {JSON.stringify(nodesData)}
-      {JSON.stringify(connections)} */}
-
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />
     </div>

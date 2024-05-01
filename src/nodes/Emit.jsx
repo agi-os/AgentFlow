@@ -6,7 +6,7 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 import { useContext } from 'react'
-import { SocketContext } from './Socket'
+import { SocketContext } from '../Socket'
 
 const EmitNode = ({ id }) => {
   // get a handle on the websocket

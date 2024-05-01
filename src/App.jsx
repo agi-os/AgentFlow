@@ -14,12 +14,12 @@ import CustomNode from './CustomNode'
 import getArrangedElements from './getArrangedElements'
 
 import SchemaButton from './tmp/schema'
-import SchemaNode from './SchemaNode'
-import EntryNode from './EntryNode'
-import ResultNode from './ResultNode'
+import SchemaNode from './nodes/Schema'
+import EntryNode from './nodes/Entry'
+import ResultNode from './nodes/Result'
 
 import { SocketContext } from './Socket'
-import EmitNode from './EmitNode'
+import EmitNode from './nodes/Emit'
 
 const nodeTypes = {
   custom: CustomNode,
@@ -29,69 +29,32 @@ const nodeTypes = {
   emit: EmitNode,
 }
 
-const loadedSchema = {
-  age: {
-    _def: {
-      checks: [
-        {
-          kind: 'min',
-          value: 0,
-          inclusive: true,
-        },
-        {
-          kind: 'max',
-          value: 120,
-          inclusive: true,
-        },
-      ],
-      typeName: 'ZodNumber',
-      coerce: false,
-      description: 'The age of the user',
-    },
-  },
-}
-
-const initialNodes = [
-  {
-    id: 'd',
-    type: 'entry',
-    position: { x: 0, y: 0 },
-    data: { text: 'John Doe born 1999' },
-  },
-
-  {
-    id: 'schema',
-    type: 'schema',
-    position: { x: 200, y: 200 },
-    data: { schema: loadedSchema },
-  },
-
-  {
-    id: 'r',
-    type: 'result',
-    position: { x: 400, y: 400 },
-    data: { text: 'result node' },
-  },
-
-  { id: 'emit', type: 'emit', position: { x: 600, y: 600 } },
-]
-
-const initialEdges = [
-  { id: 'schema->emit', source: 'schema', target: 'emit' },
-  { id: 'd->emit', source: 'd', target: 'emit' },
-  { id: 'emit->r', source: 'emit', target: 'r' },
-]
+import useStore from './store'
+import { useShallow } from 'zustand/react/shallow'
+const selector = state => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  setNodes: state.setNodes,
+  setEdges: state.setEdges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  onConnect: state.onConnect,
+})
 
 const App = () => {
   const socket = useContext(SocketContext)
 
+  const {
+    nodes,
+    edges,
+    setNodes,
+    setEdges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+  } = useStore(useShallow(selector))
+
   const { fitView } = useReactFlow()
-
-  // handle nodes
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-
-  // handle edges
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // layout the nodes
   const onLayout = useCallback(
@@ -108,6 +71,12 @@ const App = () => {
     [nodes, edges, setNodes, setEdges, fitView]
   )
 
+  // initial layout
+  useEffect(() => {
+    onLayout('TB')
+    setTimeout(() => onLayout('TB'), 50)
+  }, [])
+
   // load schema
   useEffect(() => {
     if (!socket) return
@@ -117,12 +86,11 @@ const App = () => {
       // emit the get schema event with schema id and use callback to get the schema
       socket.emit('get schema', schemaId, schema => {
         // update the schema in the schema node
-        setNodes(nodes => {
-          const schemaNode = nodes.find(node => node.type === 'schema')
-          schemaNode.data.schema = schema
-          schemaNode.data.schemaId = schemaId
-          return [...nodes]
-        })
+        const schemaNode = nodes.find(node => node.type === 'schema')
+        schemaNode.data.schema = schema
+        schemaNode.data.schemaId = schemaId
+        setNodes([...nodes])
+
         // trigger 2x, once to repaint and get measurements, once to layout
         onLayout('TB')
         setTimeout(() => onLayout('TB'), 50)
@@ -135,11 +103,11 @@ const App = () => {
     }
   }, [socket, setNodes, onLayout])
 
-  // handle edge connections
-  const onConnect = useCallback(
-    connection => setEdges(edges => addEdge(connection, edges)),
-    [setEdges]
-  )
+  // // handle edge connections
+  // const onConnect = useCallback(
+  //   connection => setEdges(edges => addEdge(connection, edges)),
+  //   [setEdges]
+  // )
 
   return (
     <>
@@ -156,8 +124,6 @@ const App = () => {
         // selectionMode={SelectionMode.Partial}
         fitView>
         <Background />
-        {/* <MiniMap /> */}
-        {/* <Controls /> */}
         <Panel position="top-left">
           <SchemaButton />
         </Panel>
@@ -165,7 +131,7 @@ const App = () => {
           <button
             className="bg-gray-800 text-gray-500 font-bold py-2 px-4 rounded"
             onClick={() => onLayout('TB')}>
-            vertical layout
+            update layout
           </button>
         </Panel>{' '}
       </ReactFlow>
