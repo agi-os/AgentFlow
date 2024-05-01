@@ -3,14 +3,15 @@ import {
   Position,
   useHandleConnections,
   useNodesData,
+  useReactFlow,
 } from '@xyflow/react'
 import { useContext, useState } from 'react'
 import { SocketContext } from '../Socket'
 import classNames from './classNames'
 
 const ActionNode = ({ id, data }) => {
-  // track the response
-  const [response, setResponse] = useState(null)
+  // get a handle on the updateNodeData function
+  const { updateNodeData } = useReactFlow()
 
   // get a handle on the websocket
   const socket = useContext(SocketContext)
@@ -42,7 +43,7 @@ const ActionNode = ({ id, data }) => {
     socket.emit('action', emission, response => {
       console.log('response', response)
       // update the node data
-      setResponse(response)
+      updateNodeData(id, { response })
     })
   }
 
@@ -57,7 +58,7 @@ const ActionNode = ({ id, data }) => {
         run: {`${tool}('${args}')`}
       </button>
       <pre className="text-xs leading-none overflow-auto max-h-36">
-        response: {JSON.stringify(response, null, 2) || 'none'}
+        response: {JSON.stringify(data.response, null, 2) || 'none'}
       </pre>
       <Handle type="source" position={Position.Bottom} />
     </div>
