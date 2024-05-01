@@ -211,6 +211,8 @@ const App = () => {
         colorMode="dark"
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
+        minZoom={0.2}
+        maxZoom={4}
         // selectionOnDrag
         // panOnDrag={panOnDrag}
         // selectionMode={SelectionMode.Partial}

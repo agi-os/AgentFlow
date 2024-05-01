@@ -6,7 +6,8 @@ import {
   useReactFlow,
 } from '@xyflow/react'
 import classNames from './classNames'
-import { useEffect } from 'react'
+
+import Pre from '../components/Pre'
 
 const ResultNode = ({ id }) => {
   // get a handle on the updateNodeData function
@@ -22,20 +23,16 @@ const ResultNode = ({ id }) => {
     connections.map(connection => connection.source)
   )
 
-  // prepare data to be emitted from source node
-  const sourceData = nodesData?.map(nodeData => nodeData?.data?.response)
-
-  // update the node data FIXME: infinite loop
-  // useEffect(() => {
-  //   console.log('sourceData', sourceData)
-  //   updateNodeData(id, { sourceData })
-  // }, [id, sourceData, updateNodeData])
+  // merge all data objects from nodesData
+  const mergedData = nodesData.reduce((acc, nodeData) => {
+    return { ...acc, ...nodeData?.data }
+  }, {})
 
   return (
     <div className={classNames.join(' ')}>
       <div>Result node [{id}]</div>
       <Handle type="target" position={Position.Top} />
-      <pre>{JSON.stringify(nodesData, null, 2) || 'none'}</pre>
+      <Pre>{mergedData}</Pre>
       <Handle type="source" position={Position.Bottom} />
     </div>
   )

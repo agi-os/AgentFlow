@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { Position, Handle, useReactFlow } from '@xyflow/react'
 import Input from '../components/Input'
 import classNames from './classNames'
@@ -12,19 +12,20 @@ import classNames from './classNames'
 const EntryNode = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
 
-  const [text, setText] = useState(data.text)
-
-  const updateText = text => {
-    // avoid jumping caret with a synchronous update
-    setText(text)
-    // update actual node data
-    updateNodeData(id, { text })
-  }
+  const onChange = useCallback(
+    text => {
+      updateNodeData(id, { text })
+    },
+    [id, updateNodeData]
+  )
 
   return (
     <div className={classNames.join(' ')}>
-      <div>Content node [{id}]</div>
-      <Input updateText={updateText} text={text} />
+      <div>Entry node [{id}]</div>
+      <Input
+        onChange={event => onChange(event.target.value)}
+        text={data.text}
+      />
       <Handle type="source" position={Position.Bottom} />
     </div>
   )

@@ -9,15 +9,11 @@ const Input = ({
     'rounded',
     'nodrag',
   ],
-  updateText,
+  onChange,
   text,
 }) => {
   return (
-    <input
-      className={classNames.join(' ')}
-      onChange={event => updateText(event.target.value)}
-      value={text}
-    />
+    <input className={classNames.join(' ')} onChange={onChange} value={text} />
   )
 }
 

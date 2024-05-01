@@ -59,7 +59,7 @@ const toolkitSchema = {
   tool: {
     type: 'enum',
     constraints: {
-      values: ['Web search', 'Scrape url', 'Scrape email', 'Video transcript'],
+      values: ['webSearch', 'webScrape', 'reflection', 'planning'],
     },
     description: 'The tool to be used',
   },
@@ -77,59 +77,83 @@ const multiToolkitSchema = {
   },
 }
 
-import { useContext } from 'react'
+import { useContext, useCallback } from 'react'
 import { SocketContext } from '../Socket'
+import { useReactFlow } from '@xyflow/react'
 
 const classNames = [
   'bg-gray-900',
   'hover:bg-gray-800',
   'text-gray-400',
+  'hover:text-gray-200',
   'font-semibold',
   'py-2',
-  'px-4',
+  'px-3',
   'border',
-  'border-gray-400',
-  'rounded',
-  'shadow',
+  'border-gray-700',
+  'rounded-full',
+  'shadow-lg',
+  'outline',
+  'outline-opacity-50',
+  'outline-black',
+  'outline-4',
+]
+
+let nodeId = 0
+const buttons = [
+  // { schema: schema, label: 'Person schema' },
+  { schema: searchSchema, label: 'Search schema' },
+  { schema: multiSearchSchema, label: 'Multi search schema' },
+  { schema: toolkitSchema, label: 'Toolkit schema' },
+  { schema: multiToolkitSchema, label: 'Multi toolkit schema' },
+  { schema: {}, label: 'Entry node', secondParam: 'entry' },
+  { schema: {}, label: 'Emit node', secondParam: 'emit' },
+  { schema: {}, label: 'Action node', secondParam: 'action' },
+  { schema: {}, label: 'Result node', secondParam: 'result' },
 ]
 
 /**
- * Component generates a button which will emit the schema on ws provided by hook from socket context
+ * Component generates button which will emit the schema on ws provided by hook from socket context
  */
 const SchemaButton = () => {
   const socket = useContext(SocketContext)
+
+  const reactFlowInstance = useReactFlow()
+
+  const onClick = useCallback(
+    (schema, type = 'schema') => {
+      const id = `${type}-${++nodeId}`
+      const newNode = {
+        id,
+        position: {
+          x: Math.random() * 500,
+          y: Math.random() * 500,
+        },
+        type,
+        data: {
+          label: `Node ${id}`,
+        },
+      }
+      reactFlowInstance.addNodes(newNode)
+
+      if (Object.keys(schema).length !== 0) {
+        socket.emit('schema', JSON.stringify(schema))
+      }
+    },
+    [socket, reactFlowInstance]
+  )
+
   return (
-    <>
-      <button
-        className={classNames.join(' ')}
-        onClick={() => socket.emit('schema', JSON.stringify(schema))}>
-        Send schema
-      </button>
-      <button
-        className={classNames.join(' ')}
-        onClick={() => socket.emit('schema', JSON.stringify(searchSchema))}>
-        Send search schema
-      </button>
-      <button
-        className={classNames.join(' ')}
-        onClick={() =>
-          socket.emit('schema', JSON.stringify(multiSearchSchema))
-        }>
-        Send multi search schema
-      </button>
-      <button
-        className={classNames.join(' ')}
-        onClick={() => socket.emit('schema', JSON.stringify(toolkitSchema))}>
-        Send toolkit schema
-      </button>
-      <button
-        className={classNames.join(' ')}
-        onClick={() =>
-          socket.emit('schema', JSON.stringify(multiToolkitSchema))
-        }>
-        Send multi toolkit schema
-      </button>
-    </>
+    <div className="grid grid-cols-4 gap-3">
+      {buttons.map((button, index) => (
+        <button
+          key={index}
+          className={classNames.join(' ')}
+          onClick={() => onClick(button.schema, button.secondParam)}>
+          {button.label}
+        </button>
+      ))}
+    </div>
   )
 }
 
