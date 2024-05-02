@@ -30,36 +30,13 @@ const initialNodes = [
     position: { x: 0, y: 0 },
     data: { text: 'John Doe born 1999' },
   },
-
-  {
-    id: 'action',
-    type: 'action',
-    position: { x: 400, y: 600 },
-    data: { text: 'action node' },
-  },
-
-  { id: 'emit', type: 'emit', position: { x: 600, y: 600 } },
-  {
-    id: 'result',
-    type: 'result',
-    position: { x: 400, y: 400 },
-    data: { text: 'result node' },
-  },
 ]
 
-const initialEdges = [
-  { id: 'e1', source: 'content', target: 'emit' },
-  { id: 'e3', source: 'action', target: 'result' },
-]
-
-let id = 1
-const getId = () => `${id++}`
+const initialEdges = []
 
 const App = () => {
-  const connectingNodeId = useRef(null)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  const { screenToFlowPosition } = useReactFlow()
 
   const onConnect = useCallback(
     params => setEdges(eds => addEdge(params, eds)),
