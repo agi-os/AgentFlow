@@ -88,7 +88,7 @@ export const classNames = [
   'hover:text-zinc-200',
   'font-semibold',
   'py-2',
-  'px-3',
+  'px-4',
   'border',
   'border-zinc-700',
   'rounded-full',
@@ -100,26 +100,29 @@ export const classNames = [
 ]
 
 let nodeId = 0
-const buttons = [
-  // { schema: schema, label: 'Person schema' },
-  { schema: searchSchema, label: 'Search schema' },
+const buttonsOld = [
+  { schema: searchSchema, label: '🧬 Search schema' },
   { schema: multiSearchSchema, label: 'Multi search schema' },
   { schema: toolkitSchema, label: 'Toolkit schema' },
   { schema: multiToolkitSchema, label: 'Multi toolkit schema' },
-  { schema: {}, label: 'Entry node', secondParam: 'entry' },
-  { schema: {}, label: 'Emit node', secondParam: 'emit' },
-  { schema: {}, label: 'Action node', secondParam: 'action' },
-  { schema: {}, label: 'Actions node', secondParam: 'actions' },
-  { schema: {}, label: 'Result node', secondParam: 'result' },
-  { schema: {}, label: 'Agent node', secondParam: 'agent' },
-  { schema: {}, label: 'Tool node', secondParam: 'tool' },
-  { schema: {}, label: 'Workbench node', secondParam: 'workbench' },
+  { schema: {}, label: ' Emit', secondParam: 'emit' },
+  { schema: {}, label: 'Action', secondParam: 'action' },
+  { schema: {}, label: 'Actions', secondParam: 'actions' },
+  { schema: {}, label: 'Result', secondParam: 'result' },
+]
+
+const buttons = [
+  { schema: schema, label: '🧬 Schema' },
+  { schema: {}, label: '✏️ Entry', secondParam: 'entry' },
+  { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },
+  { schema: {}, label: '🛠️ Tool', secondParam: 'tool' },
+  { schema: {}, label: '🏗️ Workbench', secondParam: 'workbench' },
 ]
 
 /**
  * Component generates button which will emit the schema on ws provided by hook from socket context
  */
-const SchemaButton = () => {
+const SchemaButton = ({ old = false }) => {
   const socket = useContext(SocketContext)
 
   const reactFlowInstance = useReactFlow()
@@ -148,8 +151,8 @@ const SchemaButton = () => {
   )
 
   return (
-    <div className="grid grid-cols-4 gap-3">
-      {buttons.map((button, index) => (
+    <div className="flex flex-wrap gap-5">
+      {(old ? buttonsOld : buttons).map((button, index) => (
         <button
           key={index}
           className={classNames.join(' ')}

@@ -100,7 +100,7 @@ const WorkbenchNode = ({ id, data }) => {
     <button
       className="bg-zinc-900 text-white p-2 rounded-full"
       onClick={() => (isLoading ? null : handleClick())}>
-      {isLoading ? 'Loading...' : 'Emit'}
+      {isLoading ? '⚙️ Working...' : '👟 Run'}
     </button>
   )
 

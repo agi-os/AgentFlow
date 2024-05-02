@@ -6,7 +6,7 @@ const getArrangedElements = (nodes, edges, options) => {
   g.setGraph({
     rankdir: options.direction,
     nodesep: 300,
-    ranksep: 250,
+    ranksep: 550,
   })
 
   edges.forEach(edge => g.setEdge(edge.source, edge.target))

@@ -168,7 +168,10 @@ const App = () => {
             onClick={() => onLayout('TB')}>
             update layout
           </button>
-        </Panel>{' '}
+        </Panel>
+        <Panel position="bottom-left">
+          <SchemaButton old />
+        </Panel>
       </ReactFlow>
     </>
   )

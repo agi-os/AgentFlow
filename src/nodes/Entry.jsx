@@ -22,7 +22,7 @@ const EntryNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <Title id={id}>Entry</Title>
+      <Title id={id}>✏️ Entry</Title>
       <Input
         onChange={event => onChange(event.target.value)}
         text={data.text}
