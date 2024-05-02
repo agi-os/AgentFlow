@@ -9,7 +9,8 @@ import classNames from './classNames'
 
 import Pre from '../components/Pre'
 import Title from '../components/Title'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
+import { useResult } from '../hooks'
 
 const ResultNode = ({ id, data }) => {
   // get a handle on the updateNodeData function
@@ -26,20 +27,7 @@ const ResultNode = ({ id, data }) => {
   )
 
   // Get the result from the connected nodes
-  const result = useMemo(() => {
-    // Get the sourceHandle which starts with 'result-' to get the index
-    const resultIndex = connections
-      .find(connection => connection?.sourceHandle?.startsWith('result-'))
-      ?.sourceHandle?.split('-')[1]
-
-    // Merge all data objects from nodesData
-    const mergedData = nodesData.reduce((acc, nodeData) => {
-      return { ...acc, ...nodeData?.data }
-    }, {})
-
-    // Get the result from the merged data results[index]
-    return mergedData.results?.[resultIndex]
-  }, [connections, nodesData])
+  const result = useResult(connections, nodesData)
 
   // Assign the result to the result node's data
   useEffect(() => {

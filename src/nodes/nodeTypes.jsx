@@ -4,6 +4,7 @@ import EntryNode from './Entry'
 import ResultNode from './Result'
 import EmitNode from './Emit'
 import ActionNode from './Action'
+import ActionsNode from './Actions'
 
 export default {
   custom: CustomNode,
@@ -12,4 +13,5 @@ export default {
   result: ResultNode,
   emit: EmitNode,
   action: ActionNode,
+  actions: ActionsNode,
 }

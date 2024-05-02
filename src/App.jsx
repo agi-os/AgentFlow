@@ -49,7 +49,6 @@ const initialNodes = [
 
 const initialEdges = [
   { id: 'e1', source: 'content', target: 'emit' },
-  { id: 'e2', source: 'emit', target: 'action' },
   { id: 'e3', source: 'action', target: 'result' },
 ]
 
@@ -125,8 +124,6 @@ const App = () => {
 
     // when schema is loaded to the server
     socket.on('schema loaded', ({ schemaId, schemaJson }) => {
-      console.log('schema loaded', schemaId, schemaJson)
-
       // update the schema in the schema node
       const schemaNode = nodes.find(node => node.type === 'schema')
       schemaNode.data.schema = JSON.parse(schemaJson)
