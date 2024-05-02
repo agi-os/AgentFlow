@@ -5,7 +5,7 @@ const getArrangedElements = (nodes, edges, options) => {
 
   g.setGraph({
     rankdir: options.direction,
-    nodesep: 350,
+    nodesep: 300,
     ranksep: 250,
   })
 

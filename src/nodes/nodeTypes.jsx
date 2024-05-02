@@ -6,6 +6,8 @@ import EmitNode from './Emit'
 import ActionNode from './Action'
 import ActionsNode from './Actions'
 import AgentNode from './Agent'
+import ToolNode from './Tool'
+import WorkbenchNode from './Workbench'
 
 export default {
   agent: AgentNode,
@@ -16,4 +18,6 @@ export default {
   emit: EmitNode,
   action: ActionNode,
   actions: ActionsNode,
+  tool: ToolNode,
+  workbench: WorkbenchNode,
 }

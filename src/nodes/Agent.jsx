@@ -1,27 +1,33 @@
 import { useCallback } from 'react'
 import { Position, Handle, useReactFlow } from '@xyflow/react'
-import Input from '../components/Input'
 import classNames from './classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
+import Inputs from '../components/Inputs'
 
-const Inputs = ({ inputs, data, onChange }) =>
-  inputs.map(({ label, field }) => (
-    <Input
-      key={field}
-      label={label}
-      text={data[field]}
-      onChange={event => onChange({ value: event.target.value, field })}
-    />
-  ))
+import agentPresets from './presets/agents.json'
 
 /**
- * Text entry node
+ * Agent identity node
  * @param {string} id - Node ID
  * @param {object} data - Node data
  * @returns {JSX.Element}
  */
 const AgentNode = ({ id, data }) => {
+  const handleSelect = event => {
+    const agent = agentPresets.find(
+      agent => agent.agentName === event.target.value
+    )
+
+    if (!agent) return
+
+    updateNodeData(id, {
+      agentName: agent.agentName,
+      agentDescription: agent.agentDescription,
+      tools: agent.tools,
+    })
+  }
+
   const { updateNodeData } = useReactFlow()
 
   const onChange = useCallback(
@@ -32,13 +38,26 @@ const AgentNode = ({ id, data }) => {
   )
 
   const inputs = [
-    { label: 'Name', field: 'name' },
-    { label: 'Text', field: 'text' },
+    { label: 'Name', field: 'agentName' },
+    { label: 'Description', field: 'agentDescription' },
+    { label: 'Tools', field: 'tools' },
   ]
 
   return (
     <div className={classNames.join(' ')}>
-      <Title id={id}>Agent</Title>
+      <Title id={id}>🧑‍💼 Agent</Title>
+      <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
+      <select
+        value={data.agentName}
+        className="appearance-none  bg-zinc-900 text-white rounded-full p-2 pl-3 border border-zinc-700 outline-none"
+        onChange={handleSelect}>
+        <option value="">Select a preset</option>
+        {agentPresets.map((agent, index) => (
+          <option key={index} value={agent.agentName}>
+            {agent.agentName}
+          </option>
+        ))}
+      </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
       <Pre>{data}</Pre>
       <Handle type="source" position={Position.Bottom} />

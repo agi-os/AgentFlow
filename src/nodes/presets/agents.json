@@ -1,0 +1,7 @@
+[
+  {
+    "agentName": "Webster",
+    "agentDescription": "An expert web search agent. The best at finding information on the web.",
+    "tools": "search_internet"
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "name": "Person",
+    "schema": {
+      "age": {
+        "type": "number",
+        "constraints": {
+          "min": 0,
+          "max": 120
+        },
+        "description": "The age of the user"
+      },
+      "firstName": {
+        "type": "string",
+        "description": "The first name of the user, lowercase with capital first letter"
+      },
+      "surname": {
+        "type": "string",
+        "description": "The surname of the user, lowercase with capital first letter"
+      },
+      "sex": {
+        "type": "enum",
+        "constraints": {
+          "values": ["M", "F"]
+        },
+        "description": "The sex of the user, guess if not provided"
+      }
+    }
+  },
+
+  {
+    "name": "Search",
+    "schema": {
+      "purpose": {
+        "type": "string",
+        "description": "Reason for executing the search"
+      },
+      "query": {
+        "type": "string",
+        "description": "Search query to be executed"
+      },
+      "type": {
+        "type": "enum",
+        "constraints": {
+          "values": ["VIDEO", "EMAIL"]
+        },
+        "description": "Type of search to be executed"
+      }
+    }
+  },
+
+  {
+    "name": "Action",
+    "schema": {
+      "type": "enum",
+      "constraints": {
+        "values": ["search", "toolkit"]
+      },
+      "description": "The type of action to be executed"
+    }
+  },
+
+  {
+    "name": "Toolkit",
+    "schema": {
+      "purpose": {
+        "type": "string",
+        "description": "Reason for using the chosen tool"
+      },
+      "tool": {
+        "type": "enum",
+        "constraints": {
+          "values": ["webSearch", "webScrape", "reflection", "planning"]
+        },
+        "description": "The tool to be used"
+      },
+      "args": {
+        "type": "string",
+        "description": "Argument to be passed to the tool"
+      }
+    }
+  }
+]

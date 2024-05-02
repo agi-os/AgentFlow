@@ -1,0 +1,30 @@
+[
+  {
+    "functionName": "search_internet",
+    "functionDescription": "Search the internet for a given query",
+    "propertyName": "query",
+    "propertyType": "string",
+    "propertyDescription": "The query to search for"
+  },
+  {
+    "functionName": "get_game_score",
+    "functionDescription": "Get the score for a given NBA game",
+    "propertyName": "team_name",
+    "propertyType": "string",
+    "propertyDescription": "The name of the NBA team (e.g. 'Golden State Warriors')"
+  },
+  {
+    "functionName": "get_player_stats",
+    "functionDescription": "Get the stats for a given NBA player",
+    "propertyName": "player_name",
+    "propertyType": "string",
+    "propertyDescription": "The name of the NBA player (e.g. 'LeBron James')"
+  },
+  {
+    "functionName": "get_team_roster",
+    "functionDescription": "Get the roster for a given NBA team",
+    "propertyName": "team_name",
+    "propertyType": "string",
+    "propertyDescription": "The name of the NBA team (e.g. 'Los Angeles Lakers')"
+  }
+]

@@ -1,10 +1,10 @@
 const Input = ({
   classNames = [
-    'text-xs',
+    'text-[0.4rem]',
     'leading-none',
     'overflow-auto',
     'max-h-36',
-    'max-w-96',
+    'max-w-60',
   ],
   children,
 }) => {

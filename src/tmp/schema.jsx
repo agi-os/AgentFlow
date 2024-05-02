@@ -112,6 +112,8 @@ const buttons = [
   { schema: {}, label: 'Actions node', secondParam: 'actions' },
   { schema: {}, label: 'Result node', secondParam: 'result' },
   { schema: {}, label: 'Agent node', secondParam: 'agent' },
+  { schema: {}, label: 'Tool node', secondParam: 'tool' },
+  { schema: {}, label: 'Workbench node', secondParam: 'workbench' },
 ]
 
 /**
