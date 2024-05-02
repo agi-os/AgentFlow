@@ -23,34 +23,12 @@ import nodeTypes from './nodes/nodeTypes'
 import { classNames } from './tmp/schema'
 const buttonClassNames = classNames
 
-const loadedSchema = {
-  noSchema: {
-    _def: {
-      description: 'No schema loaded',
-    },
-  },
-}
-
 const initialNodes = [
   {
     id: 'content',
     type: 'entry',
     position: { x: 0, y: 0 },
     data: { text: 'John Doe born 1999' },
-  },
-
-  {
-    id: 'schema',
-    type: 'schema',
-    position: { x: 200, y: 200 },
-    data: { schema: loadedSchema },
-  },
-
-  {
-    id: 'result',
-    type: 'result',
-    position: { x: 400, y: 400 },
-    data: { text: 'result node' },
   },
 
   {
@@ -61,13 +39,18 @@ const initialNodes = [
   },
 
   { id: 'emit', type: 'emit', position: { x: 600, y: 600 } },
+  {
+    id: 'result',
+    type: 'result',
+    position: { x: 400, y: 400 },
+    data: { text: 'result node' },
+  },
 ]
 
 const initialEdges = [
-  { id: 'schema->emit', source: 'schema', target: 'emit' },
-  { id: 'd->emit', source: 'content', target: 'emit' },
-  { id: 'emit->r', source: 'emit', target: 'result' },
-  { id: 'emit->a', source: 'emit', target: 'action' },
+  { id: 'e1', source: 'content', target: 'emit' },
+  { id: 'e2', source: 'emit', target: 'action' },
+  { id: 'e3', source: 'action', target: 'result' },
 ]
 
 let id = 1
@@ -79,43 +62,9 @@ const App = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const { screenToFlowPosition } = useReactFlow()
 
-  const onConnect = useCallback(params => {
-    // reset the start node on connections
-    connectingNodeId.current = null
-    setEdges(eds => addEdge(params, eds))
-  }, [])
-
-  const onConnectStart = useCallback((_, { nodeId }) => {
-    connectingNodeId.current = nodeId
-  }, [])
-
-  const onConnectEnd = useCallback(
-    event => {
-      if (!connectingNodeId.current) return
-
-      const targetIsPane = event.target.classList.contains('react-flow__pane')
-
-      if (targetIsPane) {
-        // we need to remove the wrapper bounds, in order to get the correct position
-        const id = getId()
-        const newNode = {
-          id,
-          position: screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-          }),
-          type: prompt('Enter node type', 'result'),
-          data: { label: `Node ${id}` },
-          origin: [0.5, 0.0],
-        }
-
-        setNodes(nds => nds.concat(newNode))
-        setEdges(eds =>
-          eds.concat({ id, source: connectingNodeId.current, target: id })
-        )
-      }
-    },
-    [screenToFlowPosition, setEdges, setNodes]
+  const onConnect = useCallback(
+    params => setEdges(eds => addEdge(params, eds)),
+    [setEdges]
   )
 
   const socket = useContext(SocketContext)
@@ -206,8 +155,6 @@ const App = () => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         colorMode="dark"
-        onConnectStart={onConnectStart}
-        onConnectEnd={onConnectEnd}
         minZoom={0.2}
         maxZoom={4}
         // selectionOnDrag

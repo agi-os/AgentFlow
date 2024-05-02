@@ -1,11 +1,5 @@
 const Title = ({
-  classNames = [
-    'text-xl',
-    'font-thin',
-    'text-gray-200',
-    'leading-none',
-    'mb-4',
-  ],
+  classNames = ['text-xl', 'font-thin', 'text-gray-200', 'leading-none'],
   children,
   id,
 }) => {

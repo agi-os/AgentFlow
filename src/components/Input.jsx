@@ -10,7 +10,7 @@ const Input = ({
     'nodrag',
   ],
   onChange,
-  text,
+  text = '',
 }) => {
   return (
     <input className={classNames.join(' ')} onChange={onChange} value={text} />
