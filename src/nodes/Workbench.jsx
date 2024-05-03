@@ -18,6 +18,10 @@ const findFirstNodeData = (nodesData, property) => {
     ?.data[property]
 }
 
+// Function to find all node data based on a given property
+const findAllNodeData = (nodesData, property) =>
+  nodesData?.map(nodeData => nodeData.data[property]).filter(Boolean)
+
 const WorkbenchNode = ({ id, data }) => {
   // loading state
   const [isLoading, setIsLoading] = useState(false)
@@ -41,23 +45,29 @@ const WorkbenchNode = ({ id, data }) => {
   // Get incoming text and schema
   const incomingText = findFirstNodeData(nodesData, 'text')
   const incomingSchema = findFirstNodeData(nodesData, 'schema')
-  const incomingTool = findFirstNodeData(nodesData, 'tool')
+
+  // Get incoming tool schema
+  const incomingTools = findAllNodeData(nodesData, 'toolSchema')
 
   // Prepare emission
   const emission = useMemo(
     () => ({
       content: incomingText,
       schemaJson: incomingSchema,
-      tools: [incomingTool],
+      tools: incomingTools,
     }),
-    [incomingText, incomingSchema, incomingTool]
+    [incomingText, incomingSchema, incomingTools]
   )
 
   // Handle the click event
   const handleClick = useCallback(() => {
     setIsLoading(true)
-    // emit the event to the server
-    socket.emit('message', emission, response => {
+
+    // if we have a tool in emission, emit a tool event
+    const emissionType = emission.tools.length > 0 ? 'tool' : 'message'
+
+    // emit to the server
+    socket.emit(emissionType, emission, response => {
       console.log('response', response)
       // update the node data, adding to the results array
       const results = data?.results || []

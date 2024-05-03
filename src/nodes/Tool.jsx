@@ -1,5 +1,3 @@
-import toolPresets from './presets/tools.json'
-
 const generateToolSchema = ({
   functionName,
   functionDescription,
@@ -26,12 +24,41 @@ const generateToolSchema = ({
   }
 }
 
-import { useCallback } from 'react'
+const reverseToolSchema = schema => {
+  const functionName = schema.function.name
+  const functionDescription = schema.function.description
+  const propertyName = Object.keys(schema.function.parameters.properties)[0]
+  const propertyType = schema.function.parameters.properties[propertyName].type
+  const propertyDescription =
+    schema.function.parameters.properties[propertyName].description
+
+  return {
+    functionName,
+    functionDescription,
+    propertyName,
+    propertyType,
+    propertyDescription,
+  }
+}
+
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Position, Handle, useReactFlow } from '@xyflow/react'
 import classNames from './classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 import Inputs from '../components/Inputs'
+import { SocketContext } from '../Socket'
+
+/**
+ * List of inputs for the tool node
+ */
+const inputs = [
+  { label: 'Function Name', field: 'functionName' },
+  { label: 'Function Description', field: 'functionDescription' },
+  { label: 'Parameter Name', field: 'propertyName' },
+  { label: 'Parameter Type', field: 'propertyType' },
+  { label: 'Parameter Description', field: 'propertyDescription' },
+]
 
 /**
  * Tool identity node
@@ -40,13 +67,33 @@ import Inputs from '../components/Inputs'
  * @returns {JSX.Element}
  */
 const ToolNode = ({ id, data }) => {
+  const { updateNodeData } = useReactFlow()
+
+  // Get the socket from the context
+  const socket = useContext(SocketContext)
+
+  // List of tools available in form of presets
+  const [toolPresets, setTools] = useState([])
+
+  // Fetch the tool schemas from the server
+  useEffect(() => {
+    socket.emit('tool schemas', tools => {
+      const data = tools.map(tool => reverseToolSchema(tool))
+      setTools(data)
+    })
+  }, [socket])
+
+  // Update the node data with the selected tool when a preset is selected
   const handleSelect = event => {
+    // Find the tool with the selected function name
     const tool = toolPresets.find(
       tool => tool.functionName === event.target.value
     )
 
+    // If the tool is not found, return
     if (!tool) return
 
+    // Update the node data with the selected tool
     updateNodeData(id, {
       functionName: tool.functionName,
       functionDescription: tool.functionDescription,
@@ -57,8 +104,7 @@ const ToolNode = ({ id, data }) => {
     })
   }
 
-  const { updateNodeData } = useReactFlow()
-
+  // Handle the change of the input fields
   const onChange = useCallback(
     ({ value, field }) => {
       // Parse the data and update the tool schema
@@ -73,14 +119,7 @@ const ToolNode = ({ id, data }) => {
     [data, id, updateNodeData]
   )
 
-  const inputs = [
-    { label: 'Function Name', field: 'functionName' },
-    { label: 'Function Description', field: 'functionDescription' },
-    { label: 'Parameter Name', field: 'propertyName' },
-    { label: 'Parameter Type', field: 'propertyType' },
-    { label: 'Parameter Description', field: 'propertyDescription' },
-  ]
-
+  // Return the JSX
   return (
     <div className={classNames.join(' ')}>
       <Title id={id}>🛠️ Tool</Title>
@@ -97,7 +136,7 @@ const ToolNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
-      <Pre>{data.toolSchema}</Pre>
+      {/* <Pre>{data.toolSchema}</Pre> */}
       <Handle type="source" position={Position.Bottom} />
     </div>
   )

@@ -45,6 +45,7 @@ const AgentNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
+      <Handle type="target" position={Position.Top} />
       <Title id={id}>🧑‍💼 Agent</Title>
       <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
       <select

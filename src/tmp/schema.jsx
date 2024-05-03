@@ -101,6 +101,8 @@ export const classNames = [
 
 let nodeId = 0
 const buttonsOld = [
+  { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
+  { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
   { schema: searchSchema, label: '🧬 Search schema' },
   { schema: multiSearchSchema, label: 'Multi search schema' },
   { schema: toolkitSchema, label: 'Toolkit schema' },
