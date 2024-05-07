@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { Position, Handle, useReactFlow } from '@xyflow/react'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 import Inputs from '../components/Inputs'
 
 import agentPresets from './presets/agents.json'
+import colorMap from '../constants/colorMap'
 
 /**
  * Agent identity node
@@ -61,7 +62,11 @@ const AgentNode = ({ id, data }) => {
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
       <Pre>{data}</Pre>
-      <Handle type="source" position={Position.Bottom} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className={colorMap.agent}
+      />
     </div>
   )
 }

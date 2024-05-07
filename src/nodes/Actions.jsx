@@ -7,7 +7,7 @@ import {
 } from '@xyflow/react'
 import { useEffect, useMemo, useContext } from 'react'
 import { SocketContext } from '../Socket'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 import { useResult } from '../hooks'

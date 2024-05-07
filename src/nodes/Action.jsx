@@ -7,7 +7,7 @@ import {
 } from '@xyflow/react'
 import { useContext } from 'react'
 import { SocketContext } from '../Socket'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
 
 const ActionNode = ({ id, data }) => {
@@ -27,16 +27,28 @@ const ActionNode = ({ id, data }) => {
     connections.map(connection => connection.source)
   )
 
-  // Extracts the tool from incoming nodes
-  const tool = nodesData?.find(nodeData => nodeData?.data?.tool !== undefined)
-    ?.data?.tool
-
-  // Extracts the args from incoming nodes
-  const args = nodesData?.find(nodeData => nodeData?.data?.args !== undefined)
-    ?.data?.args
-
   // prepare emission
-  const emission = { tool, args }
+  const emission = { tool: null, args: null }
+
+  // Extracts the function name from incoming nodes
+  const functionName = nodesData?.find(
+    nodeData => nodeData?.data?.target?.function !== undefined
+  )?.data?.target?.function
+
+  emission.tool = functionName
+
+  // Extracts the first argument from incoming nodes
+  const firstArg = nodesData?.find(
+    nodeData => nodeData?.data?.target?.arguments !== undefined
+  )?.data?.target?.arguments
+
+  // If arguments exist and it's an object, get the first argument
+  if (typeof firstArg === 'object' && firstArg !== null) {
+    const firstArgKey = Object.keys(firstArg)[0]
+    const firstArgValue = firstArg[firstArgKey]
+
+    emission.args = firstArgValue
+  }
 
   // handle the click event
   const handleClick = () => {
@@ -48,20 +60,44 @@ const ActionNode = ({ id, data }) => {
     })
   }
 
+  // If a response is an array, create Handles for all elements in Right position
+  const ResponseHandles = () => {
+    // If response is not defined, abort
+    if (!data.response) return null
+
+    // If response is not an array, abort
+    if (!Array.isArray(data.response)) return null
+
+    // If response is an array, create Handles for all elements in Right position
+    return data.response?.map((response, index, array) => {
+      const offset = (index / (array.length - 1)) * 100
+      return (
+        <Handle
+          key={index}
+          type="source"
+          position={Position.Right}
+          id={`response-${index}`}
+          style={{ top: `${offset}%` }}
+        />
+      )
+    })
+  }
+
   return (
     <div className={classNames.join(' ')}>
-      <Title id={id}>Action node</Title>
+      <Title id={id}>🐣 Action</Title>
       <Handle type="target" position={Position.Top} />
       <pre>{JSON.stringify(emission, null, 2) || 'none'}</pre>
       <button
         className="bg-[#444] text-white px-2 py-1 rounded text-left"
         onClick={handleClick}>
-        run: {`${tool}('${args}')`}
+        run: {`${emission.tool}('${emission.args}')`}
       </button>
       <pre className="text-xs leading-none overflow-auto max-h-36">
         response: {JSON.stringify(data.response, null, 2) || 'none'}
       </pre>
       <Handle type="source" position={Position.Bottom} />
+      <ResponseHandles />
     </div>
   )
 }

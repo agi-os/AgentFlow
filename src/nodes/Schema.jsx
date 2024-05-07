@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 
 import Pre from '../components/Pre'
 import Title from '../components/Title'

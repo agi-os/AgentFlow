@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   Handle,
   Position,
@@ -8,66 +8,69 @@ import {
 } from '@xyflow/react'
 import { useContext } from 'react'
 import { SocketContext } from '../Socket'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
-
-// Function to find the first node data based on a given property
-const findFirstNodeData = (nodesData, property) => {
-  return nodesData?.find(nodeData => nodeData.data[property] !== undefined)
-    ?.data[property]
-}
-
-// Function to find all node data based on a given property
-const findAllNodeData = (nodesData, property) =>
-  nodesData?.map(nodeData => nodeData.data[property]).filter(Boolean)
+import useOutput from '../hooks/useOutput'
 
 const WorkbenchNode = ({ id, data }) => {
+  // Get a handle on the updateNodeData function
+  const { updateNodeData } = useReactFlow()
+
+  // Get all connections that are connected to this node
+  const connections = useHandleConnections({ type: 'target' })
+
+  // Get all nodes that are connected to this node
+  const nodes = useNodesData(connections.map(connection => connection.source))
+
+  // Get the target values
+  const target = useOutput(connections, nodes)
+
+  // Assign data.target to the node's target data
+  useEffect(() => updateNodeData(id, { target }), [id, target, updateNodeData])
+
   // loading state
   const [isLoading, setIsLoading] = useState(false)
 
   // get a handle on the websocket
   const socket = useContext(SocketContext)
 
-  // get a handle on the updateNodeData function
-  const { updateNodeData } = useReactFlow()
+  // Attempt to extract data from target nodes
+  const { entry, schema, tool } = data?.target || {}
 
-  // Get all connections that are connected to this node
-  const connections = useHandleConnections({
-    type: 'target',
-  })
-
-  // Get the data of all nodes that are connected to this node
-  const nodesData = useNodesData(
-    connections.map(connection => connection.source)
+  // Get incoming entry
+  const incomingText = useMemo(
+    () => (Array.isArray(entry) && entry.length > 0 ? entry[0] : null),
+    [entry]
   )
 
-  // Get incoming text and schema
-  const incomingText = findFirstNodeData(nodesData, 'text')
-  const incomingSchema = findFirstNodeData(nodesData, 'schema')
+  // Get incoming schema
+  const incomingSchema = useMemo(
+    () =>
+      Array.isArray(schema) && schema.length > 0 ? schema[0]?.output : null,
+    [schema]
+  )
 
-  // Get incoming tool schema
-  const incomingTools = findAllNodeData(nodesData, 'toolSchema')
-
-  // Prepare emission
-  const emission = useMemo(
-    () => ({
+  // Prepare emission on any change of incoming data
+  useEffect(() => {
+    const emission = {
       content: incomingText,
       schemaJson: incomingSchema,
-      tools: incomingTools,
-    }),
-    [incomingText, incomingSchema, incomingTools]
-  )
+      tools: tool,
+    }
+
+    updateNodeData(id, { emission })
+  }, [id, incomingText, incomingSchema, tool, updateNodeData])
 
   // Handle the click event
   const handleClick = useCallback(() => {
     setIsLoading(true)
 
     // if we have a tool in emission, emit a tool event
-    const emissionType = emission.tools.length > 0 ? 'tool' : 'message'
+    const emissionType = data?.emission?.tools?.length > 0 ? 'tool' : 'message'
 
     // emit to the server
-    socket.emit(emissionType, emission, response => {
+    socket.emit(emissionType, data.emission, response => {
       console.log('response', response)
       // update the node data, adding to the results array
       const results = data?.results || []
@@ -81,7 +84,7 @@ const WorkbenchNode = ({ id, data }) => {
 
       setIsLoading(false)
     })
-  }, [data?.results, emission, id, socket, updateNodeData])
+  }, [data?.results, data.emission, id, socket, updateNodeData])
 
   const ResultGrid = () => (
     <div
@@ -118,7 +121,9 @@ const WorkbenchNode = ({ id, data }) => {
     <div className={classNames.join(' ')}>
       <Handle type="target" position={Position.Top} />
       <Title id={id}>🏗️ Workbench</Title>
-      <Pre>{emission}</Pre>
+      <Pre>{data.target}</Pre>
+      <hr className="border border-zinc-700" />
+      <Pre>{data.emission}</Pre>
       <Button />
       <ResultGrid />
       <ResultHandles />

@@ -108,9 +108,7 @@ const buttonsOld = [
   { schema: toolkitSchema, label: 'Toolkit schema' },
   { schema: multiToolkitSchema, label: 'Multi toolkit schema' },
   { schema: {}, label: ' Emit', secondParam: 'emit' },
-  { schema: {}, label: 'Action', secondParam: 'action' },
   { schema: {}, label: 'Actions', secondParam: 'actions' },
-  { schema: {}, label: 'Result', secondParam: 'result' },
 ]
 
 const buttons = [
@@ -119,6 +117,8 @@ const buttons = [
   { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },
   { schema: {}, label: '🛠️ Tool', secondParam: 'tool' },
   { schema: {}, label: '🏗️ Workbench', secondParam: 'workbench' },
+  { schema: {}, label: '🐣 Action', secondParam: 'action' },
+  { schema: {}, label: '🛎️ Result', secondParam: 'result' },
 ]
 
 /**

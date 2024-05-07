@@ -42,12 +42,20 @@ const reverseToolSchema = schema => {
 }
 
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { Position, Handle, useReactFlow } from '@xyflow/react'
-import classNames from './classNames'
+import {
+  Position,
+  Handle,
+  useReactFlow,
+  useHandleConnections,
+  useNodesData,
+} from '@xyflow/react'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
-import Pre from '../components/Pre'
 import Inputs from '../components/Inputs'
 import { SocketContext } from '../Socket'
+import ResultHandles from './ResultHandles'
+import colorMap from '../constants/colorMap'
+import useOutput from '../hooks/useOutput'
 
 /**
  * List of inputs for the tool node
@@ -67,13 +75,35 @@ const inputs = [
  * @returns {JSX.Element}
  */
 const ToolNode = ({ id, data }) => {
-  const { updateNodeData } = useReactFlow()
-
   // Get the socket from the context
   const socket = useContext(SocketContext)
 
   // List of tools available in form of presets
   const [toolPresets, setTools] = useState([])
+
+  // Schema of the currently configured tool
+  const [toolSchema, setToolSchema] = useState({})
+
+  // On any change of tool data, update the tool schema
+  useEffect(() => {
+    setToolSchema(
+      generateToolSchema({
+        functionName: data.functionName,
+        functionDescription: data.functionDescription,
+        propertyName: data.propertyName,
+        propertyType: data.propertyType,
+        propertyDescription: data.propertyDescription,
+      })
+    )
+  }, [
+    data.functionName,
+    data.functionDescription,
+    data.propertyName,
+    data.propertyType,
+    data.propertyDescription,
+  ])
+
+  const { updateNodeData } = useReactFlow()
 
   // Fetch the tool schemas from the server
   useEffect(() => {
@@ -82,6 +112,16 @@ const ToolNode = ({ id, data }) => {
       setTools(data)
     })
   }, [socket])
+
+  // On any tool schema change, update the node output schema
+  // Assign own output to the node's incoming data
+  useEffect(
+    () =>
+      updateNodeData(id, {
+        output: toolSchema,
+      }),
+    [id, toolSchema, updateNodeData]
+  )
 
   // Update the node data with the selected tool when a preset is selected
   const handleSelect = event => {
@@ -93,35 +133,20 @@ const ToolNode = ({ id, data }) => {
     // If the tool is not found, return
     if (!tool) return
 
-    // Update the node data with the selected tool
-    updateNodeData(id, {
-      functionName: tool.functionName,
-      functionDescription: tool.functionDescription,
-      propertyName: tool.propertyName,
-      propertyType: tool.propertyType,
-      propertyDescription: tool.propertyDescription,
-      toolSchema: generateToolSchema(tool),
-    })
+    // Update the node data with the selected tool's data
+    updateNodeData(id, tool)
   }
 
   // Handle the change of the input fields
   const onChange = useCallback(
-    ({ value, field }) => {
-      // Parse the data and update the tool schema
-      const toolSchema = generateToolSchema({
-        ...data,
-        [field]: value,
-      })
-
-      // Update the node data
-      updateNodeData(id, { toolSchema, [field]: value })
-    },
-    [data, id, updateNodeData]
+    ({ value, field }) => updateNodeData(id, { [field]: value }),
+    [id, updateNodeData]
   )
 
   // Return the JSX
   return (
     <div className={classNames.join(' ')}>
+      <Handle type="target" position={Position.Top} />
       <Title id={id}>🛠️ Tool</Title>
       <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
       <select
@@ -136,8 +161,11 @@ const ToolNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
-      {/* <Pre>{data.toolSchema}</Pre> */}
-      <Handle type="source" position={Position.Bottom} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className={colorMap.tool}
+      />
     </div>
   )
 }

@@ -7,11 +7,13 @@ import {
   useNodesData,
 } from '@xyflow/react'
 import Input from '../components/Input'
-import classNames from './classNames'
+import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 
-import { useResult } from '../hooks'
+import useOutput from '../hooks/useOutput'
+import ResultHandles from './ResultHandles'
+import colorMap from '../constants/colorMap'
 
 /**
  * Text entry node
@@ -22,32 +24,8 @@ import { useResult } from '../hooks'
 const EntryNode = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
 
-  // Get all connections that are connected to this node
-  const connections = useHandleConnections({
-    type: 'target',
-  })
-
-  // Get the data of all nodes that are connected to this node
-  const nodesData = useNodesData(
-    connections.map(connection => connection.source)
-  )
-
-  // Extract the text from the incoming nodes
-  const result = useResult(connections, nodesData)
-
-  // Defines if we have any incoming connections
-  const hasTargetConnections = connections.length > 0
-
-  // Update the node data with nodesData
-  useEffect(() => {
-    console.log({ result })
-    updateNodeData(id, { target: result })
-  }, [id, updateNodeData, result])
-
   const onChange = useCallback(
-    text => {
-      updateNodeData(id, { text })
-    },
+    event => updateNodeData(id, { output: event.target.value }),
     [id, updateNodeData]
   )
 
@@ -55,15 +33,12 @@ const EntryNode = ({ id, data }) => {
     <div className={classNames.join(' ')}>
       <Handle type="target" position={Position.Top} />
       <Title id={id}>✏️ Entry</Title>
-      {hasTargetConnections ? (
-        <Pre>{data}</Pre>
-      ) : (
-        <Input
-          onChange={event => onChange(event.target.value)}
-          text={data.text}
-        />
-      )}
-      <Handle type="source" position={Position.Bottom} />
+      <Input onChange={onChange} text={data.output} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className={colorMap.entry}
+      />
     </div>
   )
 }
