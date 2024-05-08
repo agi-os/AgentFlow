@@ -13,6 +13,8 @@ import {
   getConnectedEdges,
 } from '@xyflow/react'
 
+import anime from 'animejs/lib/anime.es.js'
+
 import getArrangedElements from './getArrangedElements'
 
 import SchemaButton from './tmp/schema'
@@ -21,18 +23,10 @@ import { SocketContext } from './Socket'
 
 import nodeTypes from './nodes/nodeTypes'
 import { classNames } from './tmp/schema'
+import initialNodes from './initialNodes'
+import initialEdges from './initialEdges'
+
 const buttonClassNames = classNames
-
-const initialNodes = [
-  {
-    id: 'content',
-    type: 'entry',
-    position: { x: 0, y: 0 },
-    data: { text: 'John Doe born 1999' },
-  },
-]
-
-const initialEdges = []
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
@@ -91,8 +85,26 @@ const App = () => {
 
   // initial layout
   useEffect(() => {
-    onLayout('TB')
-    setTimeout(() => onLayout('TB'), 50)
+    // onLayout('LR')
+
+    setTimeout(() => {
+      // onLayout('LR')
+    }, 50)
+
+    setTimeout(() => {
+      var path = anime.path('.react-flow__edge path')
+      console.log(path('x'))
+
+      anime({
+        targets: '.foo-test',
+        translateX: path('x'),
+        translateY: path('y'),
+        rotate: path('angle'),
+        easing: 'easeInOutSine',
+        duration: 2000,
+        loop: true,
+      })
+    }, 100)
   }, [])
 
   // load schema
@@ -107,8 +119,8 @@ const App = () => {
       setNodes([...nodes])
 
       // trigger 2x, once to repaint and get measurements, once to layout
-      onLayout('TB')
-      setTimeout(() => onLayout('TB'), 50)
+      // onLayout('LR')
+      // setTimeout(() => onLayout('LR'), 50)
       // })
     })
 
@@ -120,6 +132,18 @@ const App = () => {
 
   return (
     <>
+      <div
+        className={[
+          'foo-test',
+          'rounded-md',
+          'bg-teal-800',
+          'absolute',
+          'w-9',
+          'h-9',
+          'z-10',
+        ].join(' ')}
+        style={{ transform: 'translate(-50%, -50%)' }}
+      />
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
@@ -129,12 +153,13 @@ const App = () => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         colorMode="dark"
-        minZoom={0.2}
-        maxZoom={4}
+        minZoom={1}
+        maxZoom={1}
         // selectionOnDrag
         // panOnDrag={panOnDrag}
         // selectionMode={SelectionMode.Partial}
-        fitView>
+        // fitView
+      >
         <Background />
         <Panel position="top-left">
           <SchemaButton />
@@ -142,7 +167,7 @@ const App = () => {
         <Panel position="top-right">
           <button
             className={buttonClassNames.join(' ')}
-            onClick={() => onLayout('TB')}>
+            onClick={() => onLayout('LR')}>
             update layout
           </button>
         </Panel>

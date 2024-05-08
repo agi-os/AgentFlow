@@ -99,7 +99,7 @@ export const classNames = [
   'outline-4',
 ]
 
-let nodeId = 0
+let nodeId = 10
 const buttonsOld = [
   { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
   { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
@@ -112,6 +112,12 @@ const buttonsOld = [
 ]
 
 const buttons = [
+  { schema: {}, label: '🗄️ Chest', secondParam: 'chest' },
+  {
+    schema: {},
+    label: '🔢 Constant Combinator',
+    secondParam: 'constantCombinator',
+  },
   { schema: schema, label: '🧬 Schema' },
   { schema: {}, label: '✏️ Entry', secondParam: 'entry' },
   { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },

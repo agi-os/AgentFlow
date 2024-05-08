@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@dagrejs/dagre": "^1.1.2",
+    "@faker-js/faker": "^8.4.1",
     "@xyflow/react": "^12.0.0-next.16",
+    "animejs": "^3.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.5.2"

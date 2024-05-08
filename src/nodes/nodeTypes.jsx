@@ -7,6 +7,8 @@ import ActionsNode from './Actions'
 import AgentNode from './Agent'
 import ToolNode from './Tool'
 import WorkbenchNode from './Workbench'
+import ChestNode from './Chest'
+import ConstantCombinatorNode from './ConstantCombinator'
 
 export default {
   agent: AgentNode,
@@ -18,4 +20,6 @@ export default {
   actions: ActionsNode,
   tool: ToolNode,
   workbench: WorkbenchNode,
+  chest: ChestNode,
+  constantCombinator: ConstantCombinatorNode,
 }
