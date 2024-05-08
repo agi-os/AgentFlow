@@ -25,16 +25,18 @@ const initialEdges = [
   {
     id: 'cc1->chest1',
     source: 'cc1',
-    sourceHandle: 'green',
+    sourceHandle: 'orange',
     target: 'chest-1',
-    targetHandle: 'green',
+    targetHandle: 'orange',
+    style: { stroke: 'orange' },
   },
   {
     id: 'cc1->chest2',
     source: 'cc1',
-    sourceHandle: 'blue',
+    sourceHandle: 'orange',
     target: 'chest-2',
-    targetHandle: 'blue',
+    targetHandle: 'orange',
+    style: { stroke: 'orange' },
   },
 ]
 

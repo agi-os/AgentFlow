@@ -10,10 +10,10 @@ const Handles = ({ type = 'source', position = Position.Right }) => {
   return (
     <>
       <Handle
-        key="green"
-        id="green"
+        key="orange"
+        id="orange"
         type={type}
-        className="signal-handle top-3 bg-green-500"
+        className="signal-handle top-3 bg-orange-500"
         position={position}
       />
       <Handle
