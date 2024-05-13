@@ -1,4 +1,12 @@
-import { Position, Handle } from '@xyflow/react'
+import {
+  Position,
+  Handle,
+  useReactFlow,
+  useNodeId,
+  NodeResizer,
+  useStoreApi,
+  useKeyPress,
+} from '@xyflow/react'
 
 /**
  * Renders the belt port for a source or target signal.
@@ -13,7 +21,33 @@ export const Belt = props => {
   const id = props?.id ? props.id : type === 'source' ? 'outbox' : 'inbox'
 
   // Set the color based on the type.
-  const color = type === 'source' ? 'bg-lime-800' : 'bg-zinc-700'
+  let color = type === 'source' ? 'bg-lime-900' : 'bg-zinc-700'
+
+  // Get a handle to react flow.
+  const reactFlow = useReactFlow()
+
+  // Get the node id from the store.
+  const nodeId = useNodeId()
+
+  if (nodeId) {
+    // Get the node from the react flow instance.
+    const node = reactFlow.getNode(nodeId)
+
+    // Get the data from the node.
+    const data = node?.data || {}
+
+    // If the node data has a color, use it.
+    switch (data?.semaphore) {
+      case 'red':
+        color = 'bg-red-500 animate-pulse'
+        break
+      case 'yellow':
+        color = 'bg-yellow-500 animate-pulse'
+        break
+      case 'green':
+        color = 'bg-green-500'
+    }
+  }
 
   // Set the position based on the type.
   const position = type === 'source' ? Position.Bottom : Position.Top
