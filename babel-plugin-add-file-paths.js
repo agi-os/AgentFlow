@@ -18,9 +18,15 @@ export default function ({ types: t }) {
         parts.pop()
         file = parts.join('.')
 
+        // Get the line number.
+        const lineNumber = path.node.loc.start.line
+
         // Add the file path as a data attribute.
-        path.node.attributes.push(
-          t.jsxAttribute(t.jsxIdentifier('data-file'), t.stringLiteral(file))
+        path.node.attributes.unshift(
+          t.jsxAttribute(
+            t.jsxIdentifier('x-jsx'),
+            t.stringLiteral(`${file}:${lineNumber}`)
+          )
         )
       },
     },
