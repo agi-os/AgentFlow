@@ -7,8 +7,11 @@ import ActionsNode from './Actions'
 import AgentNode from './Agent'
 import ToolNode from './Tool'
 import WorkbenchNode from './Workbench'
-import ChestNode from './Chest'
+import ChestNode from './Chest/index.jsx'
 import ConstantCombinatorNode from './ConstantCombinator'
+import ArithmeticCombinator from './ArithmeticCombinator'
+import SplitterNode from './Splitter'
+import ItemChestNode from './ItemChest/index'
 
 export default {
   agent: AgentNode,
@@ -22,4 +25,7 @@ export default {
   workbench: WorkbenchNode,
   chest: ChestNode,
   constantCombinator: ConstantCombinatorNode,
+  arithmeticCombinator: ArithmeticCombinator,
+  splitter: SplitterNode,
+  itemChest: ItemChestNode,
 }
