@@ -6,9 +6,10 @@ import { ZoomCompensation } from './ZoomCompensation'
  * @param {ReactNode} props.children - The children components to be rendered.
  * @returns {JSX.Element} The rendered ZoomCompensated component.
  */
-const ZoomCompensated = ({ children }) => {
+const ZoomCompensated = ({ classNames = [], children }) => {
+  const allClassNames = ['absolute', 'inset-0', ...classNames]
   return (
-    <div className="absolute inset-0 overflow-clip">
+    <div className={allClassNames.join(' ')}>
       <ZoomCompensation>{children}</ZoomCompensation>
     </div>
   )
