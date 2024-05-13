@@ -4,13 +4,12 @@ const classNames = [
   'absolute',
   'right-2',
   'top-2',
-  'w-5',
-  'h-5',
-  'shadow-inner',
+  'w-3',
+  'h-3',
   'rounded-full',
   'cursor-pointer',
   'transition',
-  'hover:scale-110',
+  'hover:scale-125',
 ]
 
 /**
