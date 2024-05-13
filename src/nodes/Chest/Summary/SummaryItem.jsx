@@ -1,17 +1,3 @@
-const classNames = [
-  'w-12',
-  'h-12',
-  'flex',
-  'flex-col',
-  'justify-center',
-  'items-center',
-  'bg-zinc-700',
-  'text-zinc-400',
-  'rounded',
-  'text-sm',
-  'shadow-md',
-]
-
 /**
  * Renders a summary item.
  *
@@ -20,6 +6,7 @@ const classNames = [
  * @param {Array} props.items - The items of this type.
  * @returns {JSX.Element} The rendered summary item.
  */
+
 const SummaryItem = ({ type, items }) => (
   <div
     className={classNames.join(' ')}
@@ -31,5 +18,20 @@ const SummaryItem = ({ type, items }) => (
     </div>
   </div>
 )
+
+const classNames = [
+  'w-12',
+  'h-12',
+  'flex',
+  'flex-col',
+  'justify-center',
+  'items-center',
+  'border',
+  'border-zinc-700',
+  'text-zinc-400',
+  'rounded',
+  'text-sm',
+  'shadow-md',
+]
 
 export default SummaryItem

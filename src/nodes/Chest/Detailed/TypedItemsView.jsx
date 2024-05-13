@@ -1,4 +1,4 @@
-import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
+import ZoomResponsiveWrapper from '../../ZoomCompensated/ZoomResponsiveWrapper'
 import TypeTitle from './TypeTitle'
 
 /**
@@ -36,7 +36,7 @@ const classNames = [
   'bg-zinc-800',
   'rounded',
   'gap-2',
-  'p-1',
+  'p-5',
   'overflow-y-auto',
 ]
 

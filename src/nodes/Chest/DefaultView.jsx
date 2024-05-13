@@ -1,4 +1,4 @@
-import TypedItemsView from './TypedItemsView'
+import TypedItemsView from './Detailed/TypedItemsView'
 
 /**
  * Renders the default view for the Chest node.
@@ -13,7 +13,7 @@ const DefaultView = ({ data }) => (
       <div className={gridClassNames.join(' ')}>
         {items.map(item => (
           <div className={itemClassNames.join(' ')} key={item.id}>
-            <p className="font-bold">{item.name}</p>
+            {item.name}
           </div>
         ))}
       </div>
@@ -21,16 +21,17 @@ const DefaultView = ({ data }) => (
   </TypedItemsView>
 )
 
-const gridClassNames = [
-  'grid',
-  'grid-cols-3',
-  'p-1',
-  'gap-1',
+const gridClassNames = ['grid', 'grid-cols-4', 'p-2', 'gap-2', 'rounded']
+
+const itemClassNames = [
+  'subgrid',
+  'font-light',
+  'px-2',
+  'gap-2',
   'rounded',
   'border',
   'border-zinc-700',
+  'bg-zinc-800',
 ]
-
-const itemClassNames = ['subgrid', 'px-2', 'gap-2', 'rounded', 'bg-zinc-700']
 
 export default DefaultView

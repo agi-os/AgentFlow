@@ -1,5 +1,5 @@
 /**
- * Renders an item with its name and phone number.
+ * Renders an item with its name and all keys not in hiddenKeys.
  *
  * @component
  * @param {Object} props - The component props.
@@ -7,19 +7,22 @@
  * @returns {JSX.Element} The rendered Item component.
  */
 const Item = ({ item }) => {
-  const itemClassNames = [
-    'p-1',
-    'gap-0',
-    'rounded',
-    'border',
-    'border-zinc-700',
-  ]
   return (
     <div className={itemClassNames.join(' ')} key={item.id}>
       <p className="font-bold">{item.name}</p>
-      <p>{item.phone}</p>
+      {Object.keys(item)
+        .filter(key => !hiddenKeys.includes(key))
+        .map(key => (
+          <p key={key}>
+            <span className="font-bold">{key}:</span> {item[key]}
+          </p>
+        ))}
     </div>
   )
 }
+
+const hiddenKeys = ['id', 'name', 'type', 'emoticon']
+
+const itemClassNames = ['p-1', 'gap-0', 'rounded', 'border', 'border-zinc-700']
 
 export default Item

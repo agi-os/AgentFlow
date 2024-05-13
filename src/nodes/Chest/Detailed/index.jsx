@@ -1,4 +1,4 @@
-import Item from './Item'
+import Item from '../Item'
 import TypedItemsView from './TypedItemsView'
 
 /**
@@ -9,7 +9,7 @@ import TypedItemsView from './TypedItemsView'
  */
 
 const DetailedView = ({ data }) => {
-  const classNames = ['grid', 'grid-cols-6', 'p-4', 'gap-2', 'text-lg']
+  const classNames = ['grid', 'grid-cols-3', 'p-4', 'gap-2', 'text-md']
 
   return (
     <TypedItemsView data={data}>

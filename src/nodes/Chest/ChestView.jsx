@@ -1,5 +1,5 @@
 import DefaultView from './DefaultView'
-import DetailedView from './DetailedView'
+import DetailedView from './Detailed/index'
 import SummaryView from './Summary/index'
 import { useStore } from '@xyflow/react'
 

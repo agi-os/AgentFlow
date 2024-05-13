@@ -21,8 +21,7 @@ const ChestNode = props => {
       <SignalHandles />
       <Title id={props.id}>🗄️ Chest</Title>
       <Semaphore />
-      <ZoomCompensated
-        classNames={['mt-6', 'overflow-x-hidden', 'overflow-y-auto']}>
+      <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
         <ChestView {...props} />
       </ZoomCompensated>
       <BeltSource />
