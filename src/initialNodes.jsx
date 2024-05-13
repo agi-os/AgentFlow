@@ -1,19 +1,91 @@
 import { faker } from '@faker-js/faker'
 
+let professionalWorkEmoticons = [
+  '💼',
+  '📊',
+  '📈',
+  '📚',
+  '📝',
+  '✅',
+  '🚀',
+  '🔍',
+  '📅',
+  '📌',
+  '📥',
+  '📤',
+]
+
+const randomArrayElement = array => {
+  const index = Math.floor(Math.random() * array.length)
+  const element = array[index]
+  array.splice(index, 1)
+  return element
+}
+
+const types = Array.from({ length: professionalWorkEmoticons.length }, () => ({
+  name: faker.person.jobType(),
+  emoticon: randomArrayElement(professionalWorkEmoticons),
+}))
+
 const createRandomProspect = () => {
   const id = faker.helpers.fromRegExp(/person-[0-9]{3}/)
+  const type = faker.helpers.arrayElement(types)
 
-  return {
+  let prospect = {
     id,
     name: faker.person.fullName(),
     title: faker.person.jobTitle(),
-    type: faker.person.jobType(),
+    type: type.name,
+    emoticon: type.emoticon,
     phone: faker.helpers.fromRegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
   }
+
+  const extraDataPoints = Math.floor(Math.random() * 6) + 4 // generates a random number between 4 and 9
+
+  for (let i = 0; i < extraDataPoints; i++) {
+    const randomDataPoint = Math.floor(Math.random() * 10) // generates a random number between 0 and 9
+
+    switch (randomDataPoint) {
+      case 0:
+        prospect.firstName = faker.person.firstName()
+        break
+      case 1:
+        prospect.lastName = faker.person.lastName()
+        break
+      case 2:
+        prospect.middleName = faker.person.middleName()
+        break
+      case 3:
+        prospect.gender = faker.person.gender()
+        break
+      case 4:
+        prospect.bio = faker.person.bio()
+        break
+      case 5:
+        prospect.prefix = faker.person.prefix()
+        break
+      case 6:
+        prospect.suffix = faker.person.suffix()
+        break
+      case 7:
+        prospect.jobDescriptor = faker.person.jobDescriptor()
+        break
+      case 8:
+        prospect.jobArea = faker.person.jobArea()
+        break
+      case 9:
+        prospect.zodiacSign = faker.person.zodiacSign()
+        break
+      default:
+        break
+    }
+  }
+
+  return prospect
 }
 
-const generateRandomAmountOfItems = (count = 10) => {
-  const amount = faker.number.int({ min: 3, max: count })
+const generateRandomAmountOfItems = ({ min = 3, max = 16 }) => {
+  const amount = faker.number.int({ min, max })
   return Array.from({ length: amount }, createRandomProspect)
 }
 
@@ -21,17 +93,17 @@ const initialNodes = [
   {
     id: 'chest-1',
     type: 'chest',
-    position: { x: 500, y: 200 },
+    position: { x: 450, y: 150 },
     data: {
-      items: generateRandomAmountOfItems(),
+      items: generateRandomAmountOfItems({ min: 42, max: 76 }),
     },
   },
   {
     id: 'chest-2',
     type: 'chest',
-    position: { x: 100, y: 900 },
+    position: { x: 100, y: 950 },
     data: {
-      items: generateRandomAmountOfItems(3),
+      items: generateRandomAmountOfItems({ min: 3, max: 5 }),
     },
   },
   {
@@ -44,6 +116,21 @@ const initialNodes = [
         { id: 'signal2', name: 'signal2', count: 2 },
       ],
     },
+  },
+  {
+    id: 'ac1',
+    type: 'arithmeticCombinator',
+    position: { x: 950, y: 950 },
+    data: {
+      mode: 'add',
+      value: 0,
+    },
+  },
+  {
+    id: 'sp1',
+    type: 'splitter',
+    position: { x: 150, y: 550 },
+    data: {},
   },
 ]
 
