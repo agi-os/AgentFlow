@@ -5,15 +5,6 @@ import ZoomCompensated from '../ZoomCompensated/index'
 import { ChestView } from './ChestView'
 import Semaphore from '../../components/Semaphore'
 
-const classNames = [
-  'p-1',
-  'rounded',
-  'bg-zinc-700',
-  'w-96',
-  'h-96',
-  'overflow-hidden',
-].join(' ')
-
 /**
  * Renders a Chest node component.
  *
@@ -25,19 +16,31 @@ const classNames = [
  */
 const ChestNode = props => {
   return (
-    <div className={classNames}>
+    <div className={classNames.join(' ')}>
       <BeltTarget />
       <SignalHandles />
       <Title id={props.id}>🗄️ Chest</Title>
       <Semaphore />
-      <div className="absolute inset-2 mt-10 overflow-clip rounded-md">
-        <ZoomCompensated>
-          <ChestView {...props} />
-        </ZoomCompensated>
-      </div>
+      <ZoomCompensated
+        classNames={['mt-6', 'overflow-x-hidden', 'overflow-y-auto']}>
+        <ChestView {...props} />
+      </ZoomCompensated>
       <BeltSource />
     </div>
   )
 }
+
+const classNames = [
+  'p-1',
+  'rounded',
+  'text-zinc-300',
+  'font-thin',
+  'bg-zinc-800',
+  'w-96',
+  'h-96',
+  'border-[1px]',
+  'border-zinc-700',
+  'overflow-hidden',
+]
 
 export default ChestNode

@@ -5,8 +5,10 @@ const classNames = [
   'flex-col',
   'justify-center',
   'items-center',
-  'bg-gray-200',
+  'bg-zinc-700',
+  'text-zinc-400',
   'rounded',
+  'text-sm',
   'shadow-md',
 ]
 
@@ -19,8 +21,10 @@ const classNames = [
  * @returns {JSX.Element} The rendered summary item.
  */
 const SummaryItem = ({ type, items }) => (
-  <div className={classNames.join(' ')} title={type + ' ' + items[0].emoticon}>
-    <span>{items.length}</span>
+  <div
+    className={classNames.join(' ')}
+    title={`${items.length}× ${type} ${items[0].emoticon}`}>
+    <span>{items.length}×</span>
     <div>
       {items[0].emoticon}
       {type.slice(0, 2).toUpperCase()}

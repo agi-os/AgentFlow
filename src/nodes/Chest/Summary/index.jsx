@@ -1,7 +1,6 @@
 import groupItemsByType from './groupItemsByType'
 import SummaryItem from './SummaryItem'
-
-const classNames = ['flex', 'flex-wrap', 'gap-2', 'w-full', 'h-full', 'p-2']
+import ZoomResponsiveWrapper from '../../ZoomCompensated/ZoomResponsiveWrapper'
 
 /**
  * Renders a summary view of typed items.
@@ -11,15 +10,30 @@ const classNames = ['flex', 'flex-wrap', 'gap-2', 'w-full', 'h-full', 'p-2']
  * @returns {JSX.Element} The rendered summary view.
  */
 const SummaryView = ({ data }) => {
+  // Get items grouped by type.
   const typedItems = groupItemsByType(data?.items)
 
+  // Render the summary view.
   return (
-    <div className={classNames.join(' ')}>
-      {Object.entries(typedItems).map(([type, items], index) => (
-        <SummaryItem key={index} type={type} items={items} />
-      ))}
-    </div>
+    <ZoomResponsiveWrapper classNames={classNames}>
+      {typedItems ? (
+        Object.entries(typedItems).map(([type, items], index) => (
+          <SummaryItem key={index} type={type} items={items} />
+        ))
+      ) : (
+        <div className="text-zinc-400">Empty</div>
+      )}
+    </ZoomResponsiveWrapper>
   )
 }
+
+const classNames = [
+  'flex',
+  'flex-wrap',
+  'content-start',
+  'justify-start',
+  'gap-2',
+  'p-2',
+]
 
 export default SummaryView
