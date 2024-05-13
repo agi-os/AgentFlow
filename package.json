@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/core": "^7.24.5",
+    "@babel/plugin-syntax-jsx": "^7.24.1",
+    "@babel/preset-react": "^7.24.1",
     "@dagrejs/dagre": "^1.1.2",
     "@faker-js/faker": "^8.4.1",
     "@xyflow/react": "^12.0.0-next.16",
