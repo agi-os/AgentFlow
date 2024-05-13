@@ -1,5 +1,5 @@
 import { useStore } from '@xyflow/react'
-import { Centered } from './Centered'
+import Centered from './Centered'
 
 /**
  * Applies zoom compensation to its children.
@@ -8,7 +8,7 @@ import { Centered } from './Centered'
  * @returns {JSX.Element} - The rendered ZoomCompensation component.
  */
 
-export const ZoomCompensation = ({ children }) => {
+const ZoomCompensation = ({ children }) => {
   // Get the zoom level from the store
   const zoom = useStore(s => s.transform[2].toFixed(2))
 
@@ -22,3 +22,5 @@ export const ZoomCompensation = ({ children }) => {
     </div>
   )
 }
+
+export default ZoomCompensation
