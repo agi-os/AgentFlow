@@ -2,6 +2,23 @@ import { useRef, useEffect } from 'react'
 import { getBezierPath } from '@xyflow/system'
 
 /**
+ * How many times per second should the target coordinate be updated.
+ * The higher the number, the more precise is the path following.
+ */
+const CALCULATIONS_PER_SECOND = 30
+
+/**
+ * How many items should flow down the path per minute.
+ */
+const ITEMS_PER_MINUTE = 12
+
+// pre-calculate some values
+const msPerFrame = (1000 / CALCULATIONS_PER_SECOND) | 0
+const itemsPerSecond = (ITEMS_PER_MINUTE / 60) * CALCULATIONS_PER_SECOND
+const framesPerItem = CALCULATIONS_PER_SECOND / itemsPerSecond
+const percentagePerFrame = 100 / framesPerItem / 5
+
+/**
  * Custom hook that animates a circle along a bezier path.
  *
  * @param {number} sourceX - The x-coordinate of the source point.
@@ -34,52 +51,89 @@ const usePathAnimation = (
     targetPosition,
   })
 
-  const directionRef = useRef(1) // 1 for forward, -1 for backward
-  const currentPointIndexRef = useRef(0) // Initialize to 0
-  const frameIdRef = useRef(null) // Store frame ID
+  // Current point in px of the item along the path
+  const currentPointPixels = useRef(0)
 
+  // Animation frame ID
+  const frameIdRef = useRef(null)
+
+  // Start the animation
   useEffect(() => {
-    let animationFrameCounter = 0 // Initialize animation frame counter
+    // Initialize next tick timestamp
+    let nextTick = performance.now() + msPerFrame
 
-    const TRANSITION_DURATION_MS = 500 // Duration of a single straight segment of transition in milliseconds
-    const framesPerTransition = (TRANSITION_DURATION_MS / 17) | 0 // Number of frames in a single straight segment of transition
+    const animate = itemsPerMinute => {
+      // Sanity check
+      if (!pathRef.current || !divRef.current) return
 
-    const animate = () => {
-      if (pathRef.current) {
-        animationFrameCounter++ // Increment animation frame counter
+      // Get the current timestamp
+      const now = performance.now() | 0
 
-        // Update circle position every framesPerTransition frames
-        if (animationFrameCounter % framesPerTransition === 0) {
-          const totalPathLength = pathRef.current.getTotalLength()
-
-          // Check if the animation has reached the end of the path in either direction
-          if (
-            (directionRef.current === 1 &&
-              currentPointIndexRef.current >= totalPathLength) ||
-            (directionRef.current === -1 && currentPointIndexRef.current <= 0)
-          ) {
-            directionRef.current *= -1 // Reverse direction
-          }
-
-          // Get the current point on the path
-          const targetPoint = pathRef.current.getPointAtLength(
-            currentPointIndexRef.current
-          )
-
-          // Move div along with circle
-          if (divRef.current) {
-            divRef.current.style.transform = `translate(${targetPoint.x}px, ${targetPoint.y}px)`
-          }
-
-          // Move to the next point based on direction and frames per transition
-          currentPointIndexRef.current +=
-            framesPerTransition * directionRef.current
-        }
-
-        frameIdRef.current = requestAnimationFrame(animate)
+      if (now < nextTick) {
+        // It's not time for the next frame yet, schedule another check
+        frameIdRef.current = requestAnimationFrame(() =>
+          animate(itemsPerMinute)
+        )
+        return
       }
+
+      // Update next tick timestamp
+      nextTick = now + msPerFrame
+
+      // Get the total length of the path
+      const totalPathLength = pathRef.current.getTotalLength()
+
+      // Did the item reach the end of the path?
+      const reachedEnd = currentPointPixels.current >= totalPathLength
+
+      // If the item reached the end of the path, reset the index and location
+      if (reachedEnd) {
+        // Get the current opacity of the item
+        const opacity = parseInt(divRef.current.style.opacity)
+
+        // If we did not yet reset the index and fade out the item
+        if (opacity === 1) {
+          // Fade out the item
+          divRef.current.style.opacity = 0
+        } else {
+          // Reset the index and location without transition delay
+          divRef.current.style.transition = 'none'
+          divRef.current.style.transform = `translate(${sourceX}px, ${sourceY}px)`
+          currentPointPixels.current = 0
+        }
+      } else {
+        // Increment the current point index
+        currentPointPixels.current += percentagePerFrame
+
+        // Get the current point on the path
+        const targetPoint = pathRef.current.getPointAtLength(
+          currentPointPixels.current
+        )
+
+        // Get a point slightly ahead on the path
+        const nextPoint = pathRef.current.getPointAtLength(
+          currentPointPixels.current + 1
+        )
+
+        // Calculate the slope of the curve at the current point
+        const deltaY = nextPoint.y - targetPoint.y
+        const deltaX = nextPoint.x - targetPoint.x
+
+        // Calculate the angle of rotation from the slope
+        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) - 90
+
+        // Move div along the path
+        divRef.current.style.transition = `transform ${msPerFrame}ms linear`
+        divRef.current.style.opacity = 1
+        divRef.current.style.transform = `translate(${targetPoint.x}px, ${targetPoint.y}px) rotate(${angle}deg)`
+      }
+
+      // Request the next frame
+      frameIdRef.current = requestAnimationFrame(() => animate(itemsPerMinute))
     }
-    frameIdRef.current = requestAnimationFrame(animate)
+
+    // Start the animation
+    frameIdRef.current = requestAnimationFrame(() => animate(ITEMS_PER_MINUTE))
 
     // Cancel the animation frame when the component re-renders or unmounts
     return () => {
@@ -87,8 +141,9 @@ const usePathAnimation = (
         cancelAnimationFrame(frameIdRef.current)
       }
     }
-  }, [pathD])
+  }, [pathD, sourceX, sourceY])
 
+  // Return the refs and the path's d attribute value
   return { pathRef, pathD, divRef }
 }
 

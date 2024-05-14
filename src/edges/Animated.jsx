@@ -1,6 +1,5 @@
 import usePathAnimation from '../hooks/usePathAnimation'
-
-import { BaseEdge, getBezierPath } from '@xyflow/react'
+import { BaseEdge } from '@xyflow/react'
 
 /**
  * Animated component represents an animated edge in a flow diagram.
@@ -34,21 +33,14 @@ const Animated = ({
     sourcePosition,
     targetPosition
   )
-  const [edgePath] = getBezierPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-  })
 
+  // Render the BaseEdge with animated item on it
   return (
     <>
       <BaseEdge
-        path={edgePath}
+        path={pathD}
         markerEnd={markerEnd}
-        className={classNames.join(' ')}
+        className={baseEdgeClassNames.join(' ')}
         animated
       />
 
@@ -57,17 +49,14 @@ const Animated = ({
         d={pathD}
         markerEnd={markerEnd}
         markerStart={markerStart}
-        ref={pathRef}
+        ref={pathRef} // BaseEdge does not expose the path element ref
       />
 
       <foreignObject x={0} y={0} width="1" height="1" overflow="visible">
         <div
           ref={divRef}
           xmlns="http://www.w3.org/1999/xhtml"
-          className="w-10 h-10 -m-5 rounded-full border border-px border-zinc-600 bg-zinc-800 grid place-items-center"
-          style={{
-            transition: '0.1s linear',
-          }}>
+          className={beltItemClassNames.join(' ')}>
           🚀
         </div>
       </foreignObject>
@@ -75,6 +64,23 @@ const Animated = ({
   )
 }
 
-const classNames = ['react-flow__edge-path', 'stroke-[3rem]', 'opacity-25']
+const beltItemClassNames = [
+  'w-10',
+  'h-10',
+  '-m-5',
+  'rounded-full',
+  'border',
+  'border-px',
+  'border-zinc-600',
+  'bg-zinc-800',
+  'grid',
+  'place-items-center',
+]
+
+const baseEdgeClassNames = [
+  'react-flow__edge-path',
+  'stroke-[3rem]',
+  'opacity-25',
+]
 
 export default Animated
