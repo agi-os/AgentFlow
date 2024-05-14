@@ -112,6 +112,7 @@ const buttonsOld = [
 ]
 
 const buttons = [
+  { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
   { schema: {}, label: '🗄️ Chest', secondParam: 'chest' },
   {
     schema: {},
@@ -130,9 +131,11 @@ const buttons = [
 /**
  * Component generates button which will emit the schema on ws provided by hook from socket context
  */
-const SchemaButton = ({ old = false }) => {
-  const socket = useContext(SocketContext)
+import { useState } from 'react'
 
+const SchemaButton = ({ old = false }) => {
+  const [isCollapsed, setIsCollapsed] = useState(true)
+  const socket = useContext(SocketContext)
   const reactFlowInstance = useReactFlow()
 
   const onClick = useCallback(
@@ -160,14 +163,20 @@ const SchemaButton = ({ old = false }) => {
 
   return (
     <div className="flex flex-wrap gap-5">
-      {(old ? buttonsOld : buttons).map((button, index) => (
-        <button
-          key={index}
-          className={classNames.join(' ')}
-          onClick={() => onClick(button.schema, button.secondParam)}>
-          {button.label}
-        </button>
-      ))}
+      <button
+        className={classNames.join(' ')}
+        onClick={() => setIsCollapsed(!isCollapsed)}>
+        {isCollapsed ? '>' : '<'}
+      </button>
+      {!isCollapsed &&
+        (old ? buttonsOld : buttons).map((button, index) => (
+          <button
+            key={index}
+            className={classNames.join(' ')}
+            onClick={() => onClick(button.schema, button.secondParam)}>
+            {button.label}
+          </button>
+        ))}
     </div>
   )
 }
