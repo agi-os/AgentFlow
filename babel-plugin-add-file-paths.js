@@ -11,6 +11,10 @@ export default function ({ types: t }) {
           parts.shift()
         }
         parts.shift()
+
+        // Keep only the last 3 parts of the path.
+        parts = parts.slice(-3)
+
         let file = parts.join('/')
 
         // Remove the file extension.
