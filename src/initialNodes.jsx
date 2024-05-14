@@ -28,7 +28,7 @@ const types = Array.from({ length: professionalWorkEmoticons.length }, () => ({
 }))
 
 const createRandomProspect = () => {
-  const id = faker.helpers.fromRegExp(/person-[0-9]{3}/)
+  const id = window?.crypto?.randomUUID()?.slice(-4)
   const type = faker.helpers.arrayElement(types)
 
   let prospect = {
@@ -56,7 +56,7 @@ const createRandomProspect = () => {
         prospect.middleName = faker.person.middleName()
         break
       case 3:
-        prospect.gender = faker.person.gender()
+        prospect.jobTitle = faker.person.jobTitle()
         break
       case 4:
         prospect.bio = faker.person.bio()
@@ -89,6 +89,11 @@ const generateRandomAmountOfItems = ({ min = 3, max = 16 }) => {
   return Array.from({ length: amount }, createRandomProspect)
 }
 
+export const randomProspects = generateRandomAmountOfItems({
+  min: 300,
+  max: 500,
+})
+
 const initialNodes = [
   {
     id: 'chest-1',
@@ -106,31 +111,36 @@ const initialNodes = [
       items: generateRandomAmountOfItems({ min: 3, max: 5 }),
     },
   },
-  {
-    id: 'cc1',
-    type: 'constantCombinator',
-    position: { x: 50, y: 150 },
-    data: {
-      signals: [
-        { id: 'signal1', name: 'signal1', count: 1 },
-        { id: 'signal2', name: 'signal2', count: 2 },
-      ],
-    },
-  },
-  {
-    id: 'ac1',
-    type: 'arithmeticCombinator',
-    position: { x: 950, y: 950 },
-    data: {
-      mode: 'add',
-      value: 0,
-    },
-  },
+  // {
+  //   id: 'cc1',
+  //   type: 'constantCombinator',
+  //   position: { x: 50, y: 150 },
+  //   data: {
+  //     signals: [
+  //       { id: 'signal1', name: 'signal1', count: 1 },
+  //       { id: 'signal2', name: 'signal2', count: 2 },
+  //     ],
+  //   },
+  // },
+  // {
+  //   id: 'ac1',
+  //   type: 'arithmeticCombinator',
+  //   position: { x: 950, y: 950 },
+  //   data: {
+  //     mode: 'add',
+  //     value: 0,
+  //   },
+  // },
   {
     id: 'sp1',
     type: 'splitter',
     position: { x: 150, y: 550 },
     data: {},
+  },
+  {
+    id: 'itemChest-1',
+    type: 'itemChest',
+    position: { x: 250, y: 150 },
   },
 ]
 

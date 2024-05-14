@@ -13,7 +13,7 @@ import {
   getConnectedEdges,
 } from '@xyflow/react'
 
-import anime from 'animejs/lib/anime.es.js'
+// import anime from 'animejs/lib/anime.es.js'
 
 import getArrangedElements from './getArrangedElements'
 
@@ -22,18 +22,41 @@ import SchemaButton from './tmp/schema'
 import { SocketContext } from './Socket'
 
 import nodeTypes from './nodes/nodeTypes'
+import edgeTypes from './edges/edgeTypes'
+
 import { classNames } from './tmp/schema'
 import initialNodes from './initialNodes'
 import initialEdges from './initialEdges'
+import useStoreExtension from './hooks/useStoreExtension'
+
+// import DevTools from './devtools/Devtools'
 
 const buttonClassNames = classNames
 
+import { randomProspects } from './initialNodes'
+
+const initialItems = randomProspects
+  // remove ids
+  .map(({ id, ...rest }) => rest)
+  // rename type to jobType
+  .map(({ type, ...rest }) => ({ jobType: type, ...rest }))
+  // add type 'prospect'
+  .map(item => ({ type: 'prospect', ...item }))
+
 const App = () => {
+  // Extend the ReactFlow store with custom functionality
+  useStoreExtension({ initialItems })
+
+  // Link the nodes and edges to the store
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
+  // Handle connection events
   const onConnect = useCallback(
-    params => setEdges(eds => addEdge(params, eds)),
+    connection => {
+      const edge = { ...connection, type: 'animated', animated: true }
+      setEdges(eds => addEdge(edge, eds))
+    },
     [setEdges]
   )
 
@@ -63,7 +86,7 @@ const App = () => {
         }, edges)
       )
     },
-    [nodes, edges]
+    [setEdges, edges, nodes]
   )
 
   const { fitView } = useReactFlow()
@@ -83,29 +106,89 @@ const App = () => {
     [nodes, edges, setNodes, setEdges, fitView]
   )
 
-  // initial layout
-  useEffect(() => {
-    // onLayout('LR')
+  // Flag to track if an update is already scheduled
+  // const updateScheduledRef = useRef(false)
 
-    setTimeout(() => {
-      // onLayout('LR')
-    }, 50)
+  // update layout on button click
+  const onUpdateLayout = useCallback(() => {
+    // disable animation
+    return false
+    /*
 
-    setTimeout(() => {
-      var path = anime.path('.react-flow__edge path')
-      console.log(path('x'))
+    // If an update is already scheduled, do nothing
+    if (updateScheduledRef.current) return
 
-      anime({
+    // Schedule the update using requestAnimationFrame
+    updateScheduledRef.current = true
+
+    // Perform the update in the next frame
+    requestAnimationFrame(() => {
+      // Reset the flag
+      updateScheduledRef.current = false
+
+      // create a handle to the animation
+      let animation
+
+      // try to get the existing animation
+      if (window.anm) {
+        animation = window.anm
+      }
+
+      // remember the location
+      let currentProgress = 0
+
+      // if the animation exists, stop it and clean memory
+      if (animation) {
+        // get the current location in the animation
+        currentProgress = animation.progress
+
+        // pause the animation
+        animation.pause()
+
+        // remove from active instances
+        const index = anime.running.indexOf(animation)
+        if (index > -1) {
+          anime.running.splice(index, 1)
+        }
+
+        // remove all handles to the animation object
+        window.anm = null
+      }
+
+      // get the current path
+      const path = anime.path('.react-flow__edge path')
+
+      // create new animation
+      animation = anime({
         targets: '.foo-test',
         translateX: path('x'),
         translateY: path('y'),
         rotate: path('angle'),
-        easing: 'easeInOutSine',
+        easing: 'easeInOutQuad',
         duration: 2000,
         loop: true,
+        autoplay: false,
       })
-    }, 100)
+
+      // calculate location based on the progress
+      const progress = (currentProgress / 100) * animation.duration
+
+      // seek to the location
+      animation.seek(progress)
+
+      // play the animation
+      animation.play()
+
+      // save the animation reference
+      window.anm = animation
+    })
+    */
   }, [])
+
+  // initial layout after short delay
+  useEffect(() => {
+    setTimeout(onUpdateLayout, 100)
+  }, [onUpdateLayout])
 
   // load schema
   useEffect(() => {
@@ -132,29 +215,32 @@ const App = () => {
 
   return (
     <>
-      <div
-        className={[
-          'foo-test',
-          'rounded-md',
-          'bg-teal-800',
-          'absolute',
-          'w-9',
-          'h-9',
-          'z-10',
-        ].join(' ')}
-        style={{ transform: 'translate(-50%, -50%)' }}
-      />
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
+        edgeTypes={edgeTypes}
+        onNodesChange={props => {
+          setTimeout(onUpdateLayout, 100)
+          onNodesChange(props)
+        }}
         edges={edges}
         onNodesDelete={onNodesDelete}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        isValidConnection={args => {
+          // ignore self-connections
+          if (args.source === args.target) return false
+
+          console.log(args)
+
+          // allow all other connections
+          return true
+        }}
+        // delete with delete key
+        deleteKeyCode={'Delete'}
         colorMode="dark"
-        minZoom={1}
-        maxZoom={1}
+        minZoom={0.1}
+        maxZoom={10}
         // selectionOnDrag
         // panOnDrag={panOnDrag}
         // selectionMode={SelectionMode.Partial}
@@ -167,13 +253,14 @@ const App = () => {
         <Panel position="top-right">
           <button
             className={buttonClassNames.join(' ')}
-            onClick={() => onLayout('LR')}>
+            onClick={onUpdateLayout}>
             update layout
           </button>
         </Panel>
         <Panel position="bottom-left">
           <SchemaButton old />
         </Panel>
+        {/* <DevTools /> */}
       </ReactFlow>
     </>
   )

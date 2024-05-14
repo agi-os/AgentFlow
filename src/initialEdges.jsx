@@ -20,7 +20,7 @@ const initialEdges = [
     target: 'chest-2',
     targetHandle: 'inbox',
     animated: true,
-    type: 'belt',
+    type: 'animated',
   },
   {
     id: 'sp1->chest2',
@@ -29,7 +29,7 @@ const initialEdges = [
     target: 'chest-2',
     targetHandle: 'inbox',
     animated: true,
-    type: 'belt',
+    type: 'animated',
   },
   // {
   //   id: 'chest1->cc1',
