@@ -1,4 +1,5 @@
 import { useStore } from '@xyflow/react'
+import baseClassNames from './classNames'
 
 /**
  * Renders an ID badge component responsive to the zoom level.
@@ -10,8 +11,13 @@ const IdBadge = ({ children }) => {
   // Get the zoom level from the store
   const zoomLevel = useStore(s => s.transform[2])
 
-  // If zoom level is less than 2.5, badge would be too small to read and just clutter the view
-  const opacityClass = zoomLevel < 2.5 ? 'opacity-0' : 'opacity-100'
+  // Calculate opacity based on zoom level
+  let opacity = 0
+  if (zoomLevel >= 1.5 && zoomLevel <= 4) {
+    opacity = (zoomLevel - 1.5) / (4 - 1.5)
+  } else if (zoomLevel > 4) {
+    opacity = 1
+  }
 
   // If user is taking a closer look, make the badge more prominent
   const zoomClassNames =
@@ -27,26 +33,14 @@ const IdBadge = ({ children }) => {
       : ['text-zinc-600', 'outline-zinc-800']
 
   // Combine the base and zoom class names
-  const classNames = [...baseClassNames, ...zoomClassNames, opacityClass]
+  const classNames = [...baseClassNames, ...zoomClassNames]
 
   // Render the badge
-  return <div className={classNames.join(' ')}>{children}</div>
+  return (
+    <div style={{ opacity }} className={classNames.join(' ')}>
+      {children}
+    </div>
+  )
 }
-
-const baseClassNames = [
-  'uppercase',
-  'text-[0.15rem]',
-  'tracking-[0.05rem]',
-  'absolute',
-  'top-1',
-  'right-1.5',
-  'font-mono',
-  'leading-[initial]',
-  'rounded-[0.05rem]',
-  'transition-all',
-  'duration-500',
-  'outline',
-  'outline-[0.1rem]',
-]
 
 export default IdBadge
