@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useStore } from '@xyflow/react'
 
 /**
@@ -35,7 +35,6 @@ const ZoomResponsiveWrapper = ({ children, classNames = [], depth = 3 }) => {
   const [, , z] = useStore(s => s.transform)
 
   // On any change to the zoom level, update the width and height from the parent's parent element
-
   useEffect(() => {
     const parentBounding = getParentElement(
       ref.current,
@@ -43,15 +42,25 @@ const ZoomResponsiveWrapper = ({ children, classNames = [], depth = 3 }) => {
     )?.getBoundingClientRect()
     if (parentBounding) {
       setDimensions({
-        width: parentBounding.width,
-        height: parentBounding.height,
+        width: parentBounding.width | 0, // Truncate to integer
+        height: parentBounding.height | 0, // Truncate to integer
       })
     }
   }, [z, depth])
 
+  // Clone children and pass dimensions as props
+  const childrenWithProps = React.Children.map(children, child => {
+    // Checking isValidElement is the safe way and avoids a typescript error too
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { dimensions })
+    }
+    return child
+  })
+
+  // Render the wrapper with the adjusted dimensions
   return (
     <div className={classNames?.join(' ')} style={dimensions} ref={ref}>
-      {children}
+      {childrenWithProps}
     </div>
   )
 }
