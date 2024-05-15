@@ -6,17 +6,23 @@ const AddItemButton = () => {
   const nodeId = useNodeId()
 
   return (
-    <button
-      className={buttonClassNames.join(' ')}
-      onClick={() => addItemHandler(store, reactFlow, nodeId)}>
-      Add 10 items
-    </button>
+    <div className={buttonClassNames.join(' ')}>
+      <button onClick={() => addItemHandler(store, reactFlow, nodeId)}>
+        Add 10 items
+      </button>
+      <button onClick={() => clearItemsHandler(reactFlow, nodeId)}>
+        Clear items
+      </button>
+    </div>
   )
 }
 
 const addItemHandler = (store, reactFlow, nodeId) => {
   // Select 10 random items from the list of items.
-  const randomItems = store.items.sort(() => 0.5 - Math.random()).slice(0, 10)
+  const randomItemIds = store.items
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 10)
+    .map(item => item.id)
 
   // Get this node from the store.
   const node = reactFlow.getNode(nodeId)
@@ -24,11 +30,11 @@ const addItemHandler = (store, reactFlow, nodeId) => {
   // Get current node data.
   const data = node.data || {}
 
-  // Get the current items.
+  // Get the current item array.
   const items = data.items || []
 
-  // Add the random items to the current items.
-  const newItems = [...items, ...randomItems]
+  // Add the random item ids to the current item array.
+  const newItems = [...items, ...randomItemIds]
 
   // Update the node data with the new items.
   const newData = { ...data, items: newItems }
@@ -43,15 +49,38 @@ const addItemHandler = (store, reactFlow, nodeId) => {
   ])
 }
 
+const clearItemsHandler = (reactFlow, nodeId) => {
+  // Get this node from the store.
+  const node = reactFlow.getNode(nodeId)
+
+  // Get current node data.
+  const data = node.data || {}
+
+  // Clear the items array.
+  const newData = { ...data, items: [] }
+
+  // Update the node with the new data.
+  const newNode = { ...node, data: newData }
+
+  // Update the node in the store.
+  reactFlow.setNodes([
+    ...reactFlow.getNodes().filter(n => n.id !== nodeId),
+    newNode,
+  ])
+}
+
 const buttonClassNames = [
   'px-2',
+  'flex',
+  'gap-5',
   'py-1',
   'rounded-full',
   'text-zinc-300',
   'font-thin',
-  'bg-zinc-800',
-  'border-[1px]',
-  'border-zinc-700',
+  'text-sm',
+  'absolute',
+  'bottom-3',
+  'right-3',
 ]
 
 export default AddItemButton

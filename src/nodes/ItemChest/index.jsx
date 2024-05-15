@@ -3,10 +3,11 @@ import SignalHandles from '../../signals/handle'
 import { BeltSource, BeltTarget } from '../../components/BeltPort'
 import ZoomCompensated from '../ZoomCompensated/index'
 import Semaphore from '../../components/Semaphore'
-import AddItemButton from './AddItemButton'
 
 import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
 import baseClassNames from './classNames'
+
+import ChestBody from './ChestBody'
 
 /**
  * Renders a Chest node component.
@@ -18,6 +19,11 @@ import baseClassNames from './classNames'
  * @returns {JSX.Element} The rendered Chest node component.
  */
 const ItemChestNode = ({ id, data, selected }) => {
+  // Get all data about this node possibly from the store
+  // const node = useInternalNode(id)
+
+  // console.log({ node })
+
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
     ? ['outline-orange-700']
@@ -34,17 +40,7 @@ const ItemChestNode = ({ id, data, selected }) => {
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
         <ZoomResponsiveWrapper classNames={zoomResponsiveWrapperClassNames}>
-          <AddItemButton />
-          <div className="flex flex-row flex-wrap gap-1">
-            {data?.items?.map((item, index) => (
-              <div
-                key={index}
-                x-id={item.id}
-                className={dataItemClassNames.join(' ')}>
-                {item.emoticon}
-              </div>
-            ))}
-          </div>
+          <ChestBody data={data} />
         </ZoomResponsiveWrapper>
       </ZoomCompensated>
       <BeltSource />
@@ -52,17 +48,6 @@ const ItemChestNode = ({ id, data, selected }) => {
   )
 }
 
-const zoomResponsiveWrapperClassNames = ['flex', 'flex-col', 'gap-2', 'p-2']
-
-const dataItemClassNames = [
-  'w-10',
-  'h-10',
-  'border-zinc-700',
-  'border',
-  'rounded-lg',
-  'flex',
-  'items-center',
-  'justify-center',
-]
+const zoomResponsiveWrapperClassNames = [] //['flex', 'flex-col', 'gap-2', 'p-2']
 
 export default ItemChestNode
