@@ -12,7 +12,7 @@ import ConstantCombinatorNode from './ConstantCombinator'
 import ArithmeticCombinator from './ArithmeticCombinator'
 import SplitterNode from './Splitter'
 import ItemChestNode from './ItemChest/index'
-import { InputPortal, OutputPortal } from './Portal.jsx'
+import { InputPortal, OutputPortal } from './Portal/index'
 
 export default {
   agent: AgentNode,

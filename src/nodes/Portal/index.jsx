@@ -1,7 +1,7 @@
-import Title from '../components/Title'
-import SignalHandles from '../signals/handle'
-import { BeltSource, BeltTarget } from '../components/BeltPort'
-import Semaphore from '../components/Semaphore'
+import Title from '../../components/Title'
+import SignalHandles from '../../signals/handle'
+import { BeltSource, BeltTarget } from '../../components/BeltPort'
+import Semaphore from '../../components/Semaphore'
 
 /**
  * Portal node is a pair of nodes that are connected by a portal, instantly transporting items between them.
@@ -42,7 +42,7 @@ const Portal = ({ id, selected, children }) => {
 export const InputPortal = ({ id, selected }) => (
   <Portal id={id} selected={selected}>
     <BeltTarget />
-    <div className="flex justify-center">⤴️ abc-def</div>
+    <div className="flex justify-center">⤴️</div>
   </Portal>
 )
 
@@ -54,7 +54,7 @@ export const InputPortal = ({ id, selected }) => (
  */
 export const OutputPortal = ({ id, selected }) => (
   <Portal id={id} selected={selected}>
-    <div className="flex justify-center">⤵️ abc-def</div>
+    <div className="flex justify-center">⤵️</div>
     <BeltSource />
   </Portal>
 )
