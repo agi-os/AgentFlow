@@ -1,7 +1,14 @@
 import { useCallback } from 'react'
 import { addEdge } from '@xyflow/react'
 
-export const onConnect = ({ connection, storeApi, setEdges }) => {
+/**
+ * Handles the onConnect event when a connection is made between nodes.
+ * @param {Object} params - The parameters for the onConnect event.
+ * @param {Object} params.connection - The connection object representing the connection made.
+ * @param {Object} params.storeApi - The store API object.
+ * @param {Function} params.setEdges - The function to update the edges state.
+ */
+const onConnect = ({ connection, storeApi, setEdges }) => {
   // Get the current store state
   const store = storeApi.getState()
 
@@ -52,11 +59,15 @@ export const onConnect = ({ connection, storeApi, setEdges }) => {
     })
   }
 
-  console.log('onConnect', connection)
-
   setEdges(edges => addEdge(connection, edges))
 }
 
+/**
+ * Custom hook that returns a memoized version of the onConnect function.
+ * @param {Object} storeApi - The store API object.
+ * @param {Function} setEdges - The function to update the edges state.
+ * @returns {Function} - The memoized onConnect function.
+ */
 const useOnConnect = (storeApi, setEdges) => {
   return useCallback(
     connection => onConnect({ connection, storeApi, setEdges }),
