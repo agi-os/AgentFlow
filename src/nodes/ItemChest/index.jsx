@@ -5,14 +5,8 @@ import ZoomCompensated from '../ZoomCompensated/index'
 import Semaphore from '../../components/Semaphore'
 import AddItemButton from './AddItemButton'
 
-import {
-  useReactFlow,
-  useStore,
-  NodeResizer,
-  useStoreApi,
-  useNodeId,
-} from '@xyflow/react'
 import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
+import baseClassNames from './classNames'
 
 /**
  * Renders a Chest node component.
@@ -23,27 +17,30 @@ import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
  * @param {Object} props.data - The data associated with the Chest node.
  * @returns {JSX.Element} The rendered Chest node component.
  */
-const ItemChestNode = props => {
-  // Get the handles on necessary data and functions from the store.
-  const store = useStore()
-  const storeApi = useStoreApi()
-  const reactFlow = useReactFlow()
+const ItemChestNode = ({ id, data, selected }) => {
+  // Prepare the class names based on the selected state
+  const selectedClassNames = selected
+    ? ['outline-orange-700']
+    : ['outline-transparent']
+
+  // Combine the base and selected class names
+  const classNames = [...baseClassNames, ...selectedClassNames]
 
   return (
     <div className={classNames.join(' ')}>
       <BeltTarget />
       <SignalHandles />
-      <Title id={props.id}>📦 Item Chest</Title>
+      <Title id={id}>📦 Item Chest</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
         <ZoomResponsiveWrapper classNames={zoomResponsiveWrapperClassNames}>
           <AddItemButton />
           <div className="flex flex-row flex-wrap gap-1">
-            {props?.data?.items?.map((item, index) => (
+            {data?.items?.map((item, index) => (
               <div
                 key={index}
                 x-id={item.id}
-                className="w-10 h-10 border-zinc-700 border rounded-lg flex items-center justify-center">
+                className={dataItemClassNames.join(' ')}>
                 {item.emoticon}
               </div>
             ))}
@@ -51,24 +48,21 @@ const ItemChestNode = props => {
         </ZoomResponsiveWrapper>
       </ZoomCompensated>
       <BeltSource />
-      {/* <NodeResizer minWidth={100} minHeight={30} /> */}
     </div>
   )
 }
 
 const zoomResponsiveWrapperClassNames = ['flex', 'flex-col', 'gap-2', 'p-2']
 
-const classNames = [
-  'p-1',
-  'rounded',
-  'text-zinc-300',
-  'font-thin',
-  'bg-zinc-800',
-  'w-96',
-  'h-96',
-  'border-[1px]',
+const dataItemClassNames = [
+  'w-10',
+  'h-10',
   'border-zinc-700',
-  'overflow-hidden',
+  'border',
+  'rounded-lg',
+  'flex',
+  'items-center',
+  'justify-center',
 ]
 
 export default ItemChestNode
