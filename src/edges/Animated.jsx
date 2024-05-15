@@ -1,5 +1,8 @@
 import usePathAnimation from '../hooks/usePathAnimation'
-import { BaseEdge } from '@xyflow/react'
+import { useStore } from '@xyflow/react'
+import BaseEdgeComponent from './BaseEdgeComponent'
+import PathComponent from './PathComponent'
+import ForeignObjectComponent from './ForeignObjectComponent'
 
 /**
  * Animated component represents an animated edge in a flow diagram.
@@ -16,6 +19,7 @@ import { BaseEdge } from '@xyflow/react'
  * @returns {JSX.Element} The rendered Animated component.
  */
 const Animated = ({
+  id,
   sourceX,
   sourceY,
   targetX,
@@ -25,6 +29,12 @@ const Animated = ({
   markerEnd,
   markerStart,
 }) => {
+  // Get the edge data from the store
+  const edge = useStore(s => s.edgeLookup.get(id))
+
+  // Get the source node data from the store
+  const sourceNode = useStore(s => s.nodeLookup.get(edge.source))
+
   const { pathRef, divRef, pathD } = usePathAnimation(
     sourceX,
     sourceY,
@@ -34,33 +44,46 @@ const Animated = ({
     targetPosition
   )
 
+  // The speed of the dash animation in milliseconds per cycle
+  const dashSpeed = 100
+
+  // Sanity check
+  if (!typeof pathD === 'string' || pathD.length === 0) {
+    return null
+  }
+
   // Render the BaseEdge with animated item on it
   return (
     <>
-      <BaseEdge
-        path={pathD}
+      <BaseEdgeComponent
+        pathD={pathD}
         markerEnd={markerEnd}
-        className={baseEdgeClassNames.join(' ')}
-        animated
+        baseEdgeClassNames={baseEdgeClassNames}
+        dashSpeed={dashSpeed}
       />
-
-      <path
-        style={{ fill: 'none', stroke: 'none' }}
-        d={pathD}
+      <PathComponent
+        pathD={pathD}
         markerEnd={markerEnd}
         markerStart={markerStart}
-        ref={pathRef} // BaseEdge does not expose the path element ref
+        pathRef={pathRef}
       />
-
-      <foreignObject x={0} y={0} width="1" height="1" overflow="visible">
-        <div
-          ref={divRef}
-          xmlns="http://www.w3.org/1999/xhtml"
-          className={beltItemClassNames.join(' ')}>
-          🚀
-        </div>
-      </foreignObject>
+      <ForeignObjectComponent sourceNode={sourceNode} divRef={divRef} />
     </>
+  )
+}
+
+export const StoreItemOnBelt = ({ node }) => {
+  // Get the first item from the chest
+  const itemId = node?.data?.items?.[0]?.id
+
+  // Get the item's emoticon
+  const emoticon = useStore(s => s.getItem(itemId)?.emoticon)
+
+  // Render the first item on the belt
+  return (
+    <div x-id={itemId} className={beltItemClassNames.join(' ')}>
+      {emoticon}
+    </div>
   )
 }
 
