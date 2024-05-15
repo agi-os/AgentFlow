@@ -19,18 +19,6 @@ const Handles = ({ type = 'source', position = 'right' }) => {
   const bottomEdgeOffset = isRight ? 'left-auto right-0' : 'left-0'
   const bottomBottomOffset = isRight ? 'left-auto right-[-0.25rem]' : 'left-3'
 
-  // Prepare the common class names for the signal handles.
-  const classNames = [
-    'shadow',
-    'signal-handle',
-    'border-none',
-    '!min-w-0',
-    '!min-h-0',
-    'border-0',
-    'bg-zinc-700',
-    'rounded',
-  ]
-
   // Top and bottom corners need to have 2 connections each.
 
   // Prepare the class names for each signal handle.
@@ -120,5 +108,17 @@ export const SignalHandles = () => (
     <Handles key="b" position={Position.Left} />
   </>
 )
+
+// Common class names for the signal handles.
+const classNames = [
+  'signal-handle',
+  'border-none',
+  '!min-w-0',
+  '!min-h-0',
+  'border-0',
+  'bg-zinc-700',
+  'rounded',
+  'shadow-[inset_0.2px_0.7px_1px_-0.6px_#ffffff4f]',
+]
 
 export default SignalHandles
