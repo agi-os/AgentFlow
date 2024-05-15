@@ -111,35 +111,13 @@ const Handles = ({ type = 'source', position = 'right' }) => {
 }
 
 /**
- * Renders the signal handles for a source signal.
- * @returns {JSX.Element} - The rendered source signal handles.
- */
-export const SourceSignalHandles = () => (
-  <>
-    <Handles key="a" />
-    <Handles key="b" type="target" />
-  </>
-)
-
-/**
- * Renders the signal handles for a target signal.
- * @returns {JSX.Element} - The rendered target signal handles.
- */
-export const TargetSignalHandles = () => (
-  <>
-    <Handles key="a" position={Position.Left} />
-    <Handles key="b" type="target" position={Position.Left} />
-  </>
-)
-
-/**
  * Renders both the source and target signal handles.
  * @returns {JSX.Element} - The rendered source and target signal handles.
  */
 export const SignalHandles = () => (
   <>
-    <SourceSignalHandles />
-    <TargetSignalHandles />
+    <Handles key="a" />
+    <Handles key="b" position={Position.Left} />
   </>
 )
 
