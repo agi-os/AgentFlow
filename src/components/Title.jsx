@@ -1,4 +1,4 @@
-import IdBadge from './IdBadge'
+import IdBadge from './IdBadge/index'
 
 /**
  * Renders a title component with optional classNames, children, and id.

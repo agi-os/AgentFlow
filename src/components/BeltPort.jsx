@@ -1,12 +1,4 @@
-import {
-  Position,
-  Handle,
-  useReactFlow,
-  useNodeId,
-  NodeResizer,
-  useStoreApi,
-  useKeyPress,
-} from '@xyflow/react'
+import { Position, Handle, useReactFlow, useNodeId } from '@xyflow/react'
 
 /**
  * Renders the belt port for a source or target signal.
