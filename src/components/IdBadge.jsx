@@ -11,7 +11,7 @@ const IdBadge = ({ children }) => {
   const zoomLevel = useStore(s => s.transform[2])
 
   // If zoom level is less than 2.5, badge would be too small to read and just clutter the view
-  if (zoomLevel < 2.5) return null
+  const opacityClass = zoomLevel < 2.5 ? 'opacity-0' : 'opacity-100'
 
   // If user is taking a closer look, make the badge more prominent
   const zoomClassNames =
@@ -22,14 +22,12 @@ const IdBadge = ({ children }) => {
           'bg-zinc-900',
           'pl-[0.05rem]',
           'ml-[-0.05rem]',
-          'outline',
-          'outline-[0.1rem]',
           'outline-zinc-900',
         ]
-      : ['text-zinc-600']
+      : ['text-zinc-600', 'outline-zinc-800']
 
   // Combine the base and zoom class names
-  const classNames = [...baseClassNames, ...zoomClassNames]
+  const classNames = [...baseClassNames, ...zoomClassNames, opacityClass]
 
   // Render the badge
   return <div className={classNames.join(' ')}>{children}</div>
@@ -45,6 +43,10 @@ const baseClassNames = [
   'font-mono',
   'leading-[initial]',
   'rounded-[0.05rem]',
+  'transition-all',
+  'duration-500',
+  'outline',
+  'outline-[0.1rem]',
 ]
 
 export default IdBadge
