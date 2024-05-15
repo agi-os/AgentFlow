@@ -8,6 +8,10 @@ import Inputs from '../components/Inputs'
 import agentPresets from './presets/agents.json'
 import colorMap from '../constants/colorMap'
 
+import SignalHandles from '../signals/handle'
+import { BeltSource, BeltTarget } from '../components/BeltPort'
+import Semaphore from '../components/Semaphore'
+
 /**
  * Agent identity node
  * @param {string} id - Node ID
@@ -46,8 +50,10 @@ const AgentNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <Handle type="target" position={Position.Top} />
-      <Title id={id}>🧑‍💼 Agent</Title>
+      {/* <Handle type="target" position={Position.Top} /> */}
+      <Title id={id}>🧑‍💼 {data?.agentName ? data?.agentName : 'Agent'}</Title>
+      <SignalHandles />
+      <Semaphore />
       <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
       <select
         value={data.agentName}
@@ -61,12 +67,14 @@ const AgentNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
-      <Pre>{data}</Pre>
+      {/* <Pre>{data}</Pre>
       <Handle
         type="source"
         position={Position.Bottom}
         className={colorMap.agent}
-      />
+      /> */}
+      <BeltSource />
+      <BeltTarget />
     </div>
   )
 }
