@@ -1,3 +1,7 @@
+import { useStore } from '@xyflow/react'
+import AddItemButton from './AddItemButton'
+import EmptyChest from './EmptyChest'
+
 /**
  * CounterView component displays a grid of item counts in a chest.
  * @param {Object} props - The component props.
@@ -13,13 +17,7 @@ const CounterView = ({ data, dimensions: { width, height } }) => {
 
   // If there are no items, render an empty chest
   if (!data?.items?.length) {
-    return (
-      <div className="flex flex-col gap-16 items-center justify-center w-full h-full">
-        <div>This chest is empty</div>
-        <div className="text-3xl mb-12">📦</div>
-        <AddItemButton />
-      </div>
-    )
+    return <EmptyChest />
   }
 
   // Get the items from the store
@@ -96,8 +94,5 @@ const CounterView = ({ data, dimensions: { width, height } }) => {
     </>
   )
 }
-
-import { useStore } from '@xyflow/react'
-import AddItemButton from './AddItemButton'
 
 export default CounterView
