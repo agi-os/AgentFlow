@@ -59,12 +59,26 @@ const useStoreExtension = ({ initialItems = [] }) => {
         generateId,
 
         // Move an item from a node to an edge
-        moveItemFromNodeToEdge: (itemId, nodeId, edgeId) =>
-          moveItem(store, itemId, nodeId, edgeId, 'node', 'edge'),
+        moveItemFromNodeToEdge: ({ itemId, nodeId, edgeId }) =>
+          moveItem({
+            store,
+            itemId,
+            fromId: nodeId,
+            toId: edgeId,
+            fromType: 'node',
+            toType: 'edge',
+          }),
 
         // Move an item from an edge to a node
-        moveItemFromEdgeToNode: (itemId, edgeId, nodeId) =>
-          moveItem(store, itemId, edgeId, nodeId, 'edge', 'node'),
+        moveItemFromEdgeToNode: ({ itemId, edgeId, nodeId }) =>
+          moveItem({
+            store,
+            itemId,
+            fromId: edgeId,
+            toId: nodeId,
+            fromType: 'edge',
+            toType: 'node',
+          }),
       }
     })
 

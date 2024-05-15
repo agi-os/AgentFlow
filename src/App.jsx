@@ -35,6 +35,7 @@ import useOnConnect from './hooks/useOnConnect'
 
 const initialItems = randomProspects
   // remove ids
+  // eslint-disable-next-line no-unused-vars
   .map(({ id, ...rest }) => rest)
   // rename type to jobType
   .map(({ type, ...rest }) => ({ jobType: type, ...rest }))
@@ -109,7 +110,7 @@ const App = () => {
     if (!socket) return
 
     // when schema is loaded to the server
-    socket.on('schema loaded', ({ schemaId, schemaJson }) => {
+    socket.on('schema loaded', ({ schemaJson }) => {
       const schemaNode = nodes.find(node => node.type === 'schema')
       schemaNode.data.schema = JSON.parse(schemaJson)
       setNodes([...nodes])
