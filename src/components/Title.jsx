@@ -1,3 +1,5 @@
+import IdBadge from './IdBadge'
+
 /**
  * Renders a title component with optional classNames, children, and id.
  * @param {Object} props - The component props.
@@ -12,9 +14,12 @@ const Title = ({
   id,
 }) => {
   return (
-    <div className={classNames.join(' ')}>
-      {children} {id && <sup>[{id}]</sup>}
-    </div>
+    <>
+      {id && <IdBadge key="badge">{id}</IdBadge>}
+      <div key="title" className={classNames.join(' ')}>
+        {children}
+      </div>
+    </>
   )
 }
 

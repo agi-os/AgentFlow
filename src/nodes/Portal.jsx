@@ -8,7 +8,6 @@ import Title from '../components/Title'
 import SignalHandles from '../signals/handle'
 import { BeltSource, BeltTarget } from '../components/BeltPort'
 import Semaphore from '../components/Semaphore'
-import IdBadge from './IdBadge'
 
 export const InputPortal = ({ id, selected }) => {
   // Prepare the class names based on the selected state
@@ -21,9 +20,8 @@ export const InputPortal = ({ id, selected }) => {
   // Render the portal
   return (
     <div className={classNames.join(' ')}>
-      <IdBadge>{id}</IdBadge>
       <BeltTarget />
-      <Title>🔗 Portal</Title>
+      <Title id={id}>🔗 Portal</Title>
       <div className="flex justify-center">⤴️ abc-def</div>
       <Semaphore />
       <SignalHandles />
@@ -41,8 +39,7 @@ export const OutputPortal = ({ id, selected }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      <IdBadge>{id}</IdBadge>
-      <Title>🔗 Portal</Title>
+      <Title id={id}>🔗 Portal</Title>
       <div className="flex justify-center">⤵️ abc-def</div>
       <SignalHandles />
       <Semaphore />

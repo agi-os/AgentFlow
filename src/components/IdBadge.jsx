@@ -10,8 +10,8 @@ const IdBadge = ({ children }) => {
   // Get the zoom level from the store
   const zoomLevel = useStore(s => s.transform[2])
 
-  // If zoom level is less than 3, badge would be too small to read and just clutter the view
-  if (zoomLevel < 3) return null
+  // If zoom level is less than 2.5, badge would be too small to read and just clutter the view
+  if (zoomLevel < 2.5) return null
 
   // If user is taking a closer look, make the badge more prominent
   const zoomClassNames =
@@ -23,6 +23,7 @@ const IdBadge = ({ children }) => {
           'pl-[0.05rem]',
           'ml-[-0.05rem]',
           'outline',
+          'outline-[0.1rem]',
           'outline-zinc-900',
         ]
       : ['text-zinc-600']
