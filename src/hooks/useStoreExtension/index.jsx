@@ -5,6 +5,7 @@ import moveItem from './moveItem'
 import addItemToStore from './addItemToStore'
 import generateId from './generateId'
 import addInitialItemsToStore from './addInitialItemsToStore'
+import lookup from './lookup'
 
 /**
  * Custom hook for managing store extension.
@@ -33,6 +34,9 @@ const useStoreExtension = ({ initialItems = [] }) => {
         // Keep the previous state
         ...prevState,
 
+        // Generic lookup, looks into all items, nodes, and edges by id
+        lookup: id => lookup(id, store),
+
         // Array of items
         items: [],
 
@@ -43,7 +47,13 @@ const useStoreExtension = ({ initialItems = [] }) => {
         addItem: item => addItemToStore(store, item),
 
         // Get an item by its id
-        getItem: id => store.getState().itemLookup.get(String(id)),
+        getItem: id => store.getState().itemLookup.get(id),
+
+        // Get an edge by its id
+        getEdge: id => store.getState().edgeLookup.get(id),
+
+        // Get a node by its id
+        getNode: id => store.getState().nodeLookup.get(id),
 
         // Generate an unique ID
         generateId,
@@ -55,35 +65,10 @@ const useStoreExtension = ({ initialItems = [] }) => {
         // Move an item from an edge to a node
         moveItemFromEdgeToNode: (itemId, edgeId, nodeId) =>
           moveItem(store, itemId, edgeId, nodeId, 'edge', 'node'),
-
-        // Generic find, looks into all items, nodes, and edges by id
-        find: id => {
-          // convert id to lowercase
-          const lowerId = String(id).toLowerCase()
-
-          // add dashes to every 3 characters of the id
-          const dashedLowerId = lowerId.replace(/(.{3})(?!$)/g, '$1-')
-
-          // Get the lookup functions
-          const { getItem, nodeLookup, edgeLookup } = store.getState()
-
-          // Attempt to find data in a chain of lookups
-          return (
-            getItem(id) ||
-            getItem(lowerId) ||
-            getItem(dashedLowerId) ||
-            nodeLookup.get(id) ||
-            nodeLookup.get(lowerId) ||
-            nodeLookup.get(dashedLowerId) ||
-            edgeLookup.get(id) ||
-            edgeLookup.get(lowerId) ||
-            edgeLookup.get(dashedLowerId)
-          )
-        },
       }
     })
 
-    // If we don't have the store state on window object, add the subscription
+    // If we don't have the store state on window object, add a subscription
     if (!window.store) {
       // Add the store state to the window object
       window.store = store.getState()
