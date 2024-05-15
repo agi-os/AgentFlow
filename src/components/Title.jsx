@@ -13,7 +13,7 @@ const Title = ({
 }) => {
   return (
     <div className={classNames.join(' ')}>
-      {children} <sup>[{id}]</sup>
+      {children} {id && <sup>[{id}]</sup>}
     </div>
   )
 }
