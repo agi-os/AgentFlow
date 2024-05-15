@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { StoreItemOnBelt } from './Animated'
+import { StoreItemOnBelt } from '.'
 
 /**
  * Represents a foreign object component.

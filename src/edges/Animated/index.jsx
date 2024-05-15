@@ -1,8 +1,9 @@
-import usePathAnimation from '../hooks/usePathAnimation'
+import usePathAnimation from '../../hooks/usePathAnimation'
 import { useStore } from '@xyflow/react'
 import BaseEdgeComponent from './BaseEdgeComponent'
 import PathComponent from './PathComponent'
 import ForeignObjectComponent from './ForeignObjectComponent'
+import beltItemClassNames from './beltItemClassNames'
 
 /**
  * Animated component represents an animated edge in a flow diagram.
@@ -58,7 +59,6 @@ const Animated = ({
       <BaseEdgeComponent
         pathD={pathD}
         markerEnd={markerEnd}
-        baseEdgeClassNames={baseEdgeClassNames}
         dashSpeed={dashSpeed}
       />
       <PathComponent
@@ -86,24 +86,5 @@ export const StoreItemOnBelt = ({ node }) => {
     </div>
   )
 }
-
-const beltItemClassNames = [
-  'w-10',
-  'h-10',
-  '-m-5',
-  'rounded-full',
-  'border',
-  'border-px',
-  'border-zinc-600',
-  'bg-zinc-800',
-  'grid',
-  'place-items-center',
-]
-
-const baseEdgeClassNames = [
-  'react-flow__edge-path',
-  'stroke-[3rem]',
-  'opacity-25',
-]
 
 export default Animated

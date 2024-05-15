@@ -1,5 +1,5 @@
 import Belt from './Belt'
-import Animated from './Animated'
+import Animated from './Animated/index'
 
 const edgeTypes = {
   belt: Belt,
