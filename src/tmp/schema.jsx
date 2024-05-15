@@ -79,7 +79,7 @@ const multiToolkitSchema = {
 
 import { useContext, useCallback } from 'react'
 import { SocketContext } from '../Socket'
-import { useReactFlow } from '@xyflow/react'
+import { useReactFlow, useStore } from '@xyflow/react'
 
 export const classNames = [
   'bg-zinc-900',
@@ -112,8 +112,12 @@ const buttonsOld = [
 ]
 
 const buttons = [
+  { schema: {}, label: '⛓️ Input Portal', secondParam: 'inputPortal' },
+  { schema: {}, label: '⛓️ Output Portal', secondParam: 'outputPortal' },
   { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
   { schema: {}, label: '🗄️ Chest', secondParam: 'chest' },
+  { schema: {}, label: 'Splitter', secondParam: 'splitter' },
+
   {
     schema: {},
     label: '🔢 Constant Combinator',
@@ -134,13 +138,14 @@ const buttons = [
 import { useState } from 'react'
 
 const SchemaButton = ({ old = false }) => {
+  const generateId = useStore(s => s.generateId)
   const [isCollapsed, setIsCollapsed] = useState(true)
   const socket = useContext(SocketContext)
   const reactFlowInstance = useReactFlow()
 
   const onClick = useCallback(
     (schema, type = 'schema') => {
-      const id = `${type}-${++nodeId}`
+      const id = generateId()
       const newNode = {
         id,
         position: {

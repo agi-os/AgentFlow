@@ -21,5 +21,6 @@ module.exports = {
     'prefer-arrow-callback': 'error',
     'func-style': ['error', 'expression'], // use arrow functions everywhere
     'react/no-unknown-property': ['error', { ignore: ['x-id'] }],
+    'react/display-name': 'off',
   },
 }

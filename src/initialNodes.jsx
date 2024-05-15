@@ -96,51 +96,37 @@ export const randomProspects = generateRandomAmountOfItems({
 
 const initialNodes = [
   {
-    id: 'chest-1',
-    type: 'chest',
-    position: { x: 450, y: 150 },
-    data: {
-      items: generateRandomAmountOfItems({ min: 42, max: 76 }),
+    id: 'wau-wrm',
+    position: {
+      x: 123,
+      y: 285,
     },
-  },
-  {
-    id: 'chest-2',
-    type: 'chest',
-    position: { x: 100, y: 950 },
-    data: {
-      items: generateRandomAmountOfItems({ min: 3, max: 5 }),
-    },
-  },
-  // {
-  //   id: 'cc1',
-  //   type: 'constantCombinator',
-  //   position: { x: 50, y: 150 },
-  //   data: {
-  //     signals: [
-  //       { id: 'signal1', name: 'signal1', count: 1 },
-  //       { id: 'signal2', name: 'signal2', count: 2 },
-  //     ],
-  //   },
-  // },
-  // {
-  //   id: 'ac1',
-  //   type: 'arithmeticCombinator',
-  //   position: { x: 950, y: 950 },
-  //   data: {
-  //     mode: 'add',
-  //     value: 0,
-  //   },
-  // },
-  {
-    id: 'sp1',
-    type: 'splitter',
-    position: { x: 150, y: 550 },
-    data: {},
-  },
-  {
-    id: 'itemChest-1',
     type: 'itemChest',
-    position: { x: 250, y: 150 },
+    data: {
+      label: 'Node wau-wrm',
+    },
+  },
+  {
+    id: 'x7t-r99',
+    position: {
+      x: 418,
+      y: 48,
+    },
+    type: 'outputPortal',
+    data: {
+      label: 'Node x7t-r99',
+    },
+  },
+  {
+    id: 'arx-cu6',
+    position: {
+      x: 423,
+      y: 864,
+    },
+    type: 'inputPortal',
+    data: {
+      label: 'Node arx-cu6',
+    },
   },
 ]
 
