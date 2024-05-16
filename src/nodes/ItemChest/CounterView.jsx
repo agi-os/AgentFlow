@@ -1,6 +1,7 @@
 import AddItemButton from './AddItemButton'
 import EmptyChest from './EmptyChest'
 import useNodeItems from '../../hooks/useNodeItems'
+import PutOnBeltButton from './PutOnBeltButton'
 
 /**
  * CounterView component displays a grid of item counts in a chest.
@@ -72,6 +73,7 @@ const CounterView = ({ dimensions: { width, height } }) => {
   return (
     <>
       <AddItemButton />
+      <PutOnBeltButton />
       <div
         style={{
           gridTemplateColumns: `repeat(${columns}, 1fr)`,

@@ -1,24 +1,19 @@
+/**
+ * Queue is an edge visually representing a belt conveyor with a queue of items on it.
+ * @param {Object} props - The component props.
+ * @param {string} props.id - The unique identifier of the Queue edge.
+ * @param {Object} props.data - The data associated with the Queue edge.
+ * @returns {JSX.Element} The rendered Queue edge component.
+ */
+
 import usePathAnimation from '../../hooks/usePathAnimation'
 import { useStore } from '@xyflow/react'
 import BaseEdgeComponent from '../BaseEdgeComponent'
-import PathComponent from './PathComponent'
-import ForeignObjectComponent from './ForeignObjectComponent'
+// import PathComponent from './PathComponent'
+// import ForeignObjectComponent from './ForeignObjectComponent'
 import { useEffect } from 'react'
 
-/**
- * Animated component represents an animated edge in a flow diagram.
- * @param {Object} props - The props for the Animated component.
- * @param {number} props.sourceX - The x-coordinate of the source point.
- * @param {number} props.sourceY - The y-coordinate of the source point.
- * @param {number} props.targetX - The x-coordinate of the target point.
- * @param {number} props.targetY - The y-coordinate of the target point.
- * @param {string} props.sourcePosition - The position of the source point relative to the source node.
- * @param {string} props.targetPosition - The position of the target point relative to the target node.
- * @param {string} props.markerEnd - The marker to be placed at the end of the edge.
- * @param {string} props.markerStart - The marker to be placed at the start of the edge.
- * @returns {JSX.Element} The rendered Animated component.
- */
-const Animated = ({
+const Queue = ({
   id,
   sourceX,
   sourceY,
@@ -78,19 +73,19 @@ const Animated = ({
         markerEnd={markerEnd}
         dashSpeed={dashSpeed}
       />
-      <PathComponent
+      {/* <PathComponent
         pathD={pathD}
         markerEnd={markerEnd}
         markerStart={markerStart}
         pathRef={pathRef}
-      />
-      <ForeignObjectComponent
+      /> */}
+      {/* <ForeignObjectComponent
         sourceNode={sourceNode}
         edge={edge}
         divRef={divRef}
-      />
+      /> */}
     </>
   )
 }
 
-export default Animated
+export default Queue

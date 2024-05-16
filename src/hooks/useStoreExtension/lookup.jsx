@@ -1,11 +1,11 @@
 /**
  * Looks up an item in the store based on the provided ID with fallbacks when direct lookup fails.
- *
- * @param {string} id - The ID of the item to look up.
- * @param {object} store - The store object containing the lookup functions.
+ * @param {object} options - The options object.
+ * @param {object} options.store - The store object.
+ * @param {string} options.id - The ID of the item to look up.
  * @returns {object|null} - The found item, or null if not found.
  */
-const lookup = (id, store) => {
+const lookup = ({ store, id }) => {
   // If the ID is not a string, return null
   if (typeof id !== 'string') return null
 

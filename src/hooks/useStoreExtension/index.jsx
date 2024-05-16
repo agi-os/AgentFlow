@@ -10,6 +10,7 @@ import updateItemLocationLookup from './updateItemLocationLookup'
 import updateItemLookup from './updateItemLookup'
 import getLocationItems from './getLocationItems'
 import getLocationItemsSorted from './getLocationItemsSorted'
+import lookup from './lookup'
 
 /**
  * Custom hook that enhances the store with additional functionality.
@@ -43,6 +44,9 @@ const useEnhancedStore = ({ initialItems }) => {
         getLocationItemsSorted({ store, locationId }),
 
       generateId,
+      getNode: id => store.getState().nodeLookup.get(id),
+      getEdge: id => store.getState().edgeLookup.get(id),
+      lookup: id => lookup({ store, id }),
     }))
   }, [store])
 
