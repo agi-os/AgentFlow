@@ -2,6 +2,19 @@ export default function ({ types: t }) {
   return {
     visitor: {
       JSXOpeningElement(path, state) {
+        const { node } = path
+
+        // Ignore the Fragment element.
+        if (
+          (t.isJSXIdentifier(node.name) &&
+            node.name &&
+            (node.name.name === 'React.Fragment' ||
+              node.name.name === 'Fragment')) ||
+          t.isJSXFragment(node)
+        ) {
+          return
+        }
+
         // Get the full path of the file.
         const fullPath = state.file.opts.filename
 
@@ -26,12 +39,30 @@ export default function ({ types: t }) {
         const lineNumber = path.node.loc.start.line
 
         // Add the file path as a data attribute.
-        path.node.attributes.unshift(
-          t.jsxAttribute(
-            t.jsxIdentifier('x-jsx'),
-            t.stringLiteral(`${file}:${lineNumber}`)
-          )
+        const jsxAttribute = t.jsxAttribute(
+          t.jsxIdentifier('x-jsx'),
+          t.stringLiteral(`${file}:${lineNumber}`)
         )
+
+        // Find x-id attribute
+        let xIdIndex = path.node.attributes.findIndex(
+          attr => attr?.name && attr?.name?.name === 'x-id'
+        )
+        let xIdAttribute
+
+        // If x-id exists, remove it from its current position
+        if (xIdIndex !== -1) {
+          xIdAttribute = path.node.attributes[xIdIndex]
+          path.node.attributes.splice(xIdIndex, 1)
+        }
+
+        if (!xIdAttribute) {
+          // Add x-jsx at the beginning of the attributes array
+          path.node.attributes.unshift(jsxAttribute)
+        } else {
+          // Add x-id and x-jsx at the beginning of the attributes array
+          path.node.attributes.unshift(xIdAttribute, jsxAttribute)
+        }
       },
     },
   }
