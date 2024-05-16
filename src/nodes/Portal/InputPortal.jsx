@@ -64,6 +64,15 @@ const InputPortal = ({ id, selected }) => {
     // If there are no incoming items, do nothing
     if (!incomingItems || incomingItems.length === 0) return
 
+    // Log the incoming items
+    console.log(
+      `portal 🔗${id} received item${
+        incomingItems.length > 1 ? 's' : ''
+      } 📦${incomingItems.map(item => item.id).join(', 📦')} on belt${
+        inboxEdges.length > 1 ? 's' : ''
+      } 🛝${inboxEdges.join(', 🛝')}`
+    )
+
     // Get all nodes that have a connection to this portal
     const connectedNodes = edges
       .map(edge => {
@@ -91,11 +100,24 @@ const InputPortal = ({ id, selected }) => {
 
         // Add the new item to the store
         addItem(newItem)
+
+        // Log the action
+        console.log(
+          `portal 🔗${id} cloned item 📦${item.id} to 🐣${newItem.id} in portal 🔗${outputPortal.id}`
+        )
       })
     })
 
+    // Log the action
+    console.log(
+      `portal 🔗${id} recycled item${
+        incomingItems.length > 1 ? 's' : ''
+      } ♻️${incomingItems.map(item => item.id).join(', ♻️')}`
+    )
+
     // Destroy all incoming items by removing them from store
     incomingItems.forEach(item => {
+      // Remove the item from the store
       removeItem(item.id)
     })
   }, [count, id, edges, getLocationItems, getNode, addItem, removeItem])
@@ -104,7 +126,9 @@ const InputPortal = ({ id, selected }) => {
     <Portal id={id} selected={selected}>
       <BeltTarget />
       <div className="inset-0 grid align-center justify-center">
-        <div className="text-center text-xs leading-0 pt-1 -mb-2">{count}</div>
+        <div className="text-center text-xs leading-0 pt-1 -mb-2">
+          ⏱️ {count}
+        </div>
         <div className="text-center">🕳️</div>
       </div>
     </Portal>

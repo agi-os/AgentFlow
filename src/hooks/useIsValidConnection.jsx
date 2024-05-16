@@ -43,8 +43,6 @@ const isValidConnection = (connection, storeApi) => {
   const sourceType = sourceNode?.type
   const targetType = targetNode?.type
 
-  console.log({ sourceType, targetType, connection })
-
   // Block all connections between input portals to prevent confusion
   if (sourceType === 'inputPortal' && targetType === 'inputPortal') return false
 

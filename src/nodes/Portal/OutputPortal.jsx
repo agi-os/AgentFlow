@@ -55,7 +55,9 @@ const OutputPortal = ({ id, selected }) => {
     locationItems.forEach(item => {
       // Only update the item if its location is not already the outbox
       if (item.location.id !== outboxEdgeId) {
-        console.log(`Sending item ${item.id} to outbox ${outboxEdgeId}`)
+        console.log(
+          `portal 🔗${id} released item 📦${item.id} on belt 🛝${outboxEdgeId}`
+        )
 
         // Update the item location to the outbox
         const newItem = {

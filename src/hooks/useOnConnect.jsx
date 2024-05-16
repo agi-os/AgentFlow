@@ -28,8 +28,6 @@ const onConnect = ({ connection, storeApi, setEdges }) => {
 
   // Sanity check
   if (sourceNode && targetNode) {
-    console.log({ sourceNode, targetNode })
-
     // Get types of the source and target nodes
     const sourceType = sourceNode?.type
     const targetType = targetNode?.type

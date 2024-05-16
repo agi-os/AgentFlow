@@ -1,3 +1,5 @@
+import SchemaButton from './SchemaButton'
+
 const schema = {
   age: {
     type: 'number',
@@ -77,30 +79,8 @@ const multiToolkitSchema = {
   },
 }
 
-import { useContext, useCallback } from 'react'
-import { SocketContext } from '../Socket'
-import { useReactFlow, useStore } from '@xyflow/react'
-
-export const classNames = [
-  'bg-zinc-900',
-  'hover:bg-zinc-800',
-  'text-zinc-400',
-  'hover:text-zinc-200',
-  'font-semibold',
-  'py-2',
-  'px-4',
-  'border',
-  'border-zinc-700',
-  'rounded-full',
-  'shadow-lg',
-  'outline',
-  'outline-opacity-50',
-  'outline-black',
-  'outline-4',
-]
-
 let nodeId = 10
-const buttonsOld = [
+export const buttonsOld = [
   { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
   { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
   { schema: searchSchema, label: '🧬 Search schema' },
@@ -111,7 +91,7 @@ const buttonsOld = [
   { schema: {}, label: 'Actions', secondParam: 'actions' },
 ]
 
-const buttons = [
+export const buttons = [
   { schema: {}, label: '⛓️ Input Portal', secondParam: 'inputPortal' },
   { schema: {}, label: '⛓️ Output Portal', secondParam: 'outputPortal' },
   { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
@@ -131,59 +111,3 @@ const buttons = [
   { schema: {}, label: '🐣 Action', secondParam: 'action' },
   { schema: {}, label: '🛎️ Result', secondParam: 'result' },
 ]
-
-/**
- * Component generates button which will emit the schema on ws provided by hook from socket context
- */
-import { useState } from 'react'
-
-const SchemaButton = ({ old = false }) => {
-  const generateId = useStore(s => s.generateId)
-  const [isCollapsed, setIsCollapsed] = useState(true)
-  const socket = useContext(SocketContext)
-  const reactFlowInstance = useReactFlow()
-
-  const onClick = useCallback(
-    (schema, type = 'schema') => {
-      const id = generateId()
-      const newNode = {
-        id,
-        position: {
-          x: Math.random() * 500,
-          y: Math.random() * 500,
-        },
-        type,
-        data: {
-          label: `Node ${id}`,
-        },
-      }
-      reactFlowInstance.addNodes(newNode)
-
-      if (Object.keys(schema).length !== 0) {
-        socket.emit('schema', JSON.stringify(schema))
-      }
-    },
-    [socket, reactFlowInstance]
-  )
-
-  return (
-    <div className="flex flex-wrap gap-5">
-      <button
-        className={classNames.join(' ')}
-        onClick={() => setIsCollapsed(!isCollapsed)}>
-        {isCollapsed ? '>' : '<'}
-      </button>
-      {!isCollapsed &&
-        (old ? buttonsOld : buttons).map((button, index) => (
-          <button
-            key={index}
-            className={classNames.join(' ')}
-            onClick={() => onClick(button.schema, button.secondParam)}>
-            {button.label}
-          </button>
-        ))}
-    </div>
-  )
-}
-
-export default SchemaButton

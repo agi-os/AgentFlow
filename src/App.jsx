@@ -15,7 +15,7 @@ import {
 
 import getArrangedElements from './getArrangedElements'
 
-import SchemaButton from './tmp/schema'
+import SchemaButton from './tmp/SchemaButton'
 
 import { SocketContext } from './Socket'
 
