@@ -4,7 +4,7 @@
  * @param {Object} store - The store object.
  * @param {Array} initialItems - The array of initial items to be added.
  */
-const addInitialItemsToStore = (store, initialItems) => {
+const addInitialItemsToStore = ({ store, initialItems }) => {
   // Sanity check
   if (!initialItems || !Array.isArray(initialItems)) return
 

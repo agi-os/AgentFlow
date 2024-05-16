@@ -1,102 +1,74 @@
 import { useEffect } from 'react'
-import { useStoreApi } from '@xyflow/react'
 
-import moveItem from './moveItem'
-import addItemToStore from './addItemToStore'
 import generateId from './generateId'
 import addInitialItemsToStore from './addInitialItemsToStore'
-import lookup from './lookup'
+import { useStoreApi } from '@xyflow/react'
+import debounce from './debounce'
+
+import addItem from './addItem'
+import updateItemLocationLookup from './updateItemLocationLookup'
+import updateItemLookup from './updateItemLookup'
+import getLocationItems from './getLocationItems'
+import getLocationItemsSorted from './getLocationItemsSorted'
 
 /**
- * Custom hook for managing store extension.
- *
- * @param {Object} options - The options for the store extension.
+ * Custom hook that enhances the store with additional functionality.
+ * @param {Object} options - The options for the enhanced store.
  * @param {Array} options.initialItems - The initial items to add to the store.
+ * @returns {Object} - The enhanced store object.
  */
-const useStoreExtension = ({ initialItems = [] }) => {
-  // Get the handle to the store api
+const useEnhancedStore = ({ initialItems }) => {
   const store = useStoreApi()
 
   useEffect(() => {
-    // Extend the store
-    store.setState(prevState => {
-      // Check if the store is already extended
-      const isExtended =
-        prevState.items &&
-        prevState.itemLookup &&
-        prevState.addItem &&
-        prevState.getItem
+    // If the store has been extended previously, abort
+    if (store.getState().generateId) return
 
-      // If the store is already extended, abort processing
-      if (isExtended) return prevState
+    // Initialize the store with the new methods
+    store.setState(draft => ({
+      ...draft,
 
-      return {
-        // Keep the previous state
-        ...prevState,
+      items: [],
+      addItem: item => addItem({ store, item }),
 
-        // Generic lookup, looks into all items, nodes, and edges by id
-        lookup: id => lookup(id, store),
+      itemLookup: new Map(),
+      updateItemLookup: debounce(() => updateItemLookup(store)),
+      getItem: id => store.getState().itemLookup.get(id),
 
-        // Array of items
-        items: [],
+      itemLocationLookup: new Map(),
+      updateItemLocationLookup: debounce(() => updateItemLocationLookup(store)),
+      getLocationItems: locationId => getLocationItems({ store, locationId }),
+      getLocationItemsSorted: locationId =>
+        getLocationItemsSorted({ store, locationId }),
 
-        // Map of items by id
-        itemLookup: new Map(),
+      generateId,
+    }))
+  }, [store])
 
-        // Add an item to the store
-        addItem: item => addItemToStore(store, item),
+  // Initializing with initial items
+  useEffect(() => {
+    // Get the current items from the store
+    const items = store.getState().items
 
-        // Get an item by its id
-        getItem: id => store.getState().itemLookup.get(id),
+    // If the store has not yet been initialized abort
+    if (!items) return
 
-        // Get an edge by its id
-        getEdge: id => store.getState().edgeLookup.get(id),
+    // If the store.items has more than 0 entries, abort
+    if (items?.length > 0) return
 
-        // Get a node by its id
-        getNode: id => store.getState().nodeLookup.get(id),
-
-        // Generate an unique ID
-        generateId,
-
-        // Move an item from a node to an edge
-        moveItemFromNodeToEdge: ({ itemId, nodeId, edgeId }) =>
-          moveItem({
-            store,
-            itemId,
-            fromId: nodeId,
-            toId: edgeId,
-            fromType: 'node',
-            toType: 'edge',
-          }),
-
-        // Move an item from an edge to a node
-        moveItemFromEdgeToNode: ({ itemId, edgeId, nodeId }) =>
-          moveItem({
-            store,
-            itemId,
-            fromId: edgeId,
-            toId: nodeId,
-            fromType: 'edge',
-            toType: 'node',
-          }),
-      }
-    })
-
-    // If we don't have the store state on window object, add a subscription
-    if (!window.store) {
-      // Add the store state to the window object
-      window.store = store.getState()
-
-      // Keep the window object state fresh for easier console debugging
-      store.subscribe(
-        s => (window.store = s),
-        s => s
-      )
-    }
-
-    // Add the initial items to the store
-    addInitialItemsToStore(store, initialItems)
+    // Add initial items as needed
+    addInitialItemsToStore({ store, initialItems })
   }, [store, initialItems])
+
+  // Create a subscription to the store updating the window.store object
+  useEffect(() => {
+    if (!window.store) {
+      window.store = store.getState()
+      store.subscribe(s => (window.store = s))
+    }
+  }, [store])
+
+  return store
 }
 
-export default useStoreExtension
+export default useEnhancedStore

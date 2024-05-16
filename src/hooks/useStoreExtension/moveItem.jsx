@@ -12,52 +12,51 @@
 const moveItem = ({ store, itemId, fromId, toId, fromType, toType }) => {
   console.log({ itemId, fromId, toId, fromType, toType })
 
-  // If the item does not exist, return false
-  if (!store.getState().getItem(itemId)) return false
+  const state = store.getState()
+  const {
+    getItem,
+    [`${fromType}Lookup`]: fromLookup,
+    [`${toType}Lookup`]: toLookup,
+  } = state
 
-  // Get the entities from the store
-  const fromEntity = store.getState()[`${fromType}Lookup`].get(fromId)
-  const toEntity = store.getState()[`${toType}Lookup`].get(toId)
-
-  // If either entity does not exist, return false
+  // Validate the item existence and entity presence
+  if (!getItem(itemId)) return false
+  const fromEntity = fromLookup.get(fromId)
+  const toEntity = toLookup.get(toId)
   if (!fromEntity || !toEntity) return false
 
-  // If the fromEntity does not have the item, return false
-  if (!fromEntity?.data?.items?.includes(itemId)) return false
+  const fromItems = fromEntity?.data?.items || []
+  const toItems = toEntity?.data?.items || []
 
-  // If the target does not have the data property, add it
-  if (!toEntity.data) toEntity.data = {}
+  // Validate item presence in fromEntity and absence in toEntity
+  if (!fromItems.includes(itemId) || toItems.includes(itemId)) return false
 
-  // If the target does not have the items property, add it
-  if (!toEntity.data.items) toEntity.data.items = []
-
-  // If the toEntity already has the item, return false
-  if (toEntity?.data?.items?.includes(itemId)) return false
-
-  // Remove the item from the fromEntity
-  const newFromEntityData = {
-    ...fromEntity.data,
-    items: fromEntity.data.items.filter(i => i !== itemId),
+  // Create shallow copies of the entities and their items arrays
+  const updatedFromEntity = {
+    ...fromEntity,
+    data: { ...fromEntity.data, items: fromItems.filter(i => i !== itemId) },
+  }
+  const updatedToEntity = {
+    ...toEntity,
+    data: { ...toEntity.data, items: [...toItems, itemId] },
   }
 
-  // Add the item to the toEntity
-  const newToEntityData = {
-    ...toEntity.data,
-    items: [...(toEntity?.data?.items || []), itemId],
+  // Create shallow copy of the lookup maps and update the relevant entries
+  const updatedFromLookup = new Map(fromLookup)
+  updatedFromLookup.set(fromId, updatedFromEntity)
+
+  const updatedToLookup = new Map(toLookup)
+  updatedToLookup.set(toId, updatedToEntity)
+
+  // Create a shallow copy of the state with the updated lookup maps
+  const newState = {
+    ...state,
+    [`${fromType}Lookup`]: updatedFromLookup,
+    [`${toType}Lookup`]: updatedToLookup,
   }
 
-  // Update only the individual entities directly bypassing the lookup
-  store.setState(draft => {
-    draft[fromType + 's'] = draft[fromType + 's'].map(e =>
-      e.id === fromId ? { ...e, data: newFromEntityData } : e
-    )
-
-    draft[toType + 's'] = draft[toType + 's'].map(e =>
-      e.id === toId ? { ...e, data: newToEntityData } : e
-    )
-
-    return draft
-  })
+  // Set the new state back into the store
+  store.setState(newState)
 
   return true
 }
