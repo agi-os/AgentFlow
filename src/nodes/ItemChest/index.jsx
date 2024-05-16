@@ -25,14 +25,14 @@ const ItemChestNode = ({ id, selected }) => {
 
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
-    ? ['outline-orange-700']
-    : ['outline-transparent']
+    ? ['outline-offset-8', 'outline-2']
+    : ['outline-offset-0', 'outline-0']
 
   // Combine the base and selected class names
   const classNames = [...baseClassNames, ...selectedClassNames]
 
   return (
-    <div className={classNames.join(' ')}>
+    <div x-id={id} className={classNames.join(' ')}>
       <BeltTarget />
       <SignalHandles />
       <Title id={id}>📦 Item Chest ({itemCount})</Title>

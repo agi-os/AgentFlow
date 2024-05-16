@@ -10,9 +10,9 @@ const baseClassNames = [
   'border-zinc-700',
   'overflow-hidden',
   'transition-all',
-  'outline-1',
+  'transition-duration-1000',
   'outline',
-  'outline-offset-8',
+  'outline-orange-700',
 ]
 
 export default baseClassNames

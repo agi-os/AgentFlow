@@ -9,9 +9,10 @@ import { memo } from 'react'
  * @param {number} props.dashSpeed - The speed of the dash animation.
  * @returns {JSX.Element} The rendered base edge component.
  */
-const BaseEdgeComponent = memo(({ pathD, markerEnd, dashSpeed }) => {
+const BaseEdgeComponent = memo(({ edgeId, pathD, markerEnd, dashSpeed }) => {
   return (
     <BaseEdge
+      x-id={edgeId}
       path={pathD}
       markerEnd={markerEnd}
       className={classNames.join(' ')}
@@ -24,4 +25,11 @@ const BaseEdgeComponent = memo(({ pathD, markerEnd, dashSpeed }) => {
 
 export default BaseEdgeComponent
 
-const classNames = ['react-flow__edge-path', 'stroke-[3rem]', 'opacity-25']
+const classNames = [
+  'react-flow__edge-path',
+  'stroke-[3rem]',
+  'opacity-25',
+  'transition-colors',
+  'duration-500',
+  'ease-in-out',
+]

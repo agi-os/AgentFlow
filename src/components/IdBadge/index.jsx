@@ -7,7 +7,7 @@ import baseClassNames from './classNames'
  * @param {ReactNode} props.children - The content to be rendered inside the badge.
  * @returns {JSX.Element} The rendered ID badge component.
  */
-const IdBadge = ({ children }) => {
+const IdBadge = ({ id, children, outline = true }) => {
   // Get the zoom level from the store
   const zoomLevel = useStore(s => s.transform[2])
 
@@ -28,16 +28,23 @@ const IdBadge = ({ children }) => {
           'bg-zinc-900',
           'pl-[0.05rem]',
           'ml-[-0.05rem]',
-          'outline-zinc-900',
+          outline
+            ? 'outline-zinc-900'
+            : 'left-3 top-8 outline-none border-none',
         ]
-      : ['text-zinc-600', 'outline-zinc-800']
+      : [
+          'text-zinc-600',
+          outline
+            ? 'outline-zinc-800'
+            : 'left-3 top-8 outline-none border-none',
+        ]
 
   // Combine the base and zoom class names
   const classNames = [...baseClassNames, ...zoomClassNames]
 
   // Render the badge
   return (
-    <div style={{ opacity }} className={classNames.join(' ')}>
+    <div x-id={id} style={{ opacity }} className={classNames.join(' ')}>
       {children}
     </div>
   )

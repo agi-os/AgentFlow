@@ -7,12 +7,12 @@ const baseClassNames = [
   'h-16',
   'border-[1px]',
   'overflow-hidden',
-  'transition-all',
   'bg-zinc-800',
   'border-zinc-700',
-  'outline-1',
+  'transition-all',
+  'transition-duration-1000',
   'outline',
-  'outline-offset-8',
+  'outline-orange-700',
 ]
 
 export default baseClassNames

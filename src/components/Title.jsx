@@ -15,8 +15,12 @@ const Title = ({
 }) => {
   return (
     <>
-      {id && <IdBadge key="badge">{id}</IdBadge>}
-      <div key="title" className={classNames.join(' ')}>
+      {id && (
+        <IdBadge id={id} key="badge">
+          {id}
+        </IdBadge>
+      )}
+      <div x-id={id} key="title" className={classNames.join(' ')}>
         {children}
       </div>
     </>

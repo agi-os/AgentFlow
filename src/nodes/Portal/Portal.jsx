@@ -15,15 +15,15 @@ import baseClassNames from './classNames'
 const Portal = ({ id, selected, children }) => {
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
-    ? ['outline-orange-700']
-    : ['outline-transparent']
+    ? ['outline-offset-8', 'outline-2']
+    : ['outline-offset-0', 'outline-0']
 
   // Combine the base and selected class names
   const classNames = [...baseClassNames, ...selectedClassNames]
 
   // Render the portal
   return (
-    <div className={classNames.join(' ')}>
+    <div x-id={id} className={classNames.join(' ')}>
       <Title id={id}>🔗 Portal</Title>
       <SignalHandles />
       <Semaphore />

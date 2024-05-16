@@ -5,7 +5,7 @@ const initialEdges = [
     target: 'wau-wrm',
     targetHandle: 'inbox',
     id: 'qqn-bc4',
-    type: 'animated',
+    type: 'queue',
     animated: true,
     selected: false,
   },
@@ -15,7 +15,7 @@ const initialEdges = [
     target: 'arx-cu6',
     targetHandle: 'inbox',
     id: 'mnc-agq',
-    type: 'animated',
+    type: 'queue',
     animated: true,
   },
   {

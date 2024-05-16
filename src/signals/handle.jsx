@@ -1,4 +1,4 @@
-import { Handle, Position } from '@xyflow/react'
+import { Handle, Position, useNodeId } from '@xyflow/react'
 
 /**
  * Renders the signal handles for a source or target signal.
@@ -7,6 +7,9 @@ import { Handle, Position } from '@xyflow/react'
  * @returns {JSX.Element} - The rendered signal handles.
  */
 const Handles = ({ type = 'source', position = 'right' }) => {
+  // Get the node id
+  const id = useNodeId()
+
   // Check if the position is on the right side.
   const isRight = position === 'right'
 
@@ -67,6 +70,7 @@ const Handles = ({ type = 'source', position = 'right' }) => {
   return (
     <>
       <Handle
+        x-id={id}
         key={topTopId}
         id={topTopId}
         type={type}
@@ -74,6 +78,7 @@ const Handles = ({ type = 'source', position = 'right' }) => {
         position={Position.Top}
       />
       <Handle
+        x-id={id}
         key={topEdgeId}
         id={topEdgeId}
         type={type}
@@ -81,6 +86,7 @@ const Handles = ({ type = 'source', position = 'right' }) => {
         position={handlePosition}
       />
       <Handle
+        x-id={id}
         key={bottomEdgeId}
         id={bottomEdgeId}
         type={type}
@@ -88,6 +94,7 @@ const Handles = ({ type = 'source', position = 'right' }) => {
         position={handlePosition}
       />
       <Handle
+        x-id={id}
         key={bottomBottomId}
         id={bottomBottomId}
         type={type}
