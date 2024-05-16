@@ -18,8 +18,8 @@ const onConnect = ({ connection, storeApi, setEdges }) => {
   // Set the id to uniquely identify this connection
   connection.id = generateId()
 
-  // Default edge is an animated belt
-  connection.type = 'animated'
+  // Default edge is a default
+  connection.type = 'default'
   connection.animated = true
 
   // Get the types of the source and target nodes
@@ -50,6 +50,29 @@ const onConnect = ({ connection, storeApi, setEdges }) => {
           target: connection.source,
           targetHandle: connection.sourceHandle,
         }
+      }
+    }
+
+    // If we are connecting an outbox to an inbox, set the type to 'queue'
+    if (
+      connection.sourceHandle === 'outbox' &&
+      connection.targetHandle === 'inbox'
+    ) {
+      connection.type = 'queue'
+    }
+
+    // If we are connecting an inbox to an outbox, set the type to 'queue' and reverse the connection
+    if (
+      connection.sourceHandle === 'inbox' &&
+      connection.targetHandle === 'outbox'
+    ) {
+      connection.type = 'queue'
+      connection = {
+        ...connection,
+        source: connection.target,
+        sourceHandle: connection.targetHandle,
+        target: connection.source,
+        targetHandle: connection.sourceHandle,
       }
     }
   } else {

@@ -15,17 +15,17 @@ const isValidConnection = (connection, storeApi) => {
   // Ignore connections to self
   if (connection.source === connection.target) return false
 
-  // Ignore connections of outbox to outbox
+  // Outbox is only allowed to connect to inbox
   if (
     connection.sourceHandle === 'outbox' &&
-    connection.targetHandle === 'outbox'
+    connection.targetHandle !== 'inbox'
   )
     return false
 
-  // Ignore connections of inbox to inbox
+  // Inbox is only allowed to connect to outbox
   if (
     connection.sourceHandle === 'inbox' &&
-    connection.targetHandle === 'inbox'
+    connection.targetHandle !== 'outbox'
   )
     return false
 
@@ -45,7 +45,10 @@ const isValidConnection = (connection, storeApi) => {
 
   console.log({ sourceType, targetType, connection })
 
-  // Block all connections between output portals
+  // Block all connections between input portals to prevent confusion
+  if (sourceType === 'inputPortal' && targetType === 'inputPortal') return false
+
+  // Block all connections between output portals to prevent confusion
   if (sourceType === 'outputPortal' && targetType === 'outputPortal')
     return false
 

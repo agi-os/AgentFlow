@@ -36,6 +36,15 @@ const useEnhancedStore = ({ initialItems }) => {
       itemLookup: new Map(),
       updateItemLookup: debounce(() => updateItemLookup(store)),
       getItem: id => store.getState().itemLookup.get(id),
+      removeItem: id => {
+        store.getState().itemLookup.delete(id)
+        store.setState(draft => ({
+          ...draft,
+          items: draft.items.filter(item => item.id !== id),
+        }))
+        store.getState().updateItemLookup()
+        store.getState().updateItemLocationLookup()
+      },
 
       itemLocationLookup: new Map(),
       updateItemLocationLookup: debounce(() => updateItemLocationLookup(store)),
@@ -47,6 +56,14 @@ const useEnhancedStore = ({ initialItems }) => {
       getNode: id => store.getState().nodeLookup.get(id),
       getEdge: id => store.getState().edgeLookup.get(id),
       lookup: id => lookup({ store, id }),
+
+      // Get all edges connected to the node
+      getNodeEdges: nodeId =>
+        store
+          .getState()
+          .edges.filter(
+            edge => edge.source === nodeId || edge.target === nodeId
+          ),
     }))
   }, [store])
 
