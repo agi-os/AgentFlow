@@ -63,7 +63,7 @@ const Animated = ({
   }, [edge, sourceNode])
 
   // The speed of the dash animation in milliseconds per cycle
-  const dashSpeed = 100
+  const dashSpeed = 300
 
   // Sanity check
   if (!typeof pathD === 'string' || pathD.length === 0) {

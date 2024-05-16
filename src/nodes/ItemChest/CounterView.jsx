@@ -22,7 +22,7 @@ const CounterView = ({ dimensions: { width, height } }) => {
   }
 
   // Define the desired cell size
-  const desiredCellSize = 90
+  const desiredCellSize = 40
 
   // Calculate the maximum number of cells that can fit in the width and height
   const maxColumns = Math.floor(width / desiredCellSize)
@@ -35,7 +35,7 @@ const CounterView = ({ dimensions: { width, height } }) => {
   )
 
   // Calculate the actual number of columns and rows
-  const columns = Math.floor(width / cellSize)
+  const columns = Math.floor(width / cellSize) - 5
   const rows = Math.floor(height / cellSize)
 
   // Calculate the total number of cells
@@ -80,13 +80,27 @@ const CounterView = ({ dimensions: { width, height } }) => {
           gridTemplateRows: `repeat(${adjustedRows}, 1fr)`,
           height: `${newHeight}px`,
         }}
-        className="grid gap-2 p-2 place-items-center">
+        className="grid gap-2 p-3 place-items-center">
+        {items.map(item => (
+          <div
+            key={item.id}
+            style={{
+              width: `${cellSize}px`,
+              height: `${cellSize}px`,
+            }}
+            className="rounded-full grid place-items-center shadow-inner shadow-zinc-700">
+            {item.emoticon}
+          </div>
+        ))}
+      </div>
+      <div className="absolute bottom-10 flex justify-center gap-2 p-3">
         {buckets &&
           Object.entries(buckets).map(([type, items]) => (
             <div
               key={type}
-              className="w-20 h-20 border border-zinc-600 rounded-full grid place-items-center">
-              {items?.[0]?.emoticon} × {items.length}
+              className="w-14 h-14 border border-zinc-600 outline outline-zinc-800 outline-4 rounded-full grid place-items-center bg-zinc-800">
+              <div className="text-xs leading-none -mb-4">{items.length}</div>
+              <div>{items?.[0]?.emoticon}</div>
             </div>
           ))}
       </div>
