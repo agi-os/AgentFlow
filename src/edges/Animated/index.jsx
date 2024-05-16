@@ -35,9 +35,6 @@ const Animated = ({
   // Get the source node data from the store
   const sourceNode = useStore(s => s.nodeLookup.get(edge.source))
 
-  // Get the moveItemFromNodeToEdge function from the store
-  const moveItemFromNodeToEdge = useStore(s => s.moveItemFromNodeToEdge)
-
   const { pathRef, divRef, pathD } = usePathAnimation(
     sourceX,
     sourceY,
@@ -62,10 +59,8 @@ const Animated = ({
       const nodeId = sourceNode.id
 
       console.log({ itemId, edgeId, nodeId })
-
-      moveItemFromNodeToEdge({ itemId, nodeId, edgeId })
     }
-  }, [edge, sourceNode, moveItemFromNodeToEdge])
+  }, [edge, sourceNode])
 
   // The speed of the dash animation in milliseconds per cycle
   const dashSpeed = 100

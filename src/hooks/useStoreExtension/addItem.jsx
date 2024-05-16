@@ -5,6 +5,15 @@
  * @param {Object} options.item - The item to be added.
  */
 const addItem = ({ store, item }) => {
+  // If we have an id, check if the item already exists
+  if (item?.id) {
+    // If item exists, remove it
+    store.setState(draft => ({
+      ...draft,
+      items: draft.items.filter(i => i.id !== item.id),
+    }))
+  }
+
   // If item has no id, generate one
   if (!item.id) item.id = store.getState().generateId()
 

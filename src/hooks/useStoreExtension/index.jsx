@@ -30,6 +30,7 @@ const useEnhancedStore = ({ initialItems }) => {
 
       items: [],
       addItem: item => addItem({ store, item }),
+      setItem: item => addItem({ store, item }),
 
       itemLookup: new Map(),
       updateItemLookup: debounce(() => updateItemLookup(store)),

@@ -9,8 +9,13 @@ const getLocationItems = ({ store, locationId }) => {
   // Extract the needed functions from the store
   const { getItem, itemLocationLookup } = store.getState()
 
+  // Sanity check
+  if (!getItem || !itemLocationLookup) {
+    return []
+  }
+
   // Get the item ids for the location
-  const itemIds = itemLocationLookup.get(locationId)
+  const itemIds = itemLocationLookup.get(locationId) || []
 
   // Map the item ids to items
   const items = itemIds.map(id => getItem(id))
