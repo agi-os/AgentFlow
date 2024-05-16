@@ -8,21 +8,20 @@ import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
 import baseClassNames from './classNames'
 
 import ChestBody from './ChestBody'
+import { useStore } from '@xyflow/react'
 
 /**
  * Renders a Chest node component.
- *
- * @component
  * @param {Object} props - The component props.
  * @param {string} props.id - The unique identifier of the Chest node.
  * @param {Object} props.data - The data associated with the Chest node.
  * @returns {JSX.Element} The rendered Chest node component.
  */
-const ItemChestNode = ({ id, data, selected }) => {
-  // Get all data about this node possibly from the store
-  // const node = useInternalNode(id)
-
-  // console.log({ node })
+const ItemChestNode = ({ id, selected }) => {
+  // Get the number of items in the chest
+  const itemCount = useStore(
+    store => store.itemLocationLookup?.get(id)?.length || 0
+  )
 
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
@@ -36,11 +35,11 @@ const ItemChestNode = ({ id, data, selected }) => {
     <div className={classNames.join(' ')}>
       <BeltTarget />
       <SignalHandles />
-      <Title id={id}>📦 Item Chest</Title>
+      <Title id={id}>📦 Item Chest ({itemCount})</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
         <ZoomResponsiveWrapper classNames={zoomResponsiveWrapperClassNames}>
-          <ChestBody data={data} />
+          <ChestBody />
         </ZoomResponsiveWrapper>
       </ZoomCompensated>
       <BeltSource />

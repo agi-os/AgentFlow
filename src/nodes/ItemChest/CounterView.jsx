@@ -1,6 +1,6 @@
-import { useStore } from '@xyflow/react'
 import AddItemButton from './AddItemButton'
 import EmptyChest from './EmptyChest'
+import useNodeItems from '../../hooks/useNodeItems'
 
 /**
  * CounterView component displays a grid of item counts in a chest.
@@ -11,17 +11,14 @@ import EmptyChest from './EmptyChest'
  * @param {number} props.dimensions.height - The height of the container.
  * @returns {JSX.Element} The rendered CounterView component.
  */
-const CounterView = ({ data, dimensions: { width, height } }) => {
-  // Get a handle to the getItem function from the store
-  const getItem = useStore(s => s.getItem)
+const CounterView = ({ dimensions: { width, height } }) => {
+  // Get all items at this location
+  const items = useNodeItems()
 
   // If there are no items, render an empty chest
-  if (!data?.items?.length) {
+  if (items.length === 0) {
     return <EmptyChest />
   }
-
-  // Get the items from the store
-  const items = data?.items?.map(id => getItem(id))
 
   // Define the desired cell size
   const desiredCellSize = 90
@@ -44,7 +41,7 @@ const CounterView = ({ data, dimensions: { width, height } }) => {
   const totalCells = columns * rows
 
   // Calculate the number of items
-  const numberOfItems = data?.items?.length || 0
+  const numberOfItems = items.length
 
   // Calculate the number of empty cells
   const emptyCells = totalCells - numberOfItems

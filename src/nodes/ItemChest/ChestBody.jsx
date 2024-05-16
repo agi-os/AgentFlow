@@ -1,3 +1,6 @@
+import CounterView from './CounterView'
+import CompactView from './CompactView'
+
 /**
  * Renders the body of the chest component.
  * @param {Object} props - The component props.
@@ -5,7 +8,7 @@
  * @param {Object} props.dimensions - The dimensions object containing width and height.
  * @returns {JSX.Element} The rendered component.
  */
-const ChestBody = ({ data, dimensions }) => {
+const ChestBody = ({ dimensions }) => {
   // Get dimensions provided by the parent zoom responsive wrapper
   const { width, height } = dimensions
 
@@ -13,19 +16,10 @@ const ChestBody = ({ data, dimensions }) => {
   const compactLimit = 600
 
   if (width + height < compactLimit) {
-    return (
-      <CompactView
-        data={data}
-        dimensions={dimensions}
-        compactLimit={compactLimit}
-      />
-    )
+    return <CompactView dimensions={dimensions} compactLimit={compactLimit} />
   }
 
-  return <CounterView data={data} dimensions={dimensions} />
+  return <CounterView dimensions={dimensions} />
 }
-
-import CounterView from './CounterView'
-import CompactView from './CompactView'
 
 export default ChestBody
