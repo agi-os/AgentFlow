@@ -20,20 +20,18 @@ const Queue = ({
   targetY,
   sourcePosition,
   targetPosition,
-  markerEnd,
-  markerStart,
 }) => {
   // Get the items on the belt
   const items = useStore(s => s.getLocationItemsSorted(id))
 
-  // Get the belt speed
-  const speed = useStore(s => s.speed)
-
-  // Create refs for the path element
+  // Reference to the path element
   const pathRef = useRef(null)
 
   // Path's d attribute value
   const [pathD, setPathD] = useState('')
+
+  // Length of the path
+  const [length, setLength] = useState(0)
 
   useEffect(() => {
     // Get the path's d attribute value
@@ -48,47 +46,31 @@ const Queue = ({
     setPathD(pathD)
   }, [sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition])
 
-  // Get the total length of the path
-  const length = pathRef?.current?.getTotalLength?.() || 0
-
-  // The speed of the dash animation in milliseconds per cycle
-  const dashSpeed = speed * speed
-
-  // Sanity check
-  if (!typeof pathD === 'string' || pathD.length === 0) {
-    return null
-  }
-
   // Render the BaseEdge with animated items on it
   return (
     <>
-      <BaseEdgeComponent
-        edgeId={id}
-        pathD={pathD}
-        markerEnd={markerEnd}
-        dashSpeed={dashSpeed}
-      />
+      <BaseEdgeComponent edgeId={id} pathD={pathD} />
+
       <PathComponent
-        edgeId={id}
         pathD={pathD}
-        markerEnd={markerEnd}
-        markerStart={markerStart}
+        onLengthChange={setLength}
         pathRef={pathRef}
       />
 
-      {items
-        .reverse()
-        .map(
-          item =>
-            item && (
-              <Item
-                key={item.id}
-                item={item}
-                pathRef={pathRef}
-                pathLength={length}
-              />
-            )
-        )}
+      {length > 0 &&
+        items
+          .reverse()
+          .map(
+            item =>
+              item && (
+                <Item
+                  key={item.id}
+                  item={item}
+                  pathRef={pathRef}
+                  pathLength={length}
+                />
+              )
+          )}
     </>
   )
 }

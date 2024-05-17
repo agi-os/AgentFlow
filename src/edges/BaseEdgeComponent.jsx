@@ -1,20 +1,24 @@
-import { BaseEdge } from '@xyflow/react'
+import { BaseEdge, useStore } from '@xyflow/react'
 import { memo } from 'react'
 
 /**
  * Renders a base edge component.
  * @param {Object} props - The component props.
  * @param {string} props.pathD - The path data for the edge.
- * @param {string} props.markerEnd - The marker end for the edge.
- * @param {number} props.dashSpeed - The speed of the dash animation.
  * @returns {JSX.Element} The rendered base edge component.
  */
-const BaseEdgeComponent = memo(({ edgeId, pathD, markerEnd, dashSpeed }) => {
+const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
+  // Get the belt speed
+  const speed = useStore(s => s.speed)
+
+  // The speed of the dash animation is the square of the speed
+  const dashSpeed = speed * speed
+
+  // Render the base edge component
   return (
     <BaseEdge
       x-id={edgeId}
       path={pathD}
-      markerEnd={markerEnd}
       className={classNames.join(' ')}
       style={{
         animation: `dashdraw ${dashSpeed}ms linear infinite`,

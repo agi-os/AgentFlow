@@ -1,28 +1,6 @@
-import IdBadge from '../../components/IdBadge'
-import SuperZoom from './SuperZoom'
-// React.forwardRef()
-// const DivItem = (item, divRef, ref, inView, zoomLevel) => {
+import InViewContent from './InViewContent'
 
-import React from 'react'
-
-const DivItem = React.forwardRef(({ item, divRef, inView, zoomLevel }, ref) => {
-  const classNames = [
-    'grid',
-    'place-items-center',
-    'w-10',
-    'h-10',
-    'relative',
-    'rounded-full',
-    'bg-zinc-900',
-    'border',
-    'border-zinc-900',
-    'bg-opacity-85',
-    '-top-5',
-    '-left-5',
-    'shadow-inner',
-    'shadow-zinc-800',
-  ]
-
+const DivItem = ({ item, divRef }) => {
   return (
     <div
       x-id={item.id}
@@ -32,19 +10,27 @@ const DivItem = React.forwardRef(({ item, divRef, inView, zoomLevel }, ref) => {
       <div x-id={item.id} className="relative -top-0.5">
         {item.emoticon}
       </div>
-      <div x-id={item.id} ref={ref} className="absolute inset-0">
-        {inView && (
-          <>
-            {zoomLevel > 9 ? (
-              <SuperZoom item={item} />
-            ) : (
-              <IdBadge outline={false}>{item.jobType.substring(0, 7)}</IdBadge>
-            )}
-          </>
-        )}
-      </div>
+      <InViewContent item={item} />
     </div>
   )
-})
+}
+
+const classNames = [
+  'grid',
+  'place-items-center',
+  'w-10',
+  'h-10',
+  'relative',
+  'rounded-full',
+  'bg-zinc-900',
+  'border',
+  'border-zinc-900',
+  'bg-opacity-85',
+  '-top-5',
+  '-left-5',
+  'shadow-inner',
+  'shadow-zinc-800',
+  'select-none',
+]
 
 export default DivItem
