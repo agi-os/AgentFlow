@@ -26,6 +26,9 @@ const Queue = ({
   // Get the items on the belt
   const items = useStore(s => s.getLocationItemsSorted(id))
 
+  // Get the belt speed
+  const speed = useStore(s => s.speed)
+
   // Create refs for the path element
   const pathRef = useRef(null)
 
@@ -49,7 +52,7 @@ const Queue = ({
   const length = pathRef?.current?.getTotalLength?.() || 0
 
   // The speed of the dash animation in milliseconds per cycle
-  const dashSpeed = 1400
+  const dashSpeed = speed * speed
 
   // Sanity check
   if (!typeof pathD === 'string' || pathD.length === 0) {

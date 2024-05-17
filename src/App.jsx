@@ -11,6 +11,7 @@ import {
   getOutgoers,
   getConnectedEdges,
   useStoreApi,
+  useStore,
 } from '@xyflow/react'
 
 import getArrangedElements from './getArrangedElements'
@@ -146,9 +147,29 @@ const App = () => {
         <Panel position="bottom-left">
           <SchemaButton old />
         </Panel>
+        <Panel position="top-right">
+          <SpeedRange />
+        </Panel>
         {/* <DevTools /> */}
       </ReactFlow>
     </>
+  )
+}
+
+const SpeedRange = () => {
+  const speed = useStore(s => s.speed) ?? 37
+  const setSpeed = useStore(s => s.setSpeed)
+
+  return (
+    <input
+      type="range"
+      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 rotate-180"
+      value={speed}
+      onChange={e => setSpeed(e.target.value)}
+      min="8"
+      max="60"
+      step="1"
+    />
   )
 }
 

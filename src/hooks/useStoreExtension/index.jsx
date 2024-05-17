@@ -29,6 +29,18 @@ const useEnhancedStore = ({ initialItems }) => {
     store.setState(draft => ({
       ...draft,
 
+      // System wide speed of all belts in pixels per second
+      speed: 37,
+      setSpeed: debounce(speed =>
+        store.setState(
+          draft => ({
+            ...draft,
+            speed: parseFloat(speed),
+          }),
+          1000
+        )
+      ),
+
       items: [],
       addItem: item => addItem({ store, item }),
       setItem: item => addItem({ store, item }),
