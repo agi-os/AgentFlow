@@ -1,8 +1,7 @@
 import { useStore } from '@xyflow/react'
 import { useEffect, useRef } from 'react'
-import IdBadge from '../../components/IdBadge'
 import { useInView } from 'react-intersection-observer'
-import SuperZoom from './SuperZoom'
+import DivItem from './DivItem'
 
 const Item = ({ item, pathRef, pathLength }) => {
   // Create a ref for the item's div element
@@ -41,47 +40,15 @@ const Item = ({ item, pathRef, pathLength }) => {
       width="1"
       height="1"
       overflow="visible">
-      <div
-        x-id={item.id}
-        ref={divRef}
-        xmlns="http://www.w3.org/1999/xhtml"
-        className={classNames.join(' ')}>
-        <div x-id={item.id} className="relative -top-0.5">
-          {item.emoticon}
-        </div>
-        <div x-id={item.id} ref={ref} className="absolute inset-0">
-          {inView && (
-            <>
-              {zoomLevel > 9 ? (
-                <SuperZoom item={item} />
-              ) : (
-                <IdBadge outline={false}>
-                  {item.jobType.substring(0, 7)}
-                </IdBadge>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <DivItem
+        item={item}
+        divRef={divRef}
+        ref={ref}
+        inView={inView}
+        zoomLevel={zoomLevel}
+      />
     </foreignObject>
   )
 }
-
-const classNames = [
-  'grid',
-  'place-items-center',
-  'w-10',
-  'h-10',
-  'relative',
-  'rounded-full',
-  'bg-zinc-900',
-  'border',
-  'border-zinc-900',
-  'bg-opacity-85',
-  '-top-5',
-  '-left-5',
-  'shadow-inner',
-  'shadow-zinc-800',
-]
 
 export default Item
