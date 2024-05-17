@@ -44,6 +44,16 @@ export default function ({ types: t }) {
           t.stringLiteral(`${file}:${lineNumber}`)
         )
 
+        // Find x-jsx attribute
+        let xJsxIndex = path.node.attributes.findIndex(
+          attr => attr?.name && attr?.name?.name === 'x-jsx'
+        )
+
+        // If x-jsx exists, don't add it again
+        if (xJsxIndex !== -1) {
+          return
+        }
+
         // Find x-id attribute
         let xIdIndex = path.node.attributes.findIndex(
           attr => attr?.name && attr?.name?.name === 'x-id'
