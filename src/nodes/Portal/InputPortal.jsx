@@ -2,8 +2,11 @@ import { BeltTarget } from '../../components/BeltPort'
 import Portal from './Portal'
 import { useState, useEffect } from 'react'
 import { useStore } from '@xyflow/react'
+import useJitteryCountdown from '../../hooks/useJitteryCountdown'
+import Flip from './Flip'
 
-const TIMER = 10
+// Milliseconds
+const TIMER = 4_000
 
 /**
  * Renders an input portal component.
@@ -14,7 +17,18 @@ const TIMER = 10
  */
 
 const InputPortal = ({ id, selected }) => {
-  const [count, setCount] = useState(TIMER) // Set initial countdown value
+  // Create a countdown timer
+  const { count } = useJitteryCountdown({ timer: TIMER })
+
+  // Initialize the timestamp to release the items
+  const [toTime, setToTime] = useState(0)
+
+  // Update the timestamp to release the items
+  useEffect(() => {
+    if (count <= 0) {
+      setToTime(new Date().getTime() + 24 * 3600 * 1000 + TIMER)
+    }
+  }, [count])
 
   // Get all edges connected to this portal
   const edges = useStore(s => s.getNodeEdges(id))
@@ -30,14 +44,6 @@ const InputPortal = ({ id, selected }) => {
 
   // Get the handle to removeItem function
   const removeItem = useStore(s => s.removeItem)
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCount(prevCount => (prevCount > 0 ? prevCount - 1 : TIMER))
-    }, 1000) // Countdown every second
-
-    return () => clearInterval(timer) // Cleanup on unmount
-  }, [])
 
   useEffect(() => {
     // If the countdown is not zero, do nothing
@@ -125,11 +131,18 @@ const InputPortal = ({ id, selected }) => {
   return (
     <Portal id={id} selected={selected}>
       <BeltTarget />
-      <div className="inset-0 grid align-center justify-center">
-        <div className="text-center text-xs leading-0 pt-1 -mb-2">
-          ⏱️ {count}
+      <div x-id={id} className="flex justify-center">
+        ♻️
+      </div>
+      <div
+        x-id={id}
+        className="w-full grid grid-cols-2 gap-1 text-[0.6rem] place-items-center">
+        <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-2">
+          all on 🛝{/* <div>📥 {incomingCount}</div> */}
         </div>
-        <div className="text-center">🕳️</div>
+        <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-1">
+          <Flip to={toTime} />
+        </div>
       </div>
     </Portal>
   )

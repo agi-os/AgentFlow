@@ -15,3 +15,21 @@ body,
   outline-color: transparent;
   outline-width: 0.5rem;
 }
+
+.flip-clock {
+  --fcc-flip-duration: 990ms; /* transition duration when flip card */
+  --fcc-spacing: 0.25rem; /* space between unit times and separators */
+  --fcc-digit-block-width: 1rem; /* width of digit card */
+  --fcc-digit-block-height: 1.5rem; /* height of digit card */
+  --fcc-digit-block-radius: 0.25rem; /* border radius of digit card */
+  --fcc-digit-block-spacing: 0.1rem; /* space between blocks in each unit of time */
+  --fcc-digit-font-size: 1rem; /* font size of digit */
+  --fcc-digit-color: hsl(0, 0%, 60%); /* color of digit */
+  --fcc-label-font-size: 0.25rem; /* font size of label */
+  --fcc-label-color: hsl(0, 0%, 30%); /* color of label */
+  --fcc-background: hsl(0, 0%, 9%); /* background of digit card */
+  --fcc-divider-color: hsla(0, 0%, 15%); /* color of divider */
+  --fcc-divider-height: 0.025rem; /* height of divider */
+  --fcc-separator-size: 0.15rem; /* size of colon */
+  --fcc-separator-color: hsl(0, 0%, 25%); /* color of colon */
+}
