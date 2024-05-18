@@ -1,6 +1,10 @@
 import { useStore } from '@xyflow/react'
 import { useCallback } from 'react'
 
+/**
+ * Defines the allowed connections between different types of portals.
+ * @type {Object.<string, string[]>}
+ */
 const ALLOWED_CONNECTIONS = {
   outbox: ['inbox'],
   inbox: ['outbox'],

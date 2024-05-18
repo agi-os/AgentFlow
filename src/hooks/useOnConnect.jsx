@@ -30,41 +30,14 @@ const setConnectionTypeAndAnimation = (connection, sourceType, targetType) => {
   }
 
   if (
-    connection.sourceHandle === 'outbox' &&
-    connection.targetHandle === 'inbox'
+    (connection.sourceHandle === 'outbox' &&
+      connection.targetHandle === 'inbox') ||
+    (connection.sourceHandle === 'inbox' &&
+      connection.targetHandle === 'outbox')
   ) {
     connection.type = 'queue'
     connection.animated = true
   }
-
-  if (
-    connection.sourceHandle === 'inbox' &&
-    connection.targetHandle === 'outbox'
-  ) {
-    connection.type = 'queue'
-    connection.animated = true
-  }
-}
-
-/**
- * Reverses the connection by swapping the source and target properties.
- * If the source type is 'outputPortal' or the source handle is 'inbox', the source and target properties are swapped along with their respective handles.
- * @param {Object} connection - The connection object to be reversed.
- * @param {string} sourceType - The type of the source.
- * @returns {Object} - The reversed connection object.
- */
-const reverseConnection = (connection, sourceType) => {
-  if (sourceType === 'outputPortal' || connection.sourceHandle === 'inbox') {
-    return {
-      ...connection,
-      source: connection.target,
-      sourceHandle: connection.targetHandle,
-      target: connection.source,
-      targetHandle: connection.sourceHandle,
-    }
-  }
-
-  return connection
 }
 
 /**
@@ -103,7 +76,6 @@ const onConnect = ({ connection, lookup, generateId, setEdges }) => {
     const targetType = targetNode?.type
 
     setConnectionTypeAndAnimation(connection, sourceType, targetType)
-    connection = reverseConnection(connection, sourceType)
   }
 
   setEdges(edges => addEdge(connection, edges))
