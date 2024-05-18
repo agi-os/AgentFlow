@@ -45,6 +45,19 @@ const useTickFeature = () => {
     const tickLoop = setInterval(tick, tickLength)
     return () => clearInterval(tickLoop)
   }, [tick, tickLength])
+
+  // Allow changing the tick length
+  useEffect(() => {
+    setState(draft => ({
+      ...draft,
+      setTickLength: newTickLength => {
+        setState(draft => ({
+          ...draft,
+          tickLength: parseInt(newTickLength) || 1000,
+        }))
+      },
+    }))
+  }, [setState])
 }
 
 export default useTickFeature
