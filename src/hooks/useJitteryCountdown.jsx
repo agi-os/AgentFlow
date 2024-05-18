@@ -18,6 +18,14 @@ const useJitteryCountdown = ({
   // Initialize the countdown timer to 0 as it is used as reset downstream
   const [count, setCount] = useState(0)
 
+  // Prepare the "to" value for the Flip component
+  const [to, setTo] = useState(new Date().getTime())
+
+  // Update the "to" value only when count is reset
+  useEffect(() => {
+    if (count === timer) setTo(new Date().getTime() + count)
+  }, [count, timer])
+
   // Initialize the current jitter value internal to this system
   const [currentJitter, setCurrentJitter] = useState(0)
 
@@ -54,7 +62,7 @@ const useJitteryCountdown = ({
   }, [jitterPercentage, jitterUpdateInterval, delay])
 
   // Return the current count and the current jitter value
-  return { count, jitter: currentJitter }
+  return { count, jitter: currentJitter, to }
 }
 
 export default useJitteryCountdown
