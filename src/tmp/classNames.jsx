@@ -14,4 +14,5 @@ export const classNames = [
   'outline-opacity-50',
   'outline-black',
   'outline-4',
+  'select-none',
 ]
