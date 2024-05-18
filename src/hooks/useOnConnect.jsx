@@ -1,5 +1,85 @@
 import { useCallback } from 'react'
-import { addEdge } from '@xyflow/react'
+import { addEdge, useStore } from '@xyflow/react'
+
+/**
+ * Retrieves the source and target nodes of a connection.
+ * @param {Object} connection - The connection object.
+ * @param {Function} lookup - The lookup function to retrieve a node by ID.
+ * @returns {Object} - An object containing the source and target nodes.
+ */
+const getNodes = (connection, lookup) => {
+  return {
+    sourceNode: lookup(connection.source),
+    targetNode: lookup(connection.target),
+  }
+}
+
+/**
+ * Sets the connection type and animation based on the source and target types.
+ * @param {object} connection - The connection object.
+ * @param {string} sourceType - The source type.
+ * @param {string} targetType - The target type.
+ */
+const setConnectionTypeAndAnimation = (connection, sourceType, targetType) => {
+  if (
+    (sourceType === 'inputPortal' && targetType === 'outputPortal') ||
+    (sourceType === 'outputPortal' && targetType === 'inputPortal')
+  ) {
+    connection.type = 'default'
+    connection.animated = true
+  }
+
+  if (
+    connection.sourceHandle === 'outbox' &&
+    connection.targetHandle === 'inbox'
+  ) {
+    connection.type = 'queue'
+    connection.animated = true
+  }
+
+  if (
+    connection.sourceHandle === 'inbox' &&
+    connection.targetHandle === 'outbox'
+  ) {
+    connection.type = 'queue'
+    connection.animated = true
+  }
+}
+
+/**
+ * Reverses the connection by swapping the source and target properties.
+ * If the source type is 'outputPortal' or the source handle is 'inbox', the source and target properties are swapped along with their respective handles.
+ * @param {Object} connection - The connection object to be reversed.
+ * @param {string} sourceType - The type of the source.
+ * @returns {Object} - The reversed connection object.
+ */
+const reverseConnection = (connection, sourceType) => {
+  if (sourceType === 'outputPortal' || connection.sourceHandle === 'inbox') {
+    return {
+      ...connection,
+      source: connection.target,
+      sourceHandle: connection.targetHandle,
+      target: connection.source,
+      targetHandle: connection.sourceHandle,
+    }
+  }
+
+  return connection
+}
+
+/**
+ * Logs a warning if either the source node or the target node is not found.
+ * @param {HTMLElement} sourceNode - The source node.
+ * @param {HTMLElement} targetNode - The target node.
+ */
+const warnIfNodesNotFound = (sourceNode, targetNode) => {
+  if (!sourceNode || !targetNode) {
+    console.warn('source or target node not found', {
+      sourceNode,
+      targetNode,
+    })
+  }
+}
 
 /**
  * Handles the onConnect event when a connection is made between nodes.
@@ -8,76 +88,22 @@ import { addEdge } from '@xyflow/react'
  * @param {Object} params.storeApi - The store API object.
  * @param {Function} params.setEdges - The function to update the edges state.
  */
-const onConnect = ({ connection, storeApi, setEdges }) => {
-  // Get the current store state
-  const store = storeApi.getState()
-
-  // Get the lookup function
-  const { lookup, generateId } = store
-
-  // Set the id to uniquely identify this connection
+const onConnect = ({ connection, lookup, generateId, setEdges }) => {
   connection.id = generateId()
-
-  // Default edge is a default
   connection.type = 'default'
-  connection.animated = true
 
-  // Get the types of the source and target nodes
-  const sourceNode = lookup(connection.source)
-  const targetNode = lookup(connection.target)
+  // Get the source and target nodes
+  const { sourceNode, targetNode } = getNodes(connection, lookup)
 
-  // Sanity check
+  // Log a warning if either the source or target node is not found
+  warnIfNodesNotFound(sourceNode, targetNode)
+
   if (sourceNode && targetNode) {
-    // Get types of the source and target nodes
     const sourceType = sourceNode?.type
     const targetType = targetNode?.type
 
-    // If one of the nodes is a inputPortal and the other is an outputPortal, set the type to 'default'
-    if (
-      (sourceType === 'inputPortal' && targetType === 'outputPortal') ||
-      (sourceType === 'outputPortal' && targetType === 'inputPortal')
-    ) {
-      connection.type = 'default'
-
-      // Reverse the connection if the source is an outputPortal
-      if (sourceType === 'outputPortal') {
-        connection = {
-          ...connection,
-          source: connection.target,
-          sourceHandle: connection.targetHandle,
-          target: connection.source,
-          targetHandle: connection.sourceHandle,
-        }
-      }
-    }
-
-    // If we are connecting an outbox to an inbox, set the type to 'queue'
-    if (
-      connection.sourceHandle === 'outbox' &&
-      connection.targetHandle === 'inbox'
-    ) {
-      connection.type = 'queue'
-    }
-
-    // If we are connecting an inbox to an outbox, set the type to 'queue' and reverse the connection
-    if (
-      connection.sourceHandle === 'inbox' &&
-      connection.targetHandle === 'outbox'
-    ) {
-      connection.type = 'queue'
-      connection = {
-        ...connection,
-        source: connection.target,
-        sourceHandle: connection.targetHandle,
-        target: connection.source,
-        targetHandle: connection.sourceHandle,
-      }
-    }
-  } else {
-    console.warn('source or target node not found', {
-      sourceNode,
-      targetNode,
-    })
+    setConnectionTypeAndAnimation(connection, sourceType, targetType)
+    connection = reverseConnection(connection, sourceType)
   }
 
   setEdges(edges => addEdge(connection, edges))
@@ -89,10 +115,14 @@ const onConnect = ({ connection, storeApi, setEdges }) => {
  * @param {Function} setEdges - The function to update the edges state.
  * @returns {Function} - The memoized onConnect function.
  */
-const useOnConnect = (storeApi, setEdges) => {
+const useOnConnect = setEdges => {
+  // Get lookup and generateId functions from the store
+  const lookup = useStore(state => state.lookup)
+  const generateId = useStore(state => state.generateId)
+
   return useCallback(
-    connection => onConnect({ connection, storeApi, setEdges }),
-    [storeApi, setEdges]
+    connection => onConnect({ connection, lookup, generateId, setEdges }),
+    [lookup, generateId, setEdges]
   )
 }
 
