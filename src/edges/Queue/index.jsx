@@ -6,7 +6,7 @@
  * @returns {JSX.Element} The rendered Queue edge component.
  */
 
-import { useStore, getBezierPath } from '@xyflow/react'
+import { useStore, getBezierPath, useStoreApi } from '@xyflow/react'
 import BaseEdgeComponent from '../BaseEdgeComponent'
 import PathComponent from './PathComponent'
 import { useEffect, useRef, useState } from 'react'
@@ -32,6 +32,27 @@ const Queue = ({
 
   // Length of the path
   const [length, setLength] = useState(0)
+
+  // Get the handle to the setState function
+  const { setState } = useStoreApi()
+
+  // Update the path's length in the state
+  useEffect(() => {
+    setState(draft => {
+      // Find the edge in the store
+      const edge = draft.getEdge(id)
+      if (!edge) return draft
+
+      // Update the length of the path
+      edge.length = length
+
+      // Update the edge in the store
+      return {
+        ...draft,
+        edges: draft.edges.map(e => (e.id === id ? edge : e)),
+      }
+    })
+  }, [length, id, setState])
 
   useEffect(() => {
     // Get the path's d attribute value

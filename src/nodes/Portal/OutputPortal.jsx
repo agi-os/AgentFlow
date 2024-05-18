@@ -72,7 +72,7 @@ const OutputPortal = ({ id, selected }) => {
         const newItem = {
           ...item,
           location: {
-            queue: ((Math.random() * 1000) | 0) / 1000,
+            queue: 0 + Math.random() * 0.1,
             id: outboxEdgeId,
           },
         }

@@ -59,7 +59,7 @@ const InputPortal = ({ id, selected }) => {
 
   // Get items that are close to the portal
   const incomingItems_ = allIncomingItems.filter(
-    item => item?.location?.distance < 0.03
+    item => item?.location?.distance > 0.96
   )
 
   const [incomingItems, setIncomingItems] = useState(incomingItems_)

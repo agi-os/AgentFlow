@@ -23,7 +23,7 @@ const putOnBelt = ({ getLocationItemsSorted, setItem, edges, nodeId }) => {
   // Update the location of the item to the output belt
   const updatedItem = {
     ...nextItem,
-    location: { ...nextItem?.location, id: edgeId, distance: 1 },
+    location: { ...nextItem?.location, id: edgeId, distance: 0 },
   }
 
   // Add the updated item to the store

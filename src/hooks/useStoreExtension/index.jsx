@@ -36,11 +36,15 @@ const useEnhancedStore = ({ initialItems }) => {
       ...draft,
 
       // Tick length in ms, this is base unit of all operations, 16.666ms = 60fps
-      tickLength: 50,
+      tickLength: 32,
 
-      // System wide speed of all belts
-      speed: 1000,
+      // System wide average speed of movement of the belt items
+      speed: 200,
 
+      // System wide random variance of the individual item movements
+      speedJitter: 0.75,
+
+      // Update the speed of all belts
       setSpeed: debounce(speed =>
         store.setState(draft => {
           console.log('Setting speed from', draft.speed, 'to', speed)
