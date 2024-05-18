@@ -1,9 +1,12 @@
 import InViewContent from './InViewContent'
 import { useStore } from '@xyflow/react'
 
-const DivItem = ({ item, transform }) => {
+const DivItem = ({ item, transform = '' }) => {
   // Get the current tick duration with added padding to prevent flickering
   const tickLength = useStore(s => s.tickLength) * 1.05
+
+  // Opacity should be set to 1 only when item gets the transform property set
+  const opacity = transform.length ? 1 : 0
 
   // Render the item
   return (
@@ -12,8 +15,9 @@ const DivItem = ({ item, transform }) => {
       xmlns="http://www.w3.org/1999/xhtml"
       className={classNames.join(' ')}
       style={{
+        opacity,
         transform,
-        transition: `transform ${tickLength}ms linear, opacity ${tickLength}ms linear`,
+        transition: `transform ${tickLength}ms linear, opacity 500ms linear`,
       }}>
       <div x-id={item.id} className="relative -top-0.5">
         {item.emoticon}
@@ -40,6 +44,7 @@ const classNames = [
   'shadow-zinc-800',
   'select-none',
   'transform-gpu',
+  'opacity-0',
 ]
 
 export default DivItem
