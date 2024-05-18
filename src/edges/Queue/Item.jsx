@@ -1,23 +1,21 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import DivItem from './DivItem'
+import { useState } from 'react'
 
 const Item = ({ item, pathRef, pathLength }) => {
-  // Create a ref for the item's div element
-  const divRef = useRef(null)
+  // Prepare the transform value
+  const [transform, setTransform] = useState('')
 
-  // Update the item's location on the path
+  // Update the transform value
   useEffect(() => {
-    // abort if ref is unavailable
-    if (!pathRef.current || !divRef.current) return
-
     // Get the distance of the item on the path
     const distance = 1 - (item.location.distance || item.location.queue || 0)
 
     // Calculate the target point on the path
     const targetPoint = pathRef.current.getPointAtLength(pathLength * distance)
 
-    // Update the item's location
-    divRef.current.style.transform = `translate(${targetPoint.x}px, ${targetPoint.y}px)`
+    // Update the transform value
+    setTransform(`translate3d(${targetPoint.x}px, ${targetPoint.y}px, 0)`)
   }, [item, pathLength, pathRef])
 
   // Render the item
@@ -29,7 +27,7 @@ const Item = ({ item, pathRef, pathLength }) => {
       width="1"
       height="1"
       overflow="visible">
-      <DivItem item={item} divRef={divRef} />
+      <DivItem item={item} transform={transform} />
     </foreignObject>
   )
 }

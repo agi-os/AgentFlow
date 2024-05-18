@@ -58,19 +58,17 @@ const Queue = ({
       />
 
       {length > 0 &&
-        items
-          .reverse()
-          .map(
-            item =>
-              item && (
-                <Item
-                  key={item.id}
-                  item={item}
-                  pathRef={pathRef}
-                  pathLength={length}
-                />
-              )
-          )}
+        items.map(
+          item =>
+            item && (
+              <Item
+                key={item.id}
+                item={item}
+                pathRef={pathRef}
+                pathLength={length}
+              />
+            )
+        )}
     </>
   )
 }

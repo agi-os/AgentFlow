@@ -11,8 +11,8 @@ const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
   // Get the belt speed
   const speed = useStore(s => s.speed)
 
-  // The speed of the dash animation is the square of the speed
-  const dashSpeed = speed * speed
+  // The speed of the dash animation
+  const dashSpeed = 300000 / speed
 
   // Render the base edge component
   return (

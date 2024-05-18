@@ -1,8 +1,14 @@
-import React from 'react'
+import { memo } from 'react'
 import FlipClockCountdown from '@leenguyen/react-flip-clock-countdown'
 import { useStore } from '@xyflow/react'
 
-const Flip = React.memo(({ to }) => {
+/**
+ * Displays a flip clock countdown with an optional zoom-controlled range input.
+ * @param {Object} props - The component props.
+ * @param {number} props.to - The target time for the countdown.
+ * @returns {JSX.Element} The rendered FlipTimer component.
+ */
+const FlipTimer = memo(({ to }) => {
   // Get the current zoom level
   const zoom = useStore(s => s.transform[2])
 
@@ -33,4 +39,5 @@ const Flip = React.memo(({ to }) => {
     </div>
   )
 })
-export default Flip
+
+export default FlipTimer

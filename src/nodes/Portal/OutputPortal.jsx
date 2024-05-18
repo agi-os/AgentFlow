@@ -3,7 +3,7 @@ import { BeltSource } from '../../components/BeltPort'
 import Portal from './Portal'
 import { useStore } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
-import Flip from './Flip'
+import Flip from '../../components/Flip'
 
 // Milliseconds
 const TIMER = 7_000

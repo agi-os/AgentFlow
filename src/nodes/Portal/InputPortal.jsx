@@ -3,10 +3,10 @@ import Portal from './Portal'
 import { useState, useEffect } from 'react'
 import { useStore } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
-import Flip from './Flip'
+import Flip from '../../components/Flip'
 
 // Milliseconds
-const TIMER = 4_000
+const TIMER = 8_000
 
 /**
  * Renders an input portal component.
@@ -62,13 +62,18 @@ const InputPortal = ({ id, selected }) => {
     if (inboxEdges.length === 0) return
 
     // Get all items incoming to our inbox
-    const incomingItems = inboxEdges
+    const allIncomingItems = inboxEdges
       .map(edgeId => getLocationItems(edgeId))
       .flat()
       .filter(Boolean)
 
     // If there are no incoming items, do nothing
-    if (!incomingItems || incomingItems.length === 0) return
+    if (!allIncomingItems || allIncomingItems.length === 0) return
+
+    // Filter the incoming items that are close to the portal
+    const incomingItems = allIncomingItems.filter(
+      item => item.location.distance < 0.03
+    )
 
     // Log the incoming items
     console.log(

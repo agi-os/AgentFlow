@@ -109,11 +109,11 @@ const SpeedRange = () => {
   return (
     <input
       type="range"
-      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 rotate-180"
+      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
       value={speed}
       onChange={e => setSpeed(e.target.value)}
-      min="8"
-      max="60"
+      min="0"
+      max="2000"
       step="1"
     />
   )

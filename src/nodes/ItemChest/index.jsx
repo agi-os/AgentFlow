@@ -10,6 +10,8 @@ import baseClassNames from './classNames'
 import ChestBody from './ChestBody'
 import { useStore } from '@xyflow/react'
 
+import Countdown from './Countdown'
+
 /**
  * Renders a Chest node component.
  * @param {Object} props - The component props.
@@ -38,15 +40,14 @@ const ItemChestNode = ({ id, selected }) => {
       <Title id={id}>📦 Item Chest ({itemCount})</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
-        <ZoomResponsiveWrapper classNames={zoomResponsiveWrapperClassNames}>
+        <ZoomResponsiveWrapper>
           <ChestBody />
         </ZoomResponsiveWrapper>
       </ZoomCompensated>
       <BeltSource />
+      <Countdown />
     </div>
   )
 }
-
-const zoomResponsiveWrapperClassNames = [] //['flex', 'flex-col', 'gap-2', 'p-2']
 
 export default ItemChestNode
