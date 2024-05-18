@@ -40,9 +40,9 @@ export const cornerHandles = corners.flatMap(corner =>
  * Mapping of corner and edge to tailwind class names.
  */
 export const tailwindClassMap = {
-  'topLeft-top': ['top-0', 'left-3', 'h-1', 'w-3'],
+  'topLeft-top': ['top-[0.5px]', 'left-3', 'h-1', 'w-3'],
   'topLeft-left': ['top-3', 'left-[0.5px]', 'w-1', 'h-3'],
-  'topRight-top': ['top-0', 'right-0', 'h-1', 'w-3', 'left-auto'],
+  'topRight-top': ['top-[0.5px]', 'right-0', 'h-1', 'w-3', 'left-auto'],
   'topRight-right': ['top-3', 'right-[0.5px]', 'w-1', 'h-3', 'left-auto'],
   'bottomRight-bottom': [
     'bottom-[0.5px]',
@@ -53,7 +53,7 @@ export const tailwindClassMap = {
     'left-auto',
   ],
   'bottomRight-right': [
-    'bottom-0',
+    'bottom-[0.5px]',
     'right-[0.5px]',
     'w-1',
     'h-3',
@@ -61,5 +61,11 @@ export const tailwindClassMap = {
     'left-auto',
   ],
   'bottomLeft-bottom': ['bottom-[0.5px]', 'left-3', 'h-1', 'w-3', 'top-auto'],
-  'bottomLeft-left': ['bottom-0', 'left-[0.5px]', 'w-1', 'h-3', 'top-auto'],
+  'bottomLeft-left': [
+    'bottom-[0.5px]',
+    'left-[0.5px]',
+    'w-1',
+    'h-3',
+    'top-auto',
+  ],
 }
