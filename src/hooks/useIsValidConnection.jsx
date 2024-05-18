@@ -1,4 +1,12 @@
+import { useStore } from '@xyflow/react'
 import { useCallback } from 'react'
+
+const ALLOWED_CONNECTIONS = {
+  outbox: ['inbox'],
+  inbox: ['outbox'],
+  inputPortal: ['outputPortal'],
+  outputPortal: ['inputPortal'],
+}
 
 /**
  * Checks if a connection is valid based on certain conditions.
@@ -6,73 +14,52 @@ import { useCallback } from 'react'
  * @param {object} storeApi - The store API object.
  * @returns {boolean} - Returns true if the connection is valid, false otherwise.
  */
-const isValidConnection = (connection, storeApi) => {
+const isValidConnection = (connection, lookup) => {
   // Sanity check
-  if (!connection) return false
-  if (!connection.source || !connection.target) return false
-  if (!storeApi) return false
-
-  // Ignore connections to self
-  if (connection.source === connection.target) return false
-
-  // Outbox is only allowed to connect to inbox
-  if (
-    connection.sourceHandle === 'outbox' &&
-    connection.targetHandle !== 'inbox'
-  )
+  if (!connection || !connection.source || !connection.target || !lookup)
     return false
 
-  // Inbox is only allowed to connect to outbox
-  if (
-    connection.sourceHandle === 'inbox' &&
-    connection.targetHandle !== 'outbox'
-  )
-    return false
+  // Extract the values from the connection object
+  const { source, sourceHandle, target, targetHandle } = connection
 
-  // Get the current store state
-  const store = storeApi.getState()
+  // Block all loopback connections
+  if (source === target) return false
 
-  // Get the lookup function
-  const { lookup } = store
+  // When sourceHandle and targetHandle both contain '-' allow the signal
+  if (sourceHandle.includes('-') && targetHandle.includes('-')) return true
 
   // Get the types of the source and target nodes
-  const sourceNode = lookup(connection.source)
-  const targetNode = lookup(connection.target)
+  const sourceNode = lookup(source)
+  const targetNode = lookup(target)
 
   // Get types of the source and target nodes
   const sourceType = sourceNode?.type
   const targetType = targetNode?.type
 
-  // Block all connections between input portals to prevent confusion
-  if (sourceType === 'inputPortal' && targetType === 'inputPortal') return false
+  // Check if the connection is allowed
+  const allowedConnections = ALLOWED_CONNECTIONS[sourceType] || []
+  if (allowedConnections.includes(targetType)) return true
 
-  // Block all connections between output portals to prevent confusion
-  if (sourceType === 'outputPortal' && targetType === 'outputPortal')
-    return false
+  // Check if the handle connection is allowed
+  const allowedHandleConnections = ALLOWED_CONNECTIONS[sourceHandle] || []
+  if (allowedHandleConnections.includes(targetHandle)) return true
 
-  // Prevent portal's output from connecting to another portal's input
-  if (
-    sourceType === 'outputPortal' &&
-    targetType === 'inputPortal' &&
-    (connection.sourceHandle === 'outbox' ||
-      connection.targetHandle === 'inbox')
-  )
-    return false
-
-  // allow all other connections
-  return true
+  // Disallow all other connections
+  return false
 }
-
 /**
  * Custom hook for checking if a connection is valid.
  * @param {Object} storeApi - The store API.
  * @returns {Function} The isValidConnection function.
  */
-const useIsValidConnection = storeApi => {
+const useIsValidConnection = () => {
+  // Get a handle to lookup function in the store
+  const lookup = useStore(s => s.lookup)
+
   // Return the isValidConnection function
   return useCallback(
-    connection => isValidConnection(connection, storeApi),
-    [storeApi]
+    connection => isValidConnection(connection, lookup),
+    [lookup]
   )
 }
 
