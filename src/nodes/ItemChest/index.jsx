@@ -1,5 +1,5 @@
 import Title from '../../components/Title'
-import SignalHandles from '../../signals/handle'
+import SignalHandles from '../../signals/SignalHandles/index'
 import { BeltSource, BeltTarget } from '../../components/BeltPort'
 import ZoomCompensated from '../ZoomCompensated/index'
 import Semaphore from '../../components/Semaphore'

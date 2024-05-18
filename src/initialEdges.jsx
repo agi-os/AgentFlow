@@ -18,15 +18,6 @@ const initialEdges = [
     type: 'queue',
     animated: true,
   },
-  {
-    source: 'arx-cu6',
-    sourceHandle: 'rt',
-    target: 'x7t-r99',
-    targetHandle: 'rb',
-    id: 'nag-lyf',
-    type: 'default',
-    animated: true,
-  },
 ]
 
 export default initialEdges

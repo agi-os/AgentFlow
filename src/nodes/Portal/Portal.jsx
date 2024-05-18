@@ -1,5 +1,5 @@
 import Title from '../../components/Title'
-import SignalHandles from '../../signals/handle'
+import SignalHandles from '../../signals/SignalHandles/index'
 import Semaphore from '../../components/Semaphore'
 import baseClassNames from './classNames'
 
@@ -24,8 +24,8 @@ const Portal = ({ id, selected, children }) => {
   // Render the portal
   return (
     <div x-id={id} className={classNames.join(' ')}>
-      <Title id={id}>🔗 Portal</Title>
       <SignalHandles />
+      <Title id={id}>🔗 Portal</Title>
       <Semaphore />
       {children}
     </div>

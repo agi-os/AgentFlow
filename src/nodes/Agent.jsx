@@ -8,7 +8,7 @@ import Inputs from '../components/Inputs'
 import agentPresets from './presets/agents.json'
 import colorMap from '../constants/colorMap'
 
-import SignalHandles from '../signals/handle'
+import SignalHandles from '../signals/SignalHandles/index'
 import { BeltSource, BeltTarget } from '../components/BeltPort'
 import Semaphore from '../components/Semaphore'
 

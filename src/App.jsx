@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
 import {
   Background,
@@ -6,15 +6,9 @@ import {
   Panel,
   useNodesState,
   useEdgesState,
-  useReactFlow,
-  getIncomers,
-  getOutgoers,
-  getConnectedEdges,
   useStoreApi,
   useStore,
 } from '@xyflow/react'
-
-import getArrangedElements from './getArrangedElements'
 
 import SchemaButton from './tmp/SchemaButton'
 
@@ -26,8 +20,6 @@ import edgeTypes from './edges/edgeTypes'
 import initialNodes from './initialNodes'
 import initialEdges from './initialEdges'
 import useStoreExtension from './hooks/useStoreExtension/index'
-
-// import DevTools from './devtools/Devtools'
 
 import { randomProspects } from './initialNodes'
 
@@ -58,53 +50,9 @@ const App = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // Handle connection events
-  const onConnect = useOnConnect(storeApi, setEdges)
+  const onConnect = useOnConnect(setEdges)
 
   const socket = useContext(SocketContext)
-
-  const onNodesDelete = useCallback(
-    deleted => {
-      setEdges(
-        deleted.reduce((acc, node) => {
-          const incomers = getIncomers(node, nodes, edges)
-          const outgoers = getOutgoers(node, nodes, edges)
-          const connectedEdges = getConnectedEdges([node], edges)
-
-          const remainingEdges = acc.filter(
-            edge => !connectedEdges.includes(edge)
-          )
-
-          const createdEdges = incomers.flatMap(({ id: source }) =>
-            outgoers.map(({ id: target }) => ({
-              id: `${source}->${target}`,
-              source,
-              target,
-            }))
-          )
-
-          return [...remainingEdges, ...createdEdges]
-        }, edges)
-      )
-    },
-    [setEdges, edges, nodes]
-  )
-
-  const { fitView } = useReactFlow()
-
-  // layout the nodes
-  const onLayout = useCallback(
-    direction => {
-      const arranged = getArrangedElements(nodes, edges, { direction })
-
-      setNodes([...arranged.nodes])
-      setEdges([...arranged.edges])
-
-      window.requestAnimationFrame(() => {
-        fitView()
-      })
-    },
-    [nodes, edges, setNodes, setEdges, fitView]
-  )
 
   // load schema
   useEffect(() => {
@@ -121,7 +69,7 @@ const App = () => {
     return () => {
       socket.off('schema loaded')
     }
-  }, [socket, setNodes, onLayout, nodes])
+  }, [socket, setNodes, nodes])
 
   return (
     <>
@@ -131,7 +79,6 @@ const App = () => {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         edges={edges}
-        onNodesDelete={onNodesDelete}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         isValidConnection={isValidConnection}
@@ -150,7 +97,6 @@ const App = () => {
         <Panel position="top-right">
           <SpeedRange />
         </Panel>
-        {/* <DevTools /> */}
       </ReactFlow>
     </>
   )

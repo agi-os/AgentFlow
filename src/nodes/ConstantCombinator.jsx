@@ -2,7 +2,7 @@ import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 
-import SignalHandles from '../signals/handle'
+import SignalHandles from '../signals/SignalHandles/index'
 
 /**
  * Constant combinator is a node that outputs constant values on output signals.

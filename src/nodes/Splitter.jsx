@@ -3,7 +3,7 @@ import Title from '../components/Title'
 import Pre from '../components/Pre'
 import Semaphore from '../components/Semaphore'
 
-import { SignalHandles } from '../signals/handle'
+import SignalHandles from '../signals/SignalHandles/index'
 import { BeltTarget, BeltSource } from '../components/BeltPort'
 
 /**
