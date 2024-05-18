@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 
 import generateId from './generateId'
 import addInitialItemsToStore from './addInitialItemsToStore'
@@ -11,6 +11,8 @@ import updateItemLookup from './updateItemLookup'
 import _getLocationItems from './getLocationItems'
 import getLocationItemsSorted from './getLocationItemsSorted'
 import lookup from './lookup'
+import useTickFeature from './useTickFeature'
+import useBeltDriveFeature from './useBeltDriveFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.
@@ -83,6 +85,8 @@ const useEnhancedStore = ({ initialItems }) => {
       getEdge: id => store.getState().edgeLookup.get(id),
       lookup: id => lookup({ store, id }),
 
+      nodeEdgeLookup: new Map(),
+
       // Get all edges connected to the node
       getNodeEdges: nodeId =>
         store
@@ -90,138 +94,51 @@ const useEnhancedStore = ({ initialItems }) => {
           .edges.filter(
             edge => edge.source === nodeId || edge.target === nodeId
           ),
+
+      // Update the nodeEdgeLookup map
+      updateNodeEdgeLookup: debounce(() => {
+        // Get the existing nodeEdgeLookup map
+        const nodeEdgeLookup = store.getState().nodeEdgeLookup
+
+        store.getState().nodes.forEach(node => {
+          // Prepare the new value for the nodeEdgeLookup value
+          const newValue = store.getState().getNodeEdges(node.id)
+
+          // Abort if the new value is the same as the old value
+          if (
+            JSON.stringify(nodeEdgeLookup.get(node.id)) ===
+            JSON.stringify(newValue)
+          )
+            return
+
+          // Update the nodeEdgeLookup map with the new value
+          nodeEdgeLookup.set(node.id, newValue)
+        })
+
+        // Update the store with the new nodeEdgeLookup map
+        store.setState(draft => ({
+          ...draft,
+          nodeEdgeLookup,
+        }))
+      }),
     }))
   }, [store])
 
-  // Get the tick counter from the store
-  const tickCounter = useStore(s => s.tickCounter)
-
-  // Tick counter will increment every tick, tasks that are not time critical can be run on every nth tick
-  useEffect(() => {
-    if (tickCounter % 50 !== 0) return
-
-    console.log('Tick counter', tickCounter)
-
-    // Get the current edges from the store
-    const draft = store.getState()
-
-    // Generate the list of belt ids
-    const newBeltIds = draft.edges
-      .filter(edge => edge.type === 'queue')
-      .map(edge => edge.id)
-
-    // Compare the new list of belt ids with the old list of belt ids
-    const hasChanged = newBeltIds.some(
-      (id, index) => id !== draft.beltIds[index]
-    )
-
-    // If the list of belt ids has changed, update the store
-    if (hasChanged) {
-      store.setState(draft => ({
-        ...draft,
-        beltIds: newBeltIds,
-      }))
-    }
-  }, [tickCounter, store])
-
-  // Get the tick length and tick function from the store
-  const tickLength = useStore(s => s.tickLength)
-  const tick = useStore(s => s.tick)
-
-  // Start the tick loop
-  useEffect(() => {
-    // Sanity check
-    if (!tick || !tickLength) return
-    const tickLoop = setInterval(tick, tickLength)
-    return () => clearInterval(tickLoop)
-  }, [tick, tickLength])
-
-  // Get the belt drive function from the store
-  const beltDrive = useStore(s => s.beltDrive)
-
   // Extend the store with the tick functionality
-  useEffect(() => {
-    // Sanity check
-    if (!store || !beltDrive) return
-
-    // Extend the store with the tick count if it does not exist
-    store.setState(draft => {
-      return {
-        ...draft,
-        tickCounter: 0,
-      }
-    })
-
-    // Extend the store with the tick function
-    store.setState(draft => {
-      return {
-        ...draft,
-        tick: () => {
-          // Increment the tick counter
-          store.setState(draft => {
-            return {
-              ...draft,
-              tickCounter: draft.tickCounter + 1,
-            }
-          })
-
-          // Call the belt drive function
-          beltDrive()
-        },
-      }
-    })
-  }, [store, beltDrive])
-
-  // Get the speed, belt ids and getLocationItems function from the store
-  const speed = useStore(s => s.speed)
-  const beltIds = useStore(s => s.beltIds)
-  const getLocationItems = useStore(s => s.getLocationItems)
+  useTickFeature()
 
   // Extend the store with the belt drive functionality
+  useBeltDriveFeature()
+
+  // Get the current tick
+  const tickCounter = useStore(s => s.tickCounter)
+  const updateNodeEdgeLookup = useStore(s => s.updateNodeEdgeLookup)
+
+  // Update node edges on every 50th tick
   useEffect(() => {
-    // Sanity check
-    if (!speed) return
-    if (!getLocationItems) return
-
-    console.log('Updating belt drive store', {
-      store,
-      speed,
-      getLocationItems,
-      beltIds,
-    })
-
-    store.setState(draft => {
-      return {
-        ...draft,
-        // Belt drive called every tick to move items on the belt one step
-        beltDrive: () => {
-          // Get the distance change per tick
-          const delta = speed / 100000
-
-          // Get all items on all belts in flat array
-          const items = beltIds.reduce((acc, id) => {
-            const items = getLocationItems(id)
-            return acc.concat(items)
-          }, [])
-
-          // Get all items with a distance more than 0
-          const itemsToMove = items.filter(item => item?.location?.distance > 0)
-
-          // Move all items on all belts which can be moved
-          itemsToMove.forEach(item => {
-            // Update the item's location
-            store.getState().setItem({
-              ...item,
-              location: {
-                ...item?.location,
-                distance: item?.location?.distance - delta,
-              },
-            })
-          })
-        },
-      }
-    })
-  }, [store, speed, getLocationItems, beltIds])
+    if (tickCounter % 50 !== 0) return
+    updateNodeEdgeLookup()
+  }, [tickCounter, updateNodeEdgeLookup])
 
   // Initializing with initial items
   useEffect(() => {

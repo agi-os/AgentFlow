@@ -18,20 +18,13 @@ const TIMER = 8_000
 
 const InputPortal = ({ id, selected }) => {
   // Create a countdown timer
-  const { count } = useJitteryCountdown({ timer: TIMER })
+  const { count, to } = useJitteryCountdown({ timer: TIMER })
 
-  // Initialize the timestamp to release the items
-  const [toTime, setToTime] = useState(0)
+  // Incoming item count
+  const [incomingCount, setIncomingCount] = useState(0)
 
-  // Update the timestamp to release the items
-  useEffect(() => {
-    if (count <= 0) {
-      setToTime(new Date().getTime() + 24 * 3600 * 1000 + TIMER)
-    }
-  }, [count])
-
-  // Get all edges connected to this portal
-  const edges = useStore(s => s.getNodeEdges(id))
+  // Get edges
+  const edges = useStore(s => s.nodeEdgeLookup.get(id) || [])
 
   // Get the handle to getLocationItems function
   const getLocationItems = useStore(s => s.getLocationItems)
@@ -45,35 +38,44 @@ const InputPortal = ({ id, selected }) => {
   // Get the handle to removeItem function
   const removeItem = useStore(s => s.removeItem)
 
+  // Get all the inboxes connected to this portal
+  const inboxEdges_ = edges.filter(edge => edge.targetHandle === 'inbox')
+
+  const [inboxEdges, setInboxEdges] = useState(inboxEdges_)
+
+  useEffect(() => {
+    // Update incoming edges only when the content changed
+    if (JSON.stringify(inboxEdges_) === JSON.stringify(inboxEdges)) return
+    setInboxEdges(inboxEdges_)
+  }, [inboxEdges_, inboxEdges])
+
+  // Get ids of all edges delivering items to our inbox
+  const inboxEdgeIds = inboxEdges.map(edge => edge.id)
+
+  // Get all items incoming to our inbox
+  const allIncomingItems = inboxEdgeIds
+    .map(edgeId => getLocationItems(edgeId))
+    .flat()
+
+  // Get items that are close to the portal
+  const incomingItems_ = allIncomingItems.filter(
+    item => item?.location?.distance < 0.03
+  )
+
+  const [incomingItems, setIncomingItems] = useState(incomingItems_)
+
+  useEffect(() => {
+    // Update incoming items only when the content changed
+    if (JSON.stringify(incomingItems_) === JSON.stringify(incomingItems)) return
+    setIncomingItems(incomingItems_)
+  }, [incomingItems_, incomingItems])
+
   useEffect(() => {
     // If the countdown is not zero, do nothing
     if (count > 0) return
 
-    // If there are no edges connected to this portal, do nothing
-    if (edges.length === 0) return
-
-    // Get ids of all edges delivering items to our inbox
-    const inboxEdges = edges
-      .filter(edge => edge.targetHandle === 'inbox')
-      .map(edge => edge.id)
-      .filter(Boolean)
-
-    // If there are no edges delivering items to our inbox, do nothing
-    if (inboxEdges.length === 0) return
-
-    // Get all items incoming to our inbox
-    const allIncomingItems = inboxEdges
-      .map(edgeId => getLocationItems(edgeId))
-      .flat()
-      .filter(Boolean)
-
-    // If there are no incoming items, do nothing
-    if (!allIncomingItems || allIncomingItems.length === 0) return
-
-    // Filter the incoming items that are close to the portal
-    const incomingItems = allIncomingItems.filter(
-      item => item.location.distance < 0.03
-    )
+    // If there are no incoming items waiting, do nothing
+    if (incomingItems.length === 0) return
 
     // Log the incoming items
     console.log(
@@ -119,19 +121,26 @@ const InputPortal = ({ id, selected }) => {
       })
     })
 
-    // Log the action
-    console.log(
-      `portal 🔗${id} recycled item${
-        incomingItems.length > 1 ? 's' : ''
-      } ♻️${incomingItems.map(item => item.id).join(', ♻️')}`
-    )
-
     // Destroy all incoming items by removing them from store
     incomingItems.forEach(item => {
       // Remove the item from the store
       removeItem(item.id)
     })
-  }, [count, id, edges, getLocationItems, getNode, addItem, removeItem])
+  }, [
+    count,
+    incomingItems,
+    edges,
+    getNode,
+    addItem,
+    removeItem,
+    id,
+    inboxEdges,
+  ])
+
+  useEffect(() => {
+    // Count the incoming items
+    setIncomingCount(incomingItems.length)
+  }, [incomingItems])
 
   return (
     <Portal id={id} selected={selected}>
@@ -143,10 +152,10 @@ const InputPortal = ({ id, selected }) => {
         x-id={id}
         className="w-full grid grid-cols-2 gap-1 text-[0.6rem] place-items-center">
         <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-2">
-          all on 🛝{/* <div>📥 {incomingCount}</div> */}
+          {<div>📥 {incomingCount}</div>}
         </div>
         <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-1">
-          <Flip to={toTime} />
+          <Flip to={to} />
         </div>
       </div>
     </Portal>
