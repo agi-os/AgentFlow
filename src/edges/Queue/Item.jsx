@@ -1,10 +1,14 @@
 import { useEffect } from 'react'
 import DivItem from './DivItem'
 import { useState } from 'react'
+import { useStore } from '@xyflow/react'
 
 const Item = ({ item, pathRef, pathLength }) => {
   // Prepare the transform value
   const [transform, setTransform] = useState('')
+
+  // Get the tick from the store
+  const tickCounter = useStore(s => s.tickCounter)
 
   // Update the transform value
   useEffect(() => {
@@ -16,7 +20,7 @@ const Item = ({ item, pathRef, pathLength }) => {
 
     // Update the transform value
     setTransform(`translate3d(${targetPoint.x}px, ${targetPoint.y}px, 0)`)
-  }, [item, pathLength, pathRef])
+  }, [item, pathLength, pathRef, tickCounter])
 
   // Render the item
   return (

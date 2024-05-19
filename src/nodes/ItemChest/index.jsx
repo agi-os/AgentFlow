@@ -25,6 +25,8 @@ const ItemChestNode = ({ id, selected }) => {
     store => store.itemLocationLookup?.get(id)?.length || 0
   )
 
+  const tickCounter = useStore(s => s.tickCounter)
+
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
     ? ['outline-offset-8', 'outline-2']
@@ -46,6 +48,7 @@ const ItemChestNode = ({ id, selected }) => {
       </ZoomCompensated>
       <BeltSource />
       <Countdown />
+      {tickCounter}
     </div>
   )
 }

@@ -53,7 +53,10 @@ const Countdown = () => {
     // Get the id of the edge on outbox of this node
     const edgeId = edges.find(
       e => e.sourceHandle === 'outbox' && e.source === nodeId
-    ).id
+    )?.id
+
+    // If there is no edge, abort
+    if (!edgeId) return
 
     // Put the item on the belt
     putOnBelt({ itemId: nextItem.id, beltId: edgeId })

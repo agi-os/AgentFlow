@@ -5,8 +5,7 @@
  * Number of calculations each second (Hz of the AgentFlow CPU).
  * @type {number}
  */
-export const TICKS_PER_SECOND = 2
-
+export const TICKS_PER_SECOND = 20
 /**
  * Minimum speed of the belt system.
  * @type {number}

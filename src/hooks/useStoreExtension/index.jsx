@@ -108,12 +108,18 @@ const useEnhancedStore = ({ initialItems }) => {
           // Prepare the new value for the nodeEdgeLookup value
           const newValue = store.getState().getNodeEdges(node.id)
 
+          const stringifiedOldValue = JSON.stringify(
+            nodeEdgeLookup.get(node.id)
+          )
+          const stringifiedNewValue = JSON.stringify(newValue)
+
           // Abort if the new value is the same as the old value
           if (
-            JSON.stringify(nodeEdgeLookup.get(node.id)) ===
-            JSON.stringify(newValue)
-          )
+            stringifiedOldValue === stringifiedNewValue ||
+            stringifiedNewValue === '[]'
+          ) {
             return
+          }
 
           // Update the nodeEdgeLookup map with the new value
           nodeEdgeLookup.set(node.id, newValue)
