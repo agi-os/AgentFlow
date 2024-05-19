@@ -194,6 +194,14 @@ const useBeltDriveFeature = () => {
           return
         }
 
+        // Check if the item is already on the belt
+        if (item.location.id === beltId) {
+          console.warn(
+            `Item with id ${itemId} is already on belt with id ${beltId}`
+          )
+          return
+        }
+
         console.log('putOnBelt', { itemId, beltId })
 
         // Put the item on the start of the belt
