@@ -8,39 +8,6 @@ const useBeltDriveFeature = () => {
   // Get the belt drive function from the store
   const beltDrive = useStore(s => s.beltDrive)
 
-  // Extend the store with the tick functionality
-  useEffect(() => {
-    // Sanity check
-    if (!setState || !beltDrive) return
-
-    // Extend the store with the tick count if it does not exist
-    setState(draft => {
-      return {
-        ...draft,
-        tickCounter: 0,
-      }
-    })
-
-    // Extend the store with the tick function
-    setState(draft => {
-      return {
-        ...draft,
-        tick: () => {
-          // Increment the tick counter
-          setState(draft => {
-            return {
-              ...draft,
-              tickCounter: draft.tickCounter + 1,
-            }
-          })
-
-          // Call the belt drive function
-          beltDrive()
-        },
-      }
-    })
-  }, [setState, beltDrive])
-
   // Get handles to variables and functions from the store
   const speed = useStore(s => s.speed)
   const speedJitter = useStore(s => s.speedJitter)
@@ -209,6 +176,30 @@ const useBeltDriveFeature = () => {
       },
     }))
   }, [getItem, getEdge, setState, setItemLocation, putOnBelt])
+
+  // Get the list of tick callbacks from the store
+  const tickCallbacks = useStore(s => s.tickCallbacks)
+
+  // Add the belt drive function to the tick callback list
+  useEffect(() => {
+    // Sanity check
+    if (!setState || !beltDrive || !tickCallbacks) return
+
+    // If tickCallbacks already has the belt drive function identical to the one we have, return
+    if (
+      tickCallbacks.has('beltDrive') &&
+      tickCallbacks.get('beltDrive') === beltDrive
+    )
+      return
+
+    // Extend the store with the tick function
+    setState(draft => {
+      return {
+        ...draft,
+        tickCallbacks: new Map([...tickCallbacks, ['beltDrive', beltDrive]]),
+      }
+    })
+  }, [setState, beltDrive, tickCallbacks])
 }
 
 export default useBeltDriveFeature
