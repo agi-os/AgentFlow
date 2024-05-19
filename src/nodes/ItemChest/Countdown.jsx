@@ -48,9 +48,9 @@ const Countdown = () => {
     const nextItems = getLocationItemsSorted(nodeId)
 
     // Filter out items that have a location.id already on the belt
-    const nextItemFiltered = nextItems.filter(
-      i => !i.location.id || i.location.id === nodeId
-    )
+    const nextItemFiltered = nextItems
+      .filter(Boolean)
+      .filter(i => !i.location.id || i.location.id === nodeId)
 
     // Get the first item in the queue of items that are not on the belt
     const nextItem = nextItemFiltered[0]

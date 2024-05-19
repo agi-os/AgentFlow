@@ -25,13 +25,17 @@ import useItemFeature from './useItemFeature'
 const useEnhancedStore = ({ initialItems }) => {
   const store = useStoreApi()
 
+  // Get the reference to items initialized in first useEffect
+  const tickLength = useStore(s => s.tickLength)
+  const speed = useStore(s => s.speed)
+
   // Extend the store with custom methods
   useEffect(() => {
     // Sanity check
     if (!store) return
 
-    // If the store has been extended previously, abort
-    if (store.getState().generateId) return
+    // If values are already defined, return
+    if (tickLength && speed) return
 
     // Initialize the store with the new methods
     store.setState(draft => ({
@@ -77,8 +81,10 @@ const useEnhancedStore = ({ initialItems }) => {
       },
 
       itemLocationLookup: new Map(),
-      updateItemLocationLookup: debounce('updateItemLocationLookup', () =>
-        _updateItemLocationLookup(store)
+      updateItemLocationLookup: debounce(
+        'updateItemLocationLookup',
+        () => _updateItemLocationLookup(store),
+        10
       ),
       getLocationItems: locationId => _getLocationItems({ store, locationId }),
       getLocationItemsSorted: locationId =>
@@ -132,7 +138,7 @@ const useEnhancedStore = ({ initialItems }) => {
         }))
       }),
     }))
-  }, [store])
+  }, [store, tickLength, speed])
 
   // Extend the store with the tick functionality
   useTickFeature()

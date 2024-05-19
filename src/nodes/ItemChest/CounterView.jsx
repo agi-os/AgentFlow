@@ -58,7 +58,9 @@ const CounterView = ({ dimensions: { width, height } }) => {
 
   // Convert the items into buckets by type
   const buckets = items?.reduce((acc, item) => {
-    const emoticon = item.emoticon || 'default'
+    if (!item) return acc
+
+    const emoticon = item?.emoticon || 'default'
 
     if (!acc[emoticon]) {
       acc[emoticon] = []
@@ -81,17 +83,20 @@ const CounterView = ({ dimensions: { width, height } }) => {
           height: `${newHeight}px`,
         }}
         className="grid gap-2 p-3 place-items-center">
-        {items.map(item => (
-          <div
-            key={item.id}
-            style={{
-              width: `${cellSize}px`,
-              height: `${cellSize}px`,
-            }}
-            className="rounded-full grid place-items-center shadow-inner shadow-zinc-700">
-            {item.emoticon}
-          </div>
-        ))}
+        {items.map(
+          item =>
+            item && (
+              <div
+                key={item.id}
+                style={{
+                  width: `${cellSize}px`,
+                  height: `${cellSize}px`,
+                }}
+                className="rounded-full grid place-items-center shadow-inner shadow-zinc-700">
+                {item.emoticon}
+              </div>
+            )
+        )}
       </div>
       <div className="absolute bottom-10 flex justify-center gap-2 p-3">
         {buckets &&
