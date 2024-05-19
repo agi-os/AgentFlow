@@ -3,7 +3,7 @@ import { useStore, useStoreApi } from '@xyflow/react'
 
 const useBeltDriveFeature = () => {
   // Get the handle to the store api
-  const { setState } = useStoreApi()
+  const { getState, setState } = useStoreApi()
 
   // Get the belt drive function from the store
   const beltDrive = useStore(s => s.beltDrive)
@@ -49,6 +49,7 @@ const useBeltDriveFeature = () => {
   const setItem = useStore(s => s.setItem)
   const getEdge = useStore(s => s.getEdge)
   const getNode = useStore(s => s.getNode)
+  const getItem = useStore(s => s.getItem)
 
   // Extend the store with the belt drive functionality
   useEffect(() => {
@@ -151,7 +152,57 @@ const useBeltDriveFeature = () => {
         },
       }
     })
-  }, [speed, beltIds, getLocationItems, setState, setItem, getEdge, getNode])
+  }, [
+    speed,
+    beltIds,
+    getLocationItems,
+    setState,
+    setItem,
+    getEdge,
+    getNode,
+    speedJitter,
+  ])
+
+  // Extend the store with the put on belt functionality
+  useEffect(() => {
+    // Sanity check
+    if (!getItem || !setItem || !setState) return
+
+    // If current store state already has the put on belt function, return
+    if (typeof getState().putOnBelt === 'function') return
+
+    // Extend the store with the put on belt function
+    setState(draft => ({
+      ...draft,
+
+      // Put an item on a belt
+      putOnBelt: ({ itemId, beltId }) => {
+        // Sanity check
+        if (!itemId || !beltId) return
+
+        // Get the belt
+        const belt = getEdge(beltId)
+
+        // Sanity check
+        if (!belt) return
+
+        // Get the item
+        const item = getItem(itemId)
+
+        // Sanity check
+        if (!item) return
+
+        // Put the item on the start of the belt
+        setItem({
+          ...item,
+          location: {
+            id: beltId,
+            distance: 0,
+          },
+        })
+      },
+    }))
+  }, [getEdge, getItem, getState, setItem, setState])
 }
 
 export default useBeltDriveFeature

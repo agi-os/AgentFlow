@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import Flip from '../../components/Flip'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
 import { useStore, useNodeId } from '@xyflow/react'
-import putOnBelt from './putOnBelt'
 
 import {
   YELLOW_COUNTDOWN,
@@ -31,18 +30,31 @@ const Countdown = () => {
   })
 
   // Get store data
-  const setItem = useStore(s => s.setItem)
   const getLocationItemsSorted = useStore(s => s.getLocationItemsSorted)
   const edges = useStore(s => s.edges)
+  const putOnBelt = useStore(s => s.putOnBelt)
+
+  // Is output allowed?
+  const outputAllowed = count <= 0 && semaphore !== 'red'
 
   useEffect(() => {
-    if (count > 0) return
+    // If the output is allowed
+    if (!outputAllowed) return
 
-    if (semaphore === 'red') return
+    // Get the next item from queue
+    const nextItem = getLocationItemsSorted(nodeId)[0]
 
-    // Add item on belt when countdown reaches 0
-    putOnBelt({ getLocationItemsSorted, setItem, edges, nodeId })
-  }, [edges, getLocationItemsSorted, nodeId, setItem, count, semaphore])
+    // If there is no next item, abort
+    if (!nextItem) return
+
+    // Get the id of the edge on outbox of this node
+    const edgeId = edges.find(
+      e => e.sourceHandle === 'outbox' && e.source === nodeId
+    ).id
+
+    // Put the item on the belt
+    putOnBelt({ itemId: nextItem.id, beltId: edgeId })
+  }, [outputAllowed, getLocationItemsSorted, nodeId, putOnBelt, edges])
 
   const classNames = [
     ...countdownClassNames,

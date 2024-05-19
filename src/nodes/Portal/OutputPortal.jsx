@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { BeltSource } from '../../components/BeltPort'
 import Portal from './Portal'
 import { useStore, useNodeId } from '@xyflow/react'
@@ -63,13 +63,13 @@ const OutputPortal = ({ id, selected }) => {
     if (!outboxEdgeId) return
 
     // Get all items incoming to our inbox here, to prevent infinite loop from dependency array
-    const locationItems = getLocationItems(id)
+    const locationItems2 = getLocationItems(id)
 
     // If we do not have any items waiting, do nothing
-    if (locationItems.length === 0) return
+    if (locationItems2.length === 0) return
 
     // Work on the received items
-    locationItems.forEach(item => {
+    locationItems2.forEach(item => {
       // Only update the item if its location is not already the outbox
       if (item.location.id !== outboxEdgeId) {
         console.log(

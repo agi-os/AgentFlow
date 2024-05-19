@@ -1,10 +1,18 @@
-const putOnBelt = ({ getLocationItemsSorted, setItem, edges, nodeId }) => {
+const putOnBeltHandler = ({
+  putOnBelt,
+  getLocationItemsSorted,
+  setItem,
+  edges,
+  nodeId,
+}) => {
   // Sanity check
   if (!edges) return
   if (!getLocationItemsSorted) return
   if (!setItem) return
   if (!nodeId) return
+  if (!putOnBelt) return
 
+  // If this node does not have an outbox, return
   if (!edges.find(e => e.source === nodeId && e.sourceHandle === 'outbox')) {
     return
   }
@@ -20,14 +28,8 @@ const putOnBelt = ({ getLocationItemsSorted, setItem, edges, nodeId }) => {
     e => e.sourceHandle === 'outbox' && e.source === nodeId
   ).id
 
-  // Update the location of the item to the output belt
-  const updatedItem = {
-    ...nextItem,
-    location: { ...nextItem?.location, id: edgeId, distance: 0 },
-  }
-
-  // Add the updated item to the store
-  setItem(updatedItem)
+  // Put the item on the belt
+  putOnBelt({ itemId: nextItem.id, beltId: edgeId })
 }
 
-export default putOnBelt
+export default putOnBeltHandler

@@ -8,8 +8,8 @@ import { useStore, useStoreApi } from '@xyflow/react'
 import debounce from './debounce'
 
 import addItem from './addItem'
-import updateItemLocationLookup from './updateItemLocationLookup'
-import updateItemLookup from './updateItemLookup'
+import _updateItemLocationLookup from './updateItemLocationLookup'
+import _updateItemLookup from './updateItemLookup'
 import _getLocationItems from './getLocationItems'
 import getLocationItemsSorted from './getLocationItemsSorted'
 import lookup from './lookup'
@@ -68,7 +68,9 @@ const useEnhancedStore = ({ initialItems }) => {
       setItem: item => addItem({ store, item }),
 
       itemLookup: new Map(),
-      updateItemLookup: debounce(() => updateItemLookup(store)),
+      updateItemLookup: debounce('updateItemLookup', () =>
+        _updateItemLookup(store)
+      ),
       getItem: id => store.getState().itemLookup.get(id),
       removeItem: id => {
         store.getState().itemLookup.delete(id)
@@ -81,7 +83,9 @@ const useEnhancedStore = ({ initialItems }) => {
       },
 
       itemLocationLookup: new Map(),
-      updateItemLocationLookup: debounce(() => updateItemLocationLookup(store)),
+      updateItemLocationLookup: debounce('updateItemLocationLookup', () =>
+        _updateItemLocationLookup(store)
+      ),
       getLocationItems: locationId => _getLocationItems({ store, locationId }),
       getLocationItemsSorted: locationId =>
         getLocationItemsSorted({ store, locationId }),
@@ -102,7 +106,7 @@ const useEnhancedStore = ({ initialItems }) => {
           ),
 
       // Update the nodeEdgeLookup map
-      updateNodeEdgeLookup: debounce(() => {
+      updateNodeEdgeLookup: debounce('updateNodeEdgeLookup', () => {
         // Get the existing nodeEdgeLookup map
         const nodeEdgeLookup = store.getState().nodeEdgeLookup
 
