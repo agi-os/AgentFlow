@@ -1,6 +1,15 @@
 import { BaseEdge, useStore } from '@xyflow/react'
 import { memo } from 'react'
 
+import {
+  MIN_SPEED,
+  MAX_SPEED,
+  MIN_DASH_DELAY,
+  MAX_DASH_DELAY,
+} from '../constants/_main'
+
+import { classNames } from './classNames'
+
 /**
  * Renders a base edge component.
  * @param {Object} props - The component props.
@@ -11,8 +20,12 @@ const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
   // Get the belt speed
   const speed = useStore(s => s.speed)
 
-  // The speed of the dash animation
-  const dashSpeed = 300000 / speed
+  // Calculate the factor for the dash animation delay
+  const factor =
+    Math.log(MAX_DASH_DELAY / MIN_DASH_DELAY) / Math.log(MAX_SPEED / MIN_SPEED)
+
+  // Calculate the dash animation delay to match the movement speed
+  const dashSpeed = MIN_DASH_DELAY * Math.pow(speed / MIN_SPEED, factor)
 
   // Render the base edge component
   return (
@@ -28,12 +41,3 @@ const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
 })
 
 export default BaseEdgeComponent
-
-const classNames = [
-  'react-flow__edge-path',
-  'stroke-[3rem]',
-  'opacity-25',
-  'transition-colors',
-  'duration-500',
-  'ease-in-out',
-]

@@ -1,4 +1,11 @@
-import { useMemo, useEffect } from 'react'
+import {
+  INITIAL_SPEED,
+  MAX_SPEED,
+  MIN_SPEED,
+  TICKS_PER_SECOND,
+} from '../../constants/_main'
+
+import { useEffect } from 'react'
 
 import generateId from './generateId'
 import addInitialItemsToStore from './addInitialItemsToStore'
@@ -36,13 +43,13 @@ const useEnhancedStore = ({ initialItems }) => {
       ...draft,
 
       // Tick length in ms, this is base unit of all operations, 16.666ms = 60fps
-      tickLength: 32,
+      tickLength: (1000 / TICKS_PER_SECOND) | 0,
 
       // System wide average speed of movement of the belt items
-      speed: 200,
+      speed: INITIAL_SPEED | 0,
 
       // System wide random variance of the individual item movements
-      speedJitter: 0.75,
+      speedJitter: 0.25,
 
       // Update the speed of all belts
       setSpeed: debounce(speed =>
