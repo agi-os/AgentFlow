@@ -1,12 +1,15 @@
 import { BeltTarget } from '../../components/BeltPort'
 import Portal from './Portal'
 import { useState, useEffect } from 'react'
-import { useStore } from '@xyflow/react'
+import { useStore, useNodeId } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
 import Flip from '../../components/Flip'
 
-// Milliseconds
-const TIMER = 8_000
+import {
+  YELLOW_COUNTDOWN,
+  GREEN_COUNTDOWN,
+  BLUE_COUNTDOWN,
+} from '../../constants/_mainConfig'
 
 /**
  * Renders an input portal component.
@@ -17,8 +20,22 @@ const TIMER = 8_000
  */
 
 const InputPortal = ({ id, selected }) => {
+  // Get the node id
+  const nodeId = useNodeId()
+
+  // Get the edge semaphore data
+  const semaphore = useStore(s => s.getNode(nodeId)?.data?.semaphore)
+
+  // Get the semaphore delay from configuration
+  const semaphoreDelay =
+    semaphore === 'green'
+      ? GREEN_COUNTDOWN
+      : semaphore === 'yellow'
+      ? YELLOW_COUNTDOWN
+      : BLUE_COUNTDOWN
+
   // Create a countdown timer
-  const { count, to } = useJitteryCountdown({ timer: TIMER })
+  const { count, to } = useJitteryCountdown({ timer: semaphoreDelay * 1000 })
 
   // Incoming item count
   const [incomingCount, setIncomingCount] = useState(0)
@@ -71,6 +88,9 @@ const InputPortal = ({ id, selected }) => {
   }, [incomingItems_, incomingItems])
 
   useEffect(() => {
+    // If semaphore is red, do nothing
+    if (semaphore === 'red') return
+
     // If the countdown is not zero, do nothing
     if (count > 0) return
 
@@ -135,6 +155,7 @@ const InputPortal = ({ id, selected }) => {
     removeItem,
     id,
     inboxEdges,
+    semaphore,
   ])
 
   useEffect(() => {
@@ -155,7 +176,11 @@ const InputPortal = ({ id, selected }) => {
           {<div>📥 {incomingCount}</div>}
         </div>
         <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-1">
-          <Flip to={to} />
+          {semaphore === 'red' ? (
+            <div className="text-xl leading-none">🚦</div>
+          ) : (
+            <Flip to={to} />
+          )}
         </div>
       </div>
     </Portal>

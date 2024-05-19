@@ -23,16 +23,34 @@ export const MAX_SPEED = MIN_SPEED * 60
  * Initial speed of the belt system.
  * @type {number}
  */
-export const INITIAL_SPEED = (MAX_SPEED + MIN_SPEED) / 4
+export const INITIAL_SPEED = (MAX_SPEED + MIN_SPEED) / 5
 
 /**
  * Minimum dash delay speed of the belt system animation.
  * @type {number}
  */
-export const MIN_DASH_DELAY = 8000
+export const MIN_DASH_DELAY = 10000
 
 /**
  * Maximum dash delay speed of the belt system animation.
  * @type {number}
  */
-export const MAX_DASH_DELAY = 150
+export const MAX_DASH_DELAY = 160
+
+/**
+ * Countdown delay in seconds for the default blue semaphore state.
+ * @type {number}
+ */
+export const BLUE_COUNTDOWN = 4
+
+/**
+ * Countdown delay in seconds for the green semaphore state.
+ * @type {number}
+ */
+export const GREEN_COUNTDOWN = 2
+
+/**
+ * Countdown delay in seconds for the yellow semaphore state.
+ * @type {number}
+ */
+export const YELLOW_COUNTDOWN = 7

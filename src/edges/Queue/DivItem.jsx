@@ -1,9 +1,10 @@
+import { classNames } from './classNames'
 import InViewContent from './InViewContent'
 import { useStore } from '@xyflow/react'
 
 const DivItem = ({ item, transform = '' }) => {
-  // Get the current tick duration with added padding to prevent flickering
-  const tickLength = useStore(s => s.tickLength) * 1.05
+  // Get the current tick duration with added padding to prevent sharp direction changes
+  const tickLength = useStore(s => s.tickLength) * 1.2
 
   // Opacity should be set to 1 only when item gets the transform property set
   const opacity = transform.length ? 1 : 0
@@ -26,25 +27,5 @@ const DivItem = ({ item, transform = '' }) => {
     </div>
   )
 }
-
-const classNames = [
-  'grid',
-  'place-items-center',
-  'w-10',
-  'h-10',
-  'relative',
-  'rounded-full',
-  'bg-zinc-900',
-  'border',
-  'border-zinc-900',
-  'bg-opacity-85',
-  '-top-5',
-  '-left-5',
-  'shadow-inner',
-  'shadow-zinc-800',
-  'select-none',
-  'transform-gpu',
-  'opacity-0',
-]
 
 export default DivItem

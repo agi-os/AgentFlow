@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { BeltSource } from '../../components/BeltPort'
 import Portal from './Portal'
-import { useStore } from '@xyflow/react'
+import { useStore, useNodeId } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
+
 import Flip from '../../components/Flip'
 
-// Milliseconds
-const TIMER = 7_000
+import {
+  YELLOW_COUNTDOWN,
+  GREEN_COUNTDOWN,
+  BLUE_COUNTDOWN,
+} from '../../constants/_mainConfig'
 
 /**
  * Renders an output portal component.
@@ -15,21 +19,25 @@ const TIMER = 7_000
  * @returns {JSX.Element} The output portal component.
  */
 const OutputPortal = ({ id, selected }) => {
+  // Get the node id
+  const nodeId = useNodeId()
+
+  // Get the edge semaphore data
+  const semaphore = useStore(s => s.getNode(nodeId)?.data?.semaphore)
+
+  // Get the semaphore delay from configuration
+  const semaphoreDelay =
+    semaphore === 'green'
+      ? GREEN_COUNTDOWN
+      : semaphore === 'yellow'
+      ? YELLOW_COUNTDOWN
+      : BLUE_COUNTDOWN
+
   // Create a countdown timer
-  const { count } = useJitteryCountdown({ timer: TIMER })
+  const { count, to } = useJitteryCountdown({ timer: semaphoreDelay * 1000 })
 
-  // Release happens when counter dips below zero
-  const releaseEnabled = count <= 0
-
-  // Initialize the timestamp to release the items
-  const [toTime, setToTime] = useState(0)
-
-  // Update the timestamp to release the items
-  useEffect(() => {
-    if (count <= 0) {
-      setToTime(new Date().getTime() + 24 * 3600 * 1000 + TIMER)
-    }
-  }, [count])
+  // Release happens when counter dips below zero and semaphore is not red
+  const releaseEnabled = count <= 0 && semaphore !== 'red'
 
   // Get all connections to this portal
   const edges = useStore(s => s.getNodeEdges(id))
@@ -95,7 +103,11 @@ const OutputPortal = ({ id, selected }) => {
           <div>📥 {locationItems.length}</div>
         </div>
         <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-1">
-          <Flip to={toTime} />
+          {semaphore === 'red' ? (
+            <div className="text-xl leading-none">🚦</div>
+          ) : (
+            <Flip to={to} />
+          )}
         </div>
       </div>
       <BeltSource />

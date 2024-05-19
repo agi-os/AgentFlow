@@ -10,6 +10,8 @@ import {
   useStore,
 } from '@xyflow/react'
 
+import { MIN_SPEED, MAX_SPEED } from './constants/_mainConfig'
+
 import SchemaButton from './tmp/SchemaButton'
 
 import { SocketContext } from './Socket'
@@ -101,8 +103,6 @@ const App = () => {
     </>
   )
 }
-
-import { MIN_SPEED, MAX_SPEED } from './constants/_main'
 
 const SpeedRange = () => {
   const speed = useStore(s => s.speed) ?? 37

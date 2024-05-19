@@ -1,9 +1,4 @@
-import {
-  INITIAL_SPEED,
-  MAX_SPEED,
-  MIN_SPEED,
-  TICKS_PER_SECOND,
-} from '../../constants/_main'
+import { INITIAL_SPEED, TICKS_PER_SECOND } from '../../constants/_mainConfig'
 
 import { useEffect } from 'react'
 

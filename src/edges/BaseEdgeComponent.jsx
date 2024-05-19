@@ -6,7 +6,7 @@ import {
   MAX_SPEED,
   MIN_DASH_DELAY,
   MAX_DASH_DELAY,
-} from '../constants/_main'
+} from '../constants/_mainConfig'
 
 import { classNames } from './classNames'
 
