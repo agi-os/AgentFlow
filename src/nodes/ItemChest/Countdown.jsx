@@ -41,6 +41,9 @@ const Countdown = () => {
     // If the output is allowed
     if (!outputAllowed) return
 
+    // Sanity check
+    if (!getLocationItemsSorted || !putOnBelt || !edges || !nodeId) return
+
     // Get the next item from queue
     const nextItem = getLocationItemsSorted(nodeId)[0]
 

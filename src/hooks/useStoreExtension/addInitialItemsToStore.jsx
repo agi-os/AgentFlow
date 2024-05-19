@@ -4,15 +4,15 @@
  * @param {Object} store - The store object.
  * @param {Array} initialItems - The array of initial items to be added.
  */
-const addInitialItemsToStore = ({ store, initialItems }) => {
+const addInitialItemsToStore = ({ setItem, initialItems }) => {
+  // Sanity check
+  if (!setItem || typeof setItem !== 'function') return
+
   // Sanity check
   if (!initialItems || !Array.isArray(initialItems)) return
 
-  // Get a handle to the add item function
-  const addItem = store.getState().addItem
-
   // Loop through the initial items and add them to the store
-  initialItems.forEach(item => addItem(item))
+  initialItems.forEach(item => setItem(item))
 }
 
 export default addInitialItemsToStore

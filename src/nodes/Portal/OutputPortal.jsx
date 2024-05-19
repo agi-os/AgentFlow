@@ -25,6 +25,9 @@ const OutputPortal = ({ id, selected }) => {
   // Get the edge semaphore data
   const semaphore = useStore(s => s.getNode(nodeId)?.data?.semaphore)
 
+  // Get the setItemLocation function
+  const setItemLocation = useStore(s => s.setItemLocation)
+
   // Get the semaphore delay from configuration
   const semaphoreDelay =
     semaphore === 'green'
@@ -36,17 +39,11 @@ const OutputPortal = ({ id, selected }) => {
   // Create a countdown timer
   const { count, to } = useJitteryCountdown({ timer: semaphoreDelay * 1000 })
 
-  // Release happens when counter dips below zero and semaphore is not red
-  const releaseEnabled = count <= 0 && semaphore !== 'red'
-
   // Get all connections to this portal
   const edges = useStore(s => s.getNodeEdges(id))
 
   // Get a handle to the getLocationItems function
   const getLocationItems = useStore(s => s.getLocationItems)
-
-  // Get a handle to the setItem function
-  const setItem = useStore(s => s.setItem)
 
   // Find the edge connected to our outbox
   const outboxEdgeId = edges.find(edge => edge.sourceHandle === 'outbox')?.id
@@ -54,22 +51,23 @@ const OutputPortal = ({ id, selected }) => {
   // Get the count of items waiting in the inbox
   const locationItems = getLocationItems(id)
 
+  // Release happens when conditions are met: countdown below zero, semaphore not red, outbox edge exists, location items exist
+  const releaseEnabled =
+    count <= 0 &&
+    semaphore !== 'red' &&
+    !!outboxEdgeId &&
+    locationItems.length > 0
+
   // Watch any incoming items and move them all to the outbox belt
   useEffect(() => {
     // If release is not enabled, do nothing
     if (!releaseEnabled) return
 
-    // If we have no outbox edge, do nothing
-    if (!outboxEdgeId) return
-
-    // Get all items incoming to our inbox here, to prevent infinite loop from dependency array
-    const locationItems2 = getLocationItems(id)
-
-    // If we do not have any items waiting, do nothing
-    if (locationItems2.length === 0) return
+    // Sanity check
+    if (!id || !setItemLocation) return
 
     // Work on the received items
-    locationItems2.forEach(item => {
+    locationItems.forEach(item => {
       // Only update the item if its location is not already the outbox
       if (item.location.id !== outboxEdgeId) {
         console.log(
@@ -77,19 +75,12 @@ const OutputPortal = ({ id, selected }) => {
         )
 
         // Update the item location to the outbox
-        const newItem = {
-          ...item,
-          location: {
-            queue: 0 + Math.random() * 0.1,
-            id: outboxEdgeId,
-          },
-        }
-
-        // Update the item in the store
-        setItem(newItem)
+        const itemId = item.id
+        const locationId = outboxEdgeId
+        setItemLocation({ itemId, locationId })
       }
     })
-  }, [releaseEnabled, outboxEdgeId, setItem, getLocationItems, id])
+  }, [releaseEnabled, outboxEdgeId, locationItems, setItemLocation, id])
 
   return (
     <Portal id={id} selected={selected}>

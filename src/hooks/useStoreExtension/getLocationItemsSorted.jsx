@@ -11,8 +11,8 @@ const getLocationItemsSorted = ({ store, locationId }) => {
   // Get the items for the location
   const items = getLocationItems({ store, locationId })
 
-  // Sort the items by queue
-  items.sort((a, b) => a.location.queue - b.location.queue)
+  // Sort the items by distance
+  items.sort((a, b) => a.location.distance - b.location.distance)
 
   // Return the sorted items
   return items

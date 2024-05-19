@@ -1,10 +1,10 @@
 /**
- * Adds an item to the store.
+ * Sets an item in the store.
  * @param {Object} options - The options for adding an item.
  * @param {Object} options.store - The store object.
  * @param {Object} options.item - The item to be added.
  */
-const addItem = ({ store, item }) => {
+const setItem = ({ store, item }) => {
   // If we have an id, check if the item already exists
   if (item?.id) {
     // If item exists, remove it
@@ -28,7 +28,7 @@ const addItem = ({ store, item }) => {
     // Set the location to the last itemChest's id with a random queue progression
     item.location = {
       id: lastItemChest?.id,
-      queue: Math.floor(Math.random() * 1000) / 1000,
+      distance: 0 + Math.random() * 0.1,
     }
   }
 
@@ -45,4 +45,4 @@ const addItem = ({ store, item }) => {
   store.getState().updateItemLocationLookup()
 }
 
-export default addItem
+export default setItem

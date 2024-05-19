@@ -49,8 +49,8 @@ const InputPortal = ({ id, selected }) => {
   // Get the handle to getNode function
   const getNode = useStore(s => s.getNode)
 
-  // Get the handle to addItem function
-  const addItem = useStore(s => s.addItem)
+  // Get the handle to setItem function
+  const setItem = useStore(s => s.setItem)
 
   // Get the handle to removeItem function
   const removeItem = useStore(s => s.removeItem)
@@ -103,7 +103,7 @@ const InputPortal = ({ id, selected }) => {
         incomingItems.length > 1 ? 's' : ''
       } 📦${incomingItems.map(item => item.id).join(', 📦')} on belt${
         inboxEdges.length > 1 ? 's' : ''
-      } 🛝${inboxEdges.join(', 🛝')}`
+      } 🛝${inboxEdges.map(e => e.id).join(', 🛝')}`
     )
 
     // Get all nodes that have a connection to this portal
@@ -132,7 +132,7 @@ const InputPortal = ({ id, selected }) => {
         newItem.location.id = outputPortal.id
 
         // Add the new item to the store
-        addItem(newItem)
+        setItem(newItem)
 
         // Log the action
         console.log(
@@ -151,7 +151,7 @@ const InputPortal = ({ id, selected }) => {
     incomingItems,
     edges,
     getNode,
-    addItem,
+    setItem,
     removeItem,
     id,
     inboxEdges,

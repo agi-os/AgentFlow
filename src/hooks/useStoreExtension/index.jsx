@@ -7,7 +7,6 @@ import addInitialItemsToStore from './addInitialItemsToStore'
 import { useStore, useStoreApi } from '@xyflow/react'
 import debounce from './debounce'
 
-import addItem from './addItem'
 import _updateItemLocationLookup from './updateItemLocationLookup'
 import _updateItemLookup from './updateItemLookup'
 import _getLocationItems from './getLocationItems'
@@ -15,6 +14,7 @@ import getLocationItemsSorted from './getLocationItemsSorted'
 import lookup from './lookup'
 import useTickFeature from './useTickFeature'
 import useBeltDriveFeature from './useBeltDriveFeature'
+import useItemFeature from './useItemFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.
@@ -63,15 +63,9 @@ const useEnhancedStore = ({ initialItems }) => {
       // Id of the setInterval loop calling beltDriveTick
       beltDriveIntervalId: null,
 
-      items: [],
-      addItem: item => addItem({ store, item }),
-      setItem: item => addItem({ store, item }),
-
-      itemLookup: new Map(),
       updateItemLookup: debounce('updateItemLookup', () =>
         _updateItemLookup(store)
       ),
-      getItem: id => store.getState().itemLookup.get(id),
       removeItem: id => {
         store.getState().itemLookup.delete(id)
         store.setState(draft => ({
@@ -137,6 +131,9 @@ const useEnhancedStore = ({ initialItems }) => {
   // Extend the store with the tick functionality
   useTickFeature()
 
+  // Extend the store with the item functionality
+  useItemFeature()
+
   // Extend the store with the belt drive functionality
   useBeltDriveFeature()
 
@@ -150,20 +147,21 @@ const useEnhancedStore = ({ initialItems }) => {
     updateNodeEdgeLookup()
   }, [tickCounter, updateNodeEdgeLookup])
 
+  // Get the handle to setItem in the store
+  const setItem = useStore(s => s.setItem)
+  const items = useStore(s => s.items)
+
   // Initializing with initial items
   useEffect(() => {
-    // Get the current items from the store
-    const items = store.getState().items
-
-    // If the store has not yet been initialized abort
-    if (!items) return
+    // Sanity check
+    if (!setItem || !items) return
 
     // If the store.items has more than 0 entries, abort
     if (items?.length > 0) return
 
     // Add initial items as needed
-    addInitialItemsToStore({ store, initialItems })
-  }, [store, initialItems])
+    addInitialItemsToStore({ setItem, initialItems })
+  }, [setItem, initialItems, items])
 
   // Create a subscription to the store updating the window.store object
   useEffect(() => {

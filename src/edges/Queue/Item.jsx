@@ -9,7 +9,7 @@ const Item = ({ item, pathRef, pathLength }) => {
   // Update the transform value
   useEffect(() => {
     // Get the distance of the item on the path
-    const distance = item.location.distance || item.location.queue || 0
+    const distance = item.location.distance || 0
 
     // Calculate the target point on the path
     const targetPoint = pathRef.current.getPointAtLength(pathLength * distance)
