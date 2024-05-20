@@ -5,7 +5,7 @@ import baseClassNames from './classNames'
 import Semaphore from '../components/Semaphore'
 import Item from '../components/Item'
 
-import { BeltSource, BeltTarget } from '../components/BeltPort'
+import { BeltSource } from '../components/BeltPort'
 import Countdown from './ItemChest/Countdown'
 import getRandomData from './getRandomData'
 
@@ -44,26 +44,29 @@ const EntryNode = ({ id, data, selected }) => {
   }
 
   const createNewItem = useCallback(() => {
-    const item = keys.reduce((acc, { key, value }) => {
-      // Skip empty keys
-      if (value === '') return acc
+    setKeys(prevKeys => {
+      const item = prevKeys.reduce((acc, { key, value }) => {
+        // Skip empty keys
+        if (value === '') return acc
 
-      // Assign the value to the key
-      acc[key] = value
+        // Assign the value to the key
+        acc[key] = value
 
-      // Return the accumulator
-      return acc
-    }, {})
+        // Return the accumulator
+        return acc
+      }, {})
 
-    // Assign the item's location to this node
-    item.location = { id, distance: 0 }
+      // Assign the item's location to this node
+      item.location = { id, distance: 0 }
 
-    // Emit the item
-    setItem(item)
+      // Emit the item
+      setItem(item)
 
-    // Update the form with new random data
-    setKeys(getRandomData(keys[0]?.value))
-  }, [keys, id, setItem])
+      // Update the form with new random data
+      const newKeys = getRandomData(prevKeys[0]?.value)
+      return newKeys
+    })
+  }, [id, setItem])
 
   const classNames = [...baseClassNames, ...selectedClassNames, 'max-w-xl']
 
@@ -81,7 +84,6 @@ const EntryNode = ({ id, data, selected }) => {
     <div x-id={id} className={classNames.join(' ')}>
       <Title id={id}>✏️ Manual Entry</Title>
       <Semaphore />
-      <BeltTarget />
       <div className="grid grid-cols-6 gap-4 p-2 pt-4">
         {keys &&
           keys?.map((keyObj, index) => [
@@ -144,12 +146,11 @@ const EntryNode = ({ id, data, selected }) => {
                     'text-xs',
                     'nodrag',
                   ].join(' ')}>
-                  Delete key
+                  Delete
                 </button>
               )}
             </div>,
           ])}
-
         <button
           onClick={addKey}
           className={[
@@ -163,14 +164,13 @@ const EntryNode = ({ id, data, selected }) => {
             'text-xs',
             'nodrag',
           ].join(' ')}>
-          Add key
+          Add more values
         </button>
-
         <button
           onClick={createNewItem}
           className={[
             'transition-colors',
-            'col-span-6',
+            'col-span-4',
             'w-full',
             'p-2',
             'text-sm',
@@ -180,15 +180,34 @@ const EntryNode = ({ id, data, selected }) => {
             'text-white',
             'nodrag',
           ].join(' ')}>
-          Add new {keys[0]?.value} {keys[1]?.value} to output
+          Add the new {keys[0]?.value} {keys[1]?.value} to output
+        </button>{' '}
+        <button
+          onClick={() => {
+            for (let i = 0; i < 5; i++) {
+              setKeys(getRandomData(keys[0]?.value))
+              createNewItem()
+            }
+          }}
+          className={[
+            'transition-colors',
+            'col-span-2',
+            'w-full',
+            'p-2',
+            'text-sm',
+            'rounded-full',
+            'bg-green-900',
+            'hover:bg-green-800',
+            'text-white',
+            'nodrag',
+          ].join(' ')}>
+          random {keys[0]?.value} {keys[1]?.value} × 10
         </button>
       </div>
 
-      {locationItems.length > 0 && (
-        <div className="p-2">
-          📍 {locationItems.length} items waiting at this location
-        </div>
-      )}
+      <div className="p-2">
+        📍 {locationItems.length} items waiting at this location
+      </div>
 
       {locationItems.length > 0 && (
         <div className="flex flex-wrap justify-evenly w-full gap-3 px-2 py-3">
