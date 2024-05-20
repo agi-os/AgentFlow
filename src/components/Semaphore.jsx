@@ -1,13 +1,28 @@
-import { useState } from 'react'
-import { useReactFlow, useNodeId, useKeyPress } from '@xyflow/react'
+import { useStore, useReactFlow, useNodeId, useKeyPress } from '@xyflow/react'
 
 /**
  * Renders a simple red-yellow-green semaphore with clickable toggles.
  * @param {Object} props - The component props.
  * @param {string} props.initial - The initial color of the semaphore.
+ * @param {string[]} props.colors - The colors of the semaphore.
+ * @param {string[]} props.classNames - The class names of the semaphore.
  * @returns {JSX.Element} The rendered semaphore.
  */
-const Semaphore = ({ initial }) => {
+const Semaphore = ({
+  initial = 'blue',
+  colors = ['red', 'yellow', 'green', 'blue'],
+  classNames = [
+    'absolute',
+    'right-2',
+    'top-2',
+    'w-3',
+    'h-3',
+    'rounded-full',
+    'cursor-pointer',
+    'transition',
+    'hover:scale-125',
+  ],
+}) => {
   // Get a handle on the react flow instance
   const reactFlow = useReactFlow()
 
@@ -16,47 +31,49 @@ const Semaphore = ({ initial }) => {
   // Get the id of the node
   const id = useNodeId()
 
-  // Define the colors
-  const colors = ['red', 'yellow', 'green', 'blue']
-
-  // Get the initial color state if provided
-  const initialColor = colors.indexOf(initial)
-
-  // Define the color state
-  const [color, setColor] = useState(initialColor >= 0 ? initialColor : 3)
+  // Get the current color on the node
+  const color = useStore(store => store.getNode(id)?.data?.semaphore) || initial
 
   // Define the color classes
-  const colorClasses = [
-    'bg-red-500',
-    'bg-yellow-500',
-    'bg-green-500',
-    'bg-blue-600 opacity-50',
-  ]
+  const colorClasses = {
+    red: 'bg-red-500',
+    yellow: 'bg-yellow-500',
+    green: 'bg-green-500',
+    blue: 'bg-blue-600 opacity-50',
+  }
 
   // Combine all classes into a single string
   const allClasses = [...classNames, colorClasses[color]].join(' ')
 
   // Toggle the color on click
   const toggleColor = () => {
-    setColor((color + 1) % colors.length)
+    // Get the index of the current color
+    const colorIndex = colors.indexOf(color)
 
-    // Get the node from the store.
-    const node = reactFlow.getNode(id)
+    // Get the next color in the list
+    const nextColor = colors[(colorIndex + 1) % colors.length]
 
-    // Update the node with the new color.
-    const newNode = {
-      ...node,
-      data: {
-        ...node.data,
-        semaphore: colors[(color + 1) % colors.length],
-      },
-    }
+    // Get all the nodes
+    const nodes = reactFlow.getNodes()
+
+    // Update this node with the new color.
+    const updatedNodes = nodes.map(node => {
+      if (node.id === id) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            semaphore: nextColor,
+          },
+        }
+      }
+
+      // Return other nodes unchanged.
+      return node
+    })
 
     // Update the node in the store.
-    reactFlow.setNodes([
-      ...reactFlow.getNodes().filter(n => n.id !== id),
-      newNode,
-    ])
+    reactFlow.setNodes(updatedNodes)
   }
 
   // Render the semaphore
@@ -70,17 +87,5 @@ const Semaphore = ({ initial }) => {
     </div>
   )
 }
-
-const classNames = [
-  'absolute',
-  'right-2',
-  'top-2',
-  'w-3',
-  'h-3',
-  'rounded-full',
-  'cursor-pointer',
-  'transition',
-  'hover:scale-125',
-]
 
 export default Semaphore
