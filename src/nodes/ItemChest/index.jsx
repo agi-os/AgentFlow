@@ -48,7 +48,6 @@ const ItemChestNode = ({ id, selected }) => {
       </ZoomCompensated>
       <BeltSource />
       <Countdown />
-      {tickCounter}
     </div>
   )
 }
