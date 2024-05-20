@@ -3,8 +3,13 @@ import { useReactFlow, useStore } from '@xyflow/react'
 import Title from '../components/Title'
 import baseClassNames from './classNames'
 import Semaphore from '../components/Semaphore'
+import Item from '../components/Item'
 
-const EntryNode = ({ id, selected }) => {
+import { BeltSource, BeltTarget } from '../components/BeltPort'
+import Countdown from './ItemChest/Countdown'
+import getRandomData from './getRandomData'
+
+const EntryNode = ({ id, data, selected }) => {
   // Prepare the class names based on the selected state
   const selectedClassNames = selected
     ? ['outline-offset-8', 'outline-2']
@@ -18,10 +23,7 @@ const EntryNode = ({ id, selected }) => {
 
   const { updateNodeData } = useReactFlow()
 
-  const [keys, setKeys] = useState([
-    { key: 'type', value: 'user' },
-    { key: 'name', value: 'Joe' },
-  ])
+  const [keys, setKeys] = useState(() => getRandomData())
 
   const addKey = () => {
     setKeys([...keys, { key: '', value: '' }])
@@ -58,54 +60,100 @@ const EntryNode = ({ id, selected }) => {
 
     // Emit the item
     setItem(item)
-  }, [id, keys, setItem])
 
-  const classNames = [...baseClassNames, ...selectedClassNames]
+    // Update the form with new random data
+    setKeys(getRandomData(keys[0]?.value))
+  }, [keys, id, setItem])
+
+  const classNames = [...baseClassNames, ...selectedClassNames, 'max-w-xl']
+
+  // Get the id of the outbox edge
+  const outboxEdgeId = useStore(
+    store =>
+      store.getNodeEdges('lcc-r8a').find(edge => edge.sourceHandle === 'outbox')
+        ?.id
+  )
+
+  // Get reference to the store function setItemLocation
+  const setItemLocation = useStore(state => state.setItemLocation)
 
   return (
     <div x-id={id} className={classNames.join(' ')}>
       <Title id={id}>✏️ Manual Entry</Title>
       <Semaphore />
+      <BeltTarget />
       <div className="grid grid-cols-6 gap-4 p-2 pt-4">
-        {keys.map((keyObj, index) => [
-          <Input
-            key={index + 'key'}
-            onChange={e => updateKey(index, e.target.value, keyObj.value)}
-            text={keyObj.key}
-            className="col-span-2"
-            disabled={index === 0 && keyObj.key === 'type'}
-          />,
-          <Input
-            key={index + 'value'}
-            onChange={e => updateKey(index, keyObj.key, e.target.value)}
-            text={keyObj.value}
-            className="col-span-3"
-          />,
-          <div
-            key={index + 'buttons'}
-            className="col-span-1 align-middle flex items-center">
-            {index !== 0 && (
-              <button
-                key={index + 'delete'}
-                onClick={() => deleteKey(index)}
-                className={[
-                  'p-2',
-                  'rounded-full',
-                  'bg-red-900',
-                  'hover:bg-red-800',
-                  'text-white',
-                  'text-xs',
-                  'nodrag',
-                ].join(' ')}>
-                Delete key
-              </button>
-            )}
-          </div>,
-        ])}
+        {keys &&
+          keys?.map((keyObj, index) => [
+            <Input
+              key={index + 'key'}
+              onChange={e => updateKey(index, e.target.value, keyObj.value)}
+              text={keyObj.key || ''}
+              className="col-span-2"
+              disabled={keyObj.key === 'type' || keyObj.key === 'emoji'}
+            />,
+            <Input
+              key={index + 'value'}
+              onChange={e => updateKey(index, keyObj.key, e.target.value)}
+              text={keyObj.value || ''}
+              className="col-span-3"
+            />,
+            <div
+              key={index + 'buttons'}
+              className="col-span-1 align-middle flex items-center">
+              {keyObj.key === 'type' ? (
+                <button
+                  key={index + 'delete'}
+                  onClick={() => setKeys(getRandomData(keys[0]?.value))}
+                  className={[
+                    'p-2',
+                    'rounded-full',
+                    'bg-zinc-700',
+                    'hover:bg-zinc-600',
+                    'text-white',
+                    'text-xs',
+                    'nodrag',
+                  ].join(' ')}>
+                  🔮
+                </button>
+              ) : keyObj.key === 'emoji' ? (
+                <button
+                  key={index + 'delete'}
+                  onClick={() => setKeys(getRandomData())}
+                  className={[
+                    'p-2',
+                    'rounded-full',
+                    'bg-zinc-700',
+                    'hover:bg-zinc-600',
+                    'text-white',
+                    'text-xs',
+                    'nodrag',
+                  ].join(' ')}>
+                  🧙‍♂️
+                </button>
+              ) : (
+                <button
+                  key={index + 'delete'}
+                  onClick={() => deleteKey(index)}
+                  className={[
+                    'p-2',
+                    'rounded-full',
+                    'bg-red-900',
+                    'hover:bg-red-800',
+                    'text-white',
+                    'text-xs',
+                    'nodrag',
+                  ].join(' ')}>
+                  Delete key
+                </button>
+              )}
+            </div>,
+          ])}
 
         <button
           onClick={addKey}
           className={[
+            'transition-colors',
             'col-span-5',
             'p-2',
             'rounded-full',
@@ -121,6 +169,7 @@ const EntryNode = ({ id, selected }) => {
         <button
           onClick={createNewItem}
           className={[
+            'transition-colors',
             'col-span-6',
             'w-full',
             'p-2',
@@ -131,21 +180,35 @@ const EntryNode = ({ id, selected }) => {
             'text-white',
             'nodrag',
           ].join(' ')}>
-          Create new item
+          Add new {keys[0]?.value} {keys[1]?.value} to output
         </button>
       </div>
-      <div className="p-2">
-        {locationItems.length > 0 && (
-          <div>
-            items ready to be released
-            {locationItems.map((item, index) => (
-              <div key={index} className="p-2">
-                {index}: {JSON.stringify(item)}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+      {locationItems.length > 0 && (
+        <div className="p-2">
+          📍 {locationItems.length} items waiting at this location
+        </div>
+      )}
+
+      {locationItems.length > 0 && (
+        <div className="flex flex-wrap justify-evenly w-full gap-3 px-2 py-3">
+          {locationItems.map(item => (
+            <div
+              key={item.id}
+              onClick={() => {
+                const itemId = item.id
+                const locationId = outboxEdgeId
+                setItemLocation({ itemId, locationId })
+              }}
+              className="cursor-pointer">
+              <Item itemId={item.id} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {data?.semaphore !== 'red' && <Countdown />}
+      <BeltSource />
     </div>
   )
 }
