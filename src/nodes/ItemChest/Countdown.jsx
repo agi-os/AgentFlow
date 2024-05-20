@@ -61,16 +61,16 @@ const Countdown = () => {
 
     // If there is no next item, set the semaphore to red and abort
     if (!nextItem) {
-      console.log({ nextItem, nodes, setNodes, nodeId })
-      if (nodes && setNodes && nodeId) {
-        // Set the semaphore to red where node.id === nodeId
-        const currentNodes = nodes.map(n =>
-          n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
-        )
+      // TODO: DEBUG
+      // if (nodes && setNodes && nodeId) {
+      //   // Set the semaphore to red where node.id === nodeId
+      //   const currentNodes = nodes.map(n =>
+      //     n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
+      //   )
 
-        // Set the updated nodes
-        setNodes(currentNodes)
-      }
+      //   // Set the updated nodes
+      //   setNodes(currentNodes)
+      // }
 
       // Abort
       return
@@ -83,16 +83,16 @@ const Countdown = () => {
 
     // If there is no edge, set the semaphore to red and abort
     if (!edgeId) {
-      console.log({ nextItem, nodes, setNodes, nodeId })
-      if (nodes && setNodes && nodeId) {
-        // Set the semaphore to red where node.id === nodeId
-        const currentNodes = nodes.map(n =>
-          n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
-        )
+      // TODO: DEBUG
+      // if (nodes && setNodes && nodeId) {
+      //   // Set the semaphore to red where node.id === nodeId
+      //   const currentNodes = nodes.map(n =>
+      //     n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
+      //   )
 
-        // Set the updated nodes
-        setNodes(currentNodes)
-      }
+      //   // Set the updated nodes
+      //   setNodes(currentNodes)
+      // }
 
       // Abort
       return

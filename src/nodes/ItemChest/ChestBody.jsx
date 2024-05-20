@@ -25,7 +25,7 @@ const ChestBody = ({ dimensions }) => {
   // Calculate the zoom factor based on the width and height and item count, to make items fill the chest viewport
   const itemCount = itemIds.length
   const availableSpace = width * height
-  const itemSpace = 170 * 170 * itemCount
+  const itemSpace = 190 * 190 * itemCount
   const zoomFactor = Math.sqrt(availableSpace / itemSpace)
 
   // Prepare the zoom level to make items fit the chest viewport

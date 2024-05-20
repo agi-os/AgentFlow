@@ -79,7 +79,6 @@ const multiToolkitSchema = {
   },
 }
 
-let nodeId = 10
 export const buttonsOld = [
   // { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
   // { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
@@ -89,25 +88,25 @@ export const buttonsOld = [
   { schema: multiToolkitSchema, label: 'Multi toolkit schema' },
   // { schema: {}, label: ' Emit', secondParam: 'emit' },
   { schema: {}, label: 'Actions', secondParam: 'actions' },
-]
-
-export const buttons = [
-  { schema: {}, label: '⛓️ Input Portal', secondParam: 'inputPortal' },
-  { schema: {}, label: '⛓️ Output Portal', secondParam: 'outputPortal' },
-  { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
   { schema: {}, label: '🗄️ Chest', secondParam: 'chest' },
-  { schema: {}, label: 'Splitter', secondParam: 'splitter' },
 
   {
     schema: {},
     label: '🔢 Constant Combinator',
     secondParam: 'constantCombinator',
   },
+  { schema: {}, label: 'Splitter', secondParam: 'splitter' },
   { schema: schema, label: '🧬 Schema' },
-  { schema: {}, label: '✏️ Entry', secondParam: 'entry' },
-  { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },
   { schema: {}, label: '🛠️ Tool', secondParam: 'tool' },
   { schema: {}, label: '🏗️ Workbench', secondParam: 'workbench' },
   { schema: {}, label: '🐣 Action', secondParam: 'action' },
   { schema: {}, label: '🛎️ Result', secondParam: 'result' },
+]
+
+export const buttons = [
+  { schema: {}, label: '✏️ Entry', secondParam: 'entry' },
+  { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
+  { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },
+  { schema: {}, label: '🔗 InPortal', secondParam: 'inputPortal' },
+  { schema: {}, label: '🔗 OutPortal', secondParam: 'outputPortal' },
 ]

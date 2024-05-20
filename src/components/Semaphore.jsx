@@ -3,9 +3,11 @@ import { useReactFlow, useNodeId, useKeyPress } from '@xyflow/react'
 
 /**
  * Renders a simple red-yellow-green semaphore with clickable toggles.
+ * @param {Object} props - The component props.
+ * @param {string} props.initial - The initial color of the semaphore.
  * @returns {JSX.Element} The rendered semaphore.
  */
-const Semaphore = () => {
+const Semaphore = ({ initial }) => {
   // Get a handle on the react flow instance
   const reactFlow = useReactFlow()
 
@@ -17,8 +19,11 @@ const Semaphore = () => {
   // Define the colors
   const colors = ['red', 'yellow', 'green', 'blue']
 
+  // Get the initial color state if provided
+  const initialColor = colors.indexOf(initial)
+
   // Define the color state
-  const [color, setColor] = useState(3)
+  const [color, setColor] = useState(initialColor >= 0 ? initialColor : 3)
 
   // Define the color classes
   const colorClasses = [
