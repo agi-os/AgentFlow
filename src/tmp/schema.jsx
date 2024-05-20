@@ -81,13 +81,13 @@ const multiToolkitSchema = {
 
 let nodeId = 10
 export const buttonsOld = [
-  { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
-  { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
+  // { schema: {}, label: '🗒️ Notepad', secondParam: 'notepad' },
+  // { schema: {}, label: '🗃️ Archive', secondParam: 'archive' },
   { schema: searchSchema, label: '🧬 Search schema' },
   { schema: multiSearchSchema, label: 'Multi search schema' },
   { schema: toolkitSchema, label: 'Toolkit schema' },
   { schema: multiToolkitSchema, label: 'Multi toolkit schema' },
-  { schema: {}, label: ' Emit', secondParam: 'emit' },
+  // { schema: {}, label: ' Emit', secondParam: 'emit' },
   { schema: {}, label: 'Actions', secondParam: 'actions' },
 ]
 
