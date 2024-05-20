@@ -115,9 +115,9 @@ const InputPortal = ({ id, selected }) => {
       .map(nodeId => getNode(nodeId))
 
     // Find all output portals connected to this portal
-    const outputPortals = connectedNodes.filter(
-      node => node.type === 'outputPortal'
-    )
+    const outputPortals = connectedNodes
+      .filter(Boolean)
+      .filter(node => node.type === 'outputPortal')
 
     // Send clones of all incoming items to all output portals
     outputPortals.forEach(outputPortal => {

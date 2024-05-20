@@ -1,7 +1,7 @@
 import Title from '../../components/Title'
 import SignalHandles from '../../signals/SignalHandles/index'
 import Semaphore from '../../components/Semaphore'
-import baseClassNames from './classNames'
+import baseClassNames from '../classNames'
 
 /**
  * Portal node is a pair of nodes that are connected by a portal, instantly transporting items between them.
@@ -19,7 +19,7 @@ const Portal = ({ id, selected, children }) => {
     : ['outline-offset-0', 'outline-0']
 
   // Combine the base and selected class names
-  const classNames = [...baseClassNames, ...selectedClassNames]
+  const classNames = [...baseClassNames, ...selectedClassNames, 'w-32', 'h-24']
 
   // Render the portal
   return (

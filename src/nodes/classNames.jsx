@@ -3,8 +3,6 @@ const baseClassNames = [
   'rounded',
   'text-zinc-300',
   'font-thin',
-  'w-32',
-  'h-24',
   'border-[1px]',
   'overflow-hidden',
   'overflow-visible',

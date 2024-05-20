@@ -68,6 +68,9 @@ const OutputPortal = ({ id, selected }) => {
 
     // Work on the received items
     locationItems.forEach(item => {
+      // Sanity check
+      if (!item) return
+
       // Only update the item if its location is not already the outbox
       if (item.location.id !== outboxEdgeId) {
         console.log(
