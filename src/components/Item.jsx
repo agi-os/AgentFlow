@@ -1,5 +1,6 @@
 import React from 'react'
 import { useStore } from '@xyflow/react'
+import ItemDetails from './ItemDetails'
 
 const Item = React.memo(({ itemId }) => {
   const item = useStore(state => state.getItem(itemId))
@@ -18,24 +19,7 @@ const Item = React.memo(({ itemId }) => {
         }}>
         🗑️
       </div>
-      <div className={innerClassNames.join(' ')}>
-        {Object.keys(item)
-          .filter(key => !['type', 'emoji', 'id', 'location'].includes(key))
-          .map(key => [
-            <div x-id={itemId} key={key}>
-              {key}
-            </div>,
-            <div x-id={itemId} key={key + 'v'}>
-              {typeof item[key] === 'object' && item[key] !== null
-                ? Object.entries(item[key]).map(([subKey, subValue]) => (
-                    <div key={subKey}>
-                      {subKey}: {subValue}
-                    </div>
-                  ))
-                : item[key]}
-            </div>,
-          ])}
-      </div>
+      <ItemDetails item={item} itemId={itemId} />
     </div>
   )
 })
@@ -72,16 +56,6 @@ const classNames = [
   'hover:shadow-zinc-500',
 ]
 
-const innerClassNames = [
-  'border-t',
-  'border-zinc-700',
-  'grid',
-  'grid-cols-[1fr,2fr]',
-  'gap-1',
-  'p-2',
-  'text-[0.5rem]',
-]
-
 const typeClassNames = [
   'absolute',
   'top-[0.05rem]',
@@ -89,8 +63,8 @@ const typeClassNames = [
   'p-1',
   'text-[0.6rem]',
   'uppercase',
-  'tracking-[0.21rem]',
-  'text-zinc-400',
+  'tracking-[0.22rem]',
+  'text-zinc-500',
   'font-extralight',
 ]
 
