@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useStore, useStoreApi } from '@xyflow/react'
 import _setItem from './setItem'
+import useItemLocationFeature from './useItemLocationFeature'
 
 /**
  * Custom hook for adding item functionality to the store.
@@ -9,9 +10,9 @@ const useItemFeature = () => {
   // Get the handle to the store api
   const store = useStoreApi()
 
-  // Get handles to baseline item stores
-  const items = useStore(s => s.items)
-  const itemLookup = useStore(s => s.itemLookup)
+  // Get information about the items in the store
+  const itemsIsArray = useStore(s => Array.isArray(s.items))
+  const itemLookupIsMap = useStore(s => s.itemLookup instanceof Map)
 
   // Add the baseline item stores
   useEffect(() => {
@@ -19,13 +20,7 @@ const useItemFeature = () => {
     if (!store) return
 
     // If the store is already set up with items, abort
-    if (
-      items &&
-      Array.isArray(items) &&
-      itemLookup &&
-      itemLookup instanceof Map
-    )
-      return
+    if (itemsIsArray && itemLookupIsMap) return
 
     // Update the store with the new item functionality
     store.setState(draft => ({
@@ -33,7 +28,7 @@ const useItemFeature = () => {
       items: [],
       itemLookup: new Map(),
     }))
-  }, [store, items, itemLookup])
+  }, [store, itemsIsArray, itemLookupIsMap])
 
   // Get the handle to the item setter
   const setItem = useStore(s => s.setItem)
@@ -145,6 +140,9 @@ const useItemFeature = () => {
       },
     }))
   }, [getItem, store, setItem, setItemDistance])
+
+  // Add extra item features
+  useItemLocationFeature()
 }
 
 export default useItemFeature

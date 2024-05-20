@@ -7,7 +7,6 @@ import addInitialItemsToStore from './addInitialItemsToStore'
 import { useStore, useStoreApi } from '@xyflow/react'
 import debounce from './debounce'
 
-import _updateItemLocationLookup from './updateItemLocationLookup'
 import _updateItemLookup from './updateItemLookup'
 import _getLocationItems from './getLocationItems'
 import getLocationItemsSorted from './getLocationItemsSorted'
@@ -67,9 +66,8 @@ const useEnhancedStore = ({ initialItems }) => {
       // Id of the setInterval loop calling beltDriveTick
       beltDriveIntervalId: null,
 
-      updateItemLookup: debounce('updateItemLookup', () =>
-        _updateItemLookup(store)
-      ),
+      updateItemLookup: () => _updateItemLookup(store),
+
       removeItem: id => {
         store.getState().itemLookup.delete(id)
         store.setState(draft => ({
@@ -80,12 +78,6 @@ const useEnhancedStore = ({ initialItems }) => {
         store.getState().updateItemLocationLookup()
       },
 
-      itemLocationLookup: new Map(),
-      updateItemLocationLookup: debounce(
-        'updateItemLocationLookup',
-        () => _updateItemLocationLookup(store),
-        10
-      ),
       getLocationItems: locationId => _getLocationItems({ store, locationId }),
       getLocationItemsSorted: locationId =>
         getLocationItemsSorted({ store, locationId }),

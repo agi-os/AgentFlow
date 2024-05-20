@@ -169,8 +169,6 @@ const useBeltDriveFeature = () => {
           return
         }
 
-        console.log('putOnBelt', { itemId, beltId })
-
         // Put the item on the start of the belt
         setItemLocation({ itemId, locationId: beltId })
       },
