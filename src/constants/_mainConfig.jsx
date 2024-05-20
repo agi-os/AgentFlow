@@ -5,12 +5,12 @@
  * Number of calculations each second (Hz of the AgentFlow CPU).
  * @type {number}
  */
-export const TICKS_PER_SECOND = 20
+export const TICKS_PER_SECOND = 4
 /**
  * Minimum speed of the belt system.
  * @type {number}
  */
-export const MIN_SPEED = 5
+export const MIN_SPEED = 50
 
 /**
  * Maximum speed of the belt system.
@@ -28,13 +28,13 @@ export const INITIAL_SPEED = (MAX_SPEED + MIN_SPEED) / 5
  * Minimum dash delay speed of the belt system animation.
  * @type {number}
  */
-export const MIN_DASH_DELAY = 10000
+export const MIN_DASH_DELAY = 5000
 
 /**
  * Maximum dash delay speed of the belt system animation.
  * @type {number}
  */
-export const MAX_DASH_DELAY = 160
+export const MAX_DASH_DELAY = 90
 
 /**
  * Countdown delay in seconds for the default blue semaphore state.
