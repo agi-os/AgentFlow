@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-let professionalWorkEmoticons = [
+let professionalWorkEmojis = [
   '💼',
   '📊',
   '📈',
@@ -22,9 +22,9 @@ const randomArrayElement = array => {
   return element
 }
 
-const types = Array.from({ length: professionalWorkEmoticons.length }, () => ({
+const types = Array.from({ length: professionalWorkEmojis.length }, () => ({
   name: faker.person.jobType(),
-  emoticon: randomArrayElement(professionalWorkEmoticons),
+  emoji: randomArrayElement(professionalWorkEmojis),
 }))
 
 const createRandomProspect = () => {
@@ -36,7 +36,7 @@ const createRandomProspect = () => {
     name: faker.person.fullName(),
     title: faker.person.jobTitle(),
     type: type.name,
-    emoticon: type.emoticon,
+    emoji: type.emoji,
     phone: faker.helpers.fromRegExp(/[0-9]{3}-[0-9]{3}-[0-9]{4}/),
   }
 
@@ -95,38 +95,47 @@ export const randomProspects = generateRandomAmountOfItems({
 })
 
 const initialNodes = [
+  // {
+  //   id: 'wau-wrm',
+  //   position: {
+  //     x: 123,
+  //     y: 285,
+  //   },
+  //   type: 'itemChest',
+  //   data: {
+  //     label: 'Node wau-wrm',
+  //   },
+  // },
+  // {
+  //   id: 'x7t-r99',
+  //   position: {
+  //     x: 418,
+  //     y: 48,
+  //   },
+  //   type: 'outputPortal',
+  //   data: {
+  //     label: 'Node x7t-r99',
+  //   },
+  // },
+  // {
+  //   id: 'arx-cu6',
+  //   position: {
+  //     x: 423,
+  //     y: 864,
+  //   },
+  //   type: 'inputPortal',
+  //   data: {
+  //     label: 'Node arx-cu6',
+  //   },
+  // },
+
   {
-    id: 'wau-wrm',
+    id: 'lcc-r8a',
     position: {
-      x: 123,
-      y: 285,
+      x: 64,
+      y: 224,
     },
-    type: 'itemChest',
-    data: {
-      label: 'Node wau-wrm',
-    },
-  },
-  {
-    id: 'x7t-r99',
-    position: {
-      x: 418,
-      y: 48,
-    },
-    type: 'outputPortal',
-    data: {
-      label: 'Node x7t-r99',
-    },
-  },
-  {
-    id: 'arx-cu6',
-    position: {
-      x: 423,
-      y: 864,
-    },
-    type: 'inputPortal',
-    data: {
-      label: 'Node arx-cu6',
-    },
+    type: 'entry',
   },
 ]
 

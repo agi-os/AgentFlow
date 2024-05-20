@@ -60,13 +60,13 @@ const CounterView = ({ dimensions: { width, height } }) => {
   const buckets = items?.reduce((acc, item) => {
     if (!item) return acc
 
-    const emoticon = item?.emoticon || 'default'
+    const emoji = item?.emoji || 'default'
 
-    if (!acc[emoticon]) {
-      acc[emoticon] = []
+    if (!acc[emoji]) {
+      acc[emoji] = []
     }
 
-    acc[emoticon].push(item)
+    acc[emoji].push(item)
 
     return acc
   }, {})
@@ -93,7 +93,7 @@ const CounterView = ({ dimensions: { width, height } }) => {
                   height: `${cellSize}px`,
                 }}
                 className="rounded-full grid place-items-center shadow-inner shadow-zinc-700">
-                {item.emoticon}
+                {item.emoji}
               </div>
             )
         )}
@@ -105,7 +105,7 @@ const CounterView = ({ dimensions: { width, height } }) => {
               key={type}
               className="w-14 h-14 border border-zinc-600 outline outline-zinc-800 outline-4 rounded-full grid place-items-center bg-zinc-800">
               <div className="text-xs leading-none -mb-4">{items.length}</div>
-              <div>{items?.[0]?.emoticon}</div>
+              <div>{items?.[0]?.emoji}</div>
             </div>
           ))}
       </div>

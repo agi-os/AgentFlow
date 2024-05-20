@@ -16,6 +16,10 @@ const Countdown = () => {
   // Get the edge semaphore data
   const semaphore = useStore(s => s.getNode(nodeId)?.data?.semaphore)
 
+  // Get setNodes and getNodes from the store
+  const setNodes = useStore(s => s.setNodes)
+  const nodes = useStore(s => s.nodes)
+
   // Get the semaphore delay from configuration
   const semaphoreDelay =
     semaphore === 'green'
@@ -55,20 +59,56 @@ const Countdown = () => {
     // Get the first item in the queue of items that are not on the belt
     const nextItem = nextItemFiltered[0]
 
-    // If there is no next item, abort
-    if (!nextItem) return
+    // If there is no next item, set the semaphore to red and abort
+    if (!nextItem) {
+      console.log({ nextItem, nodes, setNodes, nodeId })
+      if (nodes && setNodes && nodeId) {
+        // Set the semaphore to red where node.id === nodeId
+        const currentNodes = nodes.map(n =>
+          n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
+        )
+
+        // Set the updated nodes
+        setNodes(currentNodes)
+      }
+
+      // Abort
+      return
+    }
 
     // Get the id of the edge on outbox of this node
     const edgeId = edges.find(
       e => e.sourceHandle === 'outbox' && e.source === nodeId
     )?.id
 
-    // If there is no edge, abort
-    if (!edgeId) return
+    // If there is no edge, set the semaphore to red and abort
+    if (!edgeId) {
+      console.log({ nextItem, nodes, setNodes, nodeId })
+      if (nodes && setNodes && nodeId) {
+        // Set the semaphore to red where node.id === nodeId
+        const currentNodes = nodes.map(n =>
+          n.id === nodeId ? { ...n, data: { ...n.data, semaphore: 'red' } } : n
+        )
+
+        // Set the updated nodes
+        setNodes(currentNodes)
+      }
+
+      // Abort
+      return
+    }
 
     // Put the item on the belt
     putOnBelt({ itemId: nextItem.id, beltId: edgeId })
-  }, [outputAllowed, getLocationItemsSorted, nodeId, putOnBelt, edges])
+  }, [
+    outputAllowed,
+    getLocationItemsSorted,
+    nodeId,
+    putOnBelt,
+    edges,
+    nodes,
+    setNodes,
+  ])
 
   const classNames = [
     ...countdownClassNames,

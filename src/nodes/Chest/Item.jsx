@@ -21,7 +21,7 @@ const Item = ({ item }) => {
   )
 }
 
-const hiddenKeys = ['id', 'name', 'type', 'emoticon']
+const hiddenKeys = ['id', 'name', 'type', 'emoji']
 
 const itemClassNames = ['p-1', 'gap-0', 'rounded', 'border', 'border-zinc-700']
 

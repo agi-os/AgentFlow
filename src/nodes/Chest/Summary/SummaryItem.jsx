@@ -10,10 +10,10 @@
 const SummaryItem = ({ type, items }) => (
   <div
     className={classNames.join(' ')}
-    title={`${items.length}× ${type} ${items[0].emoticon}`}>
+    title={`${items.length}× ${type} ${items[0].emoji}`}>
     <span>{items.length}×</span>
     <div>
-      {items[0].emoticon}
+      {items[0].emoji}
       {type.slice(0, 2).toUpperCase()}
     </div>
   </div>

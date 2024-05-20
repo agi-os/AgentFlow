@@ -7,7 +7,7 @@
  */
 const TypeTitle = ({ type, items }) => (
   <div className={classNames.join(' ')}>
-    {items[0].emoticon} {type} ({items.length})
+    {items[0].emoji} {type} ({items.length})
   </div>
 )
 

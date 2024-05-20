@@ -17,13 +17,13 @@ const FirstItemOnBelt = ({ edgeId }) => {
   // Get the item from the store
   const item = store.items.find(i => i.id === itemId)
 
-  // Get the emoticon from the item
-  const emoticon = item?.emoticon
+  // Get the emoji from the item
+  const emoji = item?.emoji
 
   // Render the first item on the belt
   return (
     <div x-id={itemId} className={beltItemClassNames.join(' ')}>
-      {emoticon}
+      {emoji}
     </div>
   )
 }

@@ -69,6 +69,7 @@ const useEnhancedStore = ({ initialItems }) => {
       updateItemLookup: () => _updateItemLookup(store),
 
       removeItem: id => {
+        store.getState().setItemLocation({ itemId: id, locationId: null })
         store.getState().itemLookup.delete(id)
         store.setState(draft => ({
           ...draft,

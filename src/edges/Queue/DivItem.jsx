@@ -21,7 +21,7 @@ const DivItem = ({ item, transform = '' }) => {
         transition: `transform ${tickLength}ms linear, opacity 500ms linear`,
       }}>
       <div x-id={item.id} className="relative -top-0.5">
-        {item.emoticon}
+        {item.emoji}
       </div>
       <InViewContent item={item} />
     </div>
