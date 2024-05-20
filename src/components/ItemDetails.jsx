@@ -1,4 +1,5 @@
 import { useStore } from '@xyflow/react'
+import { useState } from 'react'
 
 /**
  * Renders the details of an item.
@@ -8,6 +9,7 @@ import { useStore } from '@xyflow/react'
  * @param {string[]} props.classNames - The class names for the item details.
  * @returns {JSX.Element} The rendered item details component.
  */
+
 const ItemDetails = ({
   itemId,
   classNames = [
@@ -20,18 +22,43 @@ const ItemDetails = ({
     'text-[0.5rem]',
   ],
 }) => {
-  // Get current zoom level
   const zoom = useStore(store => store.transform[2])
-
-  // Get the item details
   const item = useStore(store => store.getItem(itemId))
-
-  // Adjust the font size based on the zoom level
   const fontSize = zoom > 10 ? 100 - 3 * zoom + '%' : ''
+  const [copySuccess, setCopySuccess] = useState('')
 
-  // Return the item details
-  return (
-    <div x-id={itemId} className={classNames.join(' ')} style={{ fontSize }}>
+  const copyToClipboard = async e => {
+    // Stop propagation to prevent the item from being selected.
+    e.stopPropagation()
+    setCopySuccess('')
+
+    // Copy without the id and location properties.
+    const copy = { ...item }
+    delete copy.id
+    delete copy.location
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(copy))
+      setCopySuccess('Copied!')
+    } catch (err) {
+      setCopySuccess('Failed to copy text')
+    }
+  }
+
+  return [
+    <button
+      className="absolute transition-all 
+      right-0 top-0 p-2 text-[0.5rem] opacity-10 hover:opacity-100"
+      key="copy"
+      title="Copy to clipboard"
+      onClick={copyToClipboard}>
+      {copySuccess || '🗐'}
+    </button>,
+    <div
+      key="main"
+      x-id={itemId}
+      className={classNames.join(' ')}
+      style={{ fontSize }}>
       {Object.keys(item)
         .filter(key => !['type', 'emoji', 'id', 'location'].includes(key))
         .map(key => [
@@ -48,8 +75,8 @@ const ItemDetails = ({
               : item[key]}
           </div>,
         ])}
-    </div>
-  )
+    </div>,
+  ]
 }
 
 export default ItemDetails

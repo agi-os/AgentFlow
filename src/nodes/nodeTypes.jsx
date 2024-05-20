@@ -1,5 +1,5 @@
 import Schema from './Schema/index'
-import Entry from './Entry'
+import Entry from './Entry/index'
 import Result from './Result'
 import Action from './Action'
 import Actions from './Actions'

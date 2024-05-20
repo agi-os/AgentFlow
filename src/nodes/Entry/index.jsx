@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react'
 import { useReactFlow, useStore } from '@xyflow/react'
-import Title from '../components/Title'
-import baseClassNames from './classNames'
-import Semaphore from '../components/Semaphore'
-import Item from '../components/Item'
+import Title from '../../components/Title'
+import baseClassNames from '../classNames'
+import Semaphore from '../../components/Semaphore'
+import Item from '../../components/Item'
 
-import { BeltSource } from '../components/BeltPort'
-import Countdown from './ItemChest/Countdown'
-import getRandomData from './getRandomData'
+import { BeltSource } from '../../components/BeltPort'
+import Countdown from '../ItemChest/Countdown'
+import getRandomData from '../getRandomData'
 
 const EntryNode = ({ id, data, selected }) => {
   // Prepare the class names based on the selected state
@@ -79,6 +79,20 @@ const EntryNode = ({ id, data, selected }) => {
 
   // Get reference to the store function setItemLocation
   const setItemLocation = useStore(state => state.setItemLocation)
+
+  const pasteFromClipboard = async () => {
+    try {
+      const clipboardContent = await navigator.clipboard.readText()
+      const item = JSON.parse(clipboardContent)
+
+      // Assign the item's location to this node
+      item.location = { id, distance: 0 }
+
+      setItem(item)
+    } catch (error) {
+      console.error('Failed to paste item from clipboard:', error)
+    }
+  }
 
   return (
     <div x-id={id} className={classNames.join(' ')}>
@@ -205,8 +219,9 @@ const EntryNode = ({ id, data, selected }) => {
         </button>
       </div>
 
-      <div className="p-2">
-        📍 {locationItems.length} items waiting at this location
+      <div className="p-2 flex justify-between items-center">
+        <div>📍 {locationItems.length} items waiting at this location</div>
+        <button onClick={pasteFromClipboard}>📋 Paste from clipboard</button>
       </div>
 
       {locationItems.length > 0 && (
