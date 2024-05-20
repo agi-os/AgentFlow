@@ -3,6 +3,7 @@ import { BeltSource } from '../../components/BeltPort'
 import Portal from './Portal'
 import { useStore, useNodeId } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
+import Title from '../../components/Title'
 
 import Flip from '../../components/Flip'
 
@@ -87,6 +88,7 @@ const OutputPortal = ({ id, selected }) => {
 
   return (
     <Portal id={id} selected={selected}>
+      <Title id={id}>🔗 OutPortal</Title>{' '}
       <div x-id={id} className="flex justify-center">
         ⛲
       </div>

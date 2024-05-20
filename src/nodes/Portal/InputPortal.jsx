@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useStore, useNodeId } from '@xyflow/react'
 import useJitteryCountdown from '../../hooks/useJitteryCountdown'
 import Flip from '../../components/Flip'
+import Title from '../../components/Title'
 
 import {
   YELLOW_COUNTDOWN,
@@ -165,7 +166,7 @@ const InputPortal = ({ id, selected }) => {
 
   return (
     <Portal id={id} selected={selected}>
-      <BeltTarget />
+      <Title id={id}>🔗 InPortal</Title> <BeltTarget />
       <div x-id={id} className="flex justify-center">
         ♻️
       </div>
