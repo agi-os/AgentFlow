@@ -1,10 +1,10 @@
-# Agent Flow Handbook
+# AgentFlow Handbook
 
 There are many ways to achieve a result, but some ways can be used to make the
 process easier.
 
 Here is a collection of tips and tricks that can help you get the most out of
-Agent Flow.
+AgentFlow.
 
 # Item 📦
 
@@ -17,7 +17,7 @@ You can put whatever you want in the 📦 and move it around.
 You can move a 4 digit pin code in it, the full archive of all Wikipedia
 articles, or a shipping container full of chocolate bars.
 
-This is how postal services work and is the basic idea of an item in Agent Flow.
+This is how postal services work and is the basic idea of an item in AgentFlow.
 You put it in, and we move it around.
 
 ## Item types 📚
@@ -75,7 +75,7 @@ Note how delivering the perfect amount of information at the right time is as
 important (or even more) as the agent's capability to process it, for the
 expected quality of the result and the speed of achieving it.
 
-This is a core tenet of Agent Flow's design philosophy: Garbage in, garbage out.
+This is a core tenet of AgentFlow's design philosophy: Garbage in, garbage out.
 Make it obvious when something is wrong & make it easy to fix it.
 
 ## Item schema 🧬
@@ -90,7 +90,7 @@ agent to do its job, deciding if you have a fever or not.
 
 ## Summary
 
-- Items are the building blocks of Agent Flow.
+- Items are the building blocks of AgentFlow.
 - They are moved around by belts.
 - They encapsulate information.
 - Inboxes and outboxes are the entry and exit points for items.
@@ -100,7 +100,7 @@ agent to do its job, deciding if you have a fever or not.
 
 # Agent 🧑‍💼
 
-Agents are the core building blocks of Agent Flow doing the actual work of
+Agents are the core building blocks of AgentFlow doing the actual work of
 converting items of one type into items of another type.
 
 ## Agent 101
@@ -157,7 +157,7 @@ Garbage in, garbage out.
 
 # Belts 🏗️
 
-Belts are the backbone of Agent Flow. They are used to move items from one place
+Belts are the backbone of AgentFlow. They are used to move items from one place
 to another, and they serve as the core observability tool in the system,
 empowering you to see what is happening in your system from a bird's eye view,
 allowing you to make informed decisions based on the data you see.
@@ -189,7 +189,7 @@ inbox port.
 
 ## Belt speed 🏎️
 
-All belts in Agent Flow have the same speed. This means that they are easy to
+All belts in AgentFlow have the same speed. This means that they are easy to
 compare and predict. You can always rely on the fact that a belt will move an
 item from one end to the other in a fixed amount of time.
 
@@ -237,7 +237,7 @@ and if it is in the right place at the right time.
 
 # Signal wires 🧵
 
-All corners of Agent Flow entities have little "feet" or "bumpers" on them.
+All corners of AgentFlow entities have little "feet" or "bumpers" on them.
 
 These are the signal ports, and they are used to connect entities to each other
 with signal wires.
@@ -494,7 +494,7 @@ You can always make belts move faster (and speed up the vending machine
 refills), but you can not make signal wires (or metal pipes) more observable.
 
 Learning from your lived experience of seeing the actual behavior of the flows
-as the data is moving around in your system is a core part of the Agent Flow's
+as the data is moving around in your system is a core part of the AgentFlow's
 design philosophy.
 
 Observability of the flow allows you to understand the data moving through the
@@ -532,7 +532,7 @@ by some % of drift in the time it takes to get to the next execution. This will
 cause it to fire only slightly off the target time, but far enough to be noticed
 when observed closely.
 
-This was done on purpose as a core design choice of the Agent Flow engine, it is
+This was done on purpose as a core design choice of the AgentFlow engine, it is
 a feature, not a bug.
 
 All internal clocks are made to be slightly jittery, making portals slowly drift
