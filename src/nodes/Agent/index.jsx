@@ -1,16 +1,15 @@
 import { useCallback } from 'react'
-import { Position, Handle, useReactFlow } from '@xyflow/react'
-import classNames from '../constants/classNames'
-import Title from '../components/Title'
-import Pre from '../components/Pre'
-import Inputs from '../components/Inputs'
+import { useReactFlow } from '@xyflow/react'
+import baseClassNames from '../../constants/classNames'
+import Title from '../../components/Title'
+import Inputs from '../../components/Inputs'
 
-import agentPresets from './presets/agents.json'
-import colorMap from '../constants/colorMap'
+import agentPresets from '../presets/agents.json'
 
-import SignalHandles from '../signals/SignalHandles/index'
-import { BeltSource, BeltTarget } from '../components/BeltPort'
-import Semaphore from '../components/Semaphore'
+import SignalHandles from '../../signals/SignalHandles/index'
+import { BeltSource, BeltTarget } from '../../components/BeltPort'
+import Semaphore from '../../components/Semaphore'
+import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 
 /**
  * Agent identity node
@@ -19,6 +18,14 @@ import Semaphore from '../components/Semaphore'
  * @returns {JSX.Element}
  */
 const AgentNode = ({ id, data }) => {
+  const { updateNodeData } = useReactFlow()
+
+  // Prepare the class names based on the selected state
+  const selectedClassNames = useSelectedClassNames()
+
+  // Combine the base and selected class names
+  const classNames = [...baseClassNames, ...selectedClassNames]
+
   const handleSelect = event => {
     const agent = agentPresets.find(
       agent => agent.agentName === event.target.value
@@ -32,8 +39,6 @@ const AgentNode = ({ id, data }) => {
       tools: agent.tools,
     })
   }
-
-  const { updateNodeData } = useReactFlow()
 
   const onChange = useCallback(
     ({ value, field }) => {
@@ -50,8 +55,8 @@ const AgentNode = ({ id, data }) => {
 
   return (
     <div className={classNames.join(' ')}>
-      {/* <Handle type="target" position={Position.Top} /> */}
       <Title id={id}>🧑‍💼 {data?.agentName ? data?.agentName : 'Agent'}</Title>
+      <BeltTarget />
       <SignalHandles />
       <Semaphore />
       <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
@@ -67,14 +72,8 @@ const AgentNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
-      {/* <Pre>{data}</Pre>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className={colorMap.agent}
-      /> */}
+
       <BeltSource />
-      <BeltTarget />
     </div>
   )
 }

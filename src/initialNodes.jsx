@@ -89,53 +89,81 @@ const generateRandomAmountOfItems = ({ min = 3, max = 16 }) => {
   return Array.from({ length: amount }, createRandomProspect)
 }
 
-export const randomProspects = generateRandomAmountOfItems({
-  min: 300,
-  max: 500,
-})
+export const randomProspects = (num = 400) =>
+  generateRandomAmountOfItems({
+    min: num / 2,
+    max: num * 2,
+  })
 
 const initialNodes = [
-  // {
-  //   id: 'wau-wrm',
-  //   position: {
-  //     x: 123,
-  //     y: 285,
-  //   },
-  //   type: 'itemChest',
-  //   data: {
-  //     label: 'Node wau-wrm',
-  //   },
-  // },
-  // {
-  //   id: 'x7t-r99',
-  //   position: {
-  //     x: 418,
-  //     y: 48,
-  //   },
-  //   type: 'outputPortal',
-  //   data: {
-  //     label: 'Node x7t-r99',
-  //   },
-  // },
-  // {
-  //   id: 'arx-cu6',
-  //   position: {
-  //     x: 423,
-  //     y: 864,
-  //   },
-  //   type: 'inputPortal',
-  //   data: {
-  //     label: 'Node arx-cu6',
-  //   },
-  // },
-
+  {
+    id: 'r8h-gbb',
+    position: {
+      x: 361.95404414359746,
+      y: 858.9926711689403,
+    },
+    type: 'schema',
+    data: {
+      label: 'Node r8h-gbb',
+    },
+    measured: {
+      width: 128,
+      height: 144,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: 'u6d-qlc',
+    position: {
+      x: 491.1391899832662,
+      y: 1071.4420998329292,
+    },
+    type: 'itemChest',
+    data: {
+      label: 'Node u6d-qlc',
+    },
+    measured: {
+      width: 384,
+      height: 384,
+    },
+    selected: false,
+    dragging: false,
+  },
+  {
+    id: 'tuk-8em',
+    position: {
+      x: 556.8059145332834,
+      y: 552.658253693883,
+    },
+    type: 'agent',
+    data: {
+      label: 'Node tuk-8em',
+      agentName: 'Webster',
+      agentDescription:
+        'An expert web search agent. The best at finding information on the web.',
+      tools: 'search_internet',
+    },
+    measured: {
+      width: 256,
+      height: 339,
+    },
+    selected: false,
+    dragging: false,
+  },
   {
     id: 'lcc-r8a',
     position: {
-      x: 64,
-      y: 224,
+      x: 395.94192806577723,
+      y: -129.16195999692277,
     },
     type: 'entry',
+    measured: {
+      width: 576,
+      height: 522,
+    },
+    selected: false,
+    dragging: false,
   },
 ]
 

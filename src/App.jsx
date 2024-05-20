@@ -28,7 +28,7 @@ import { randomProspects } from './initialNodes'
 import useIsValidConnection from './hooks/useIsValidConnection'
 import useOnConnect from './hooks/useOnConnect'
 
-const initialItems = randomProspects
+const initialItems = randomProspects(10)
   // remove ids
   // eslint-disable-next-line no-unused-vars
   .map(({ id, ...rest }) => rest)
@@ -87,7 +87,7 @@ const App = () => {
         deleteKeyCode={'Delete'}
         colorMode="dark"
         minZoom={0.05}
-        maxZoom={16}
+        maxZoom={40}
         connectionMode="loose">
         <Background />
         <Panel position="top-left">
