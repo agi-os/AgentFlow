@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: [path.resolve(__dirname, 'babel-plugin-add-file-paths.js')],
+        plugins: [path.resolve(__dirname, 'vite.config.plugin.js')],
       },
     }),
   ],

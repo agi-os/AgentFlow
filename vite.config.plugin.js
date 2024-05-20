@@ -1,6 +1,16 @@
+/**
+ * Babel plugin that adds file paths as data attributes to JSX elements.
+ * @param {object} api - Babel API object.
+ * @returns {object} - Babel visitor object.
+ */
 export default function ({ types: t }) {
   return {
     visitor: {
+      /**
+       * Visits JSXOpeningElement nodes.
+       * @param {object} path - Babel path object.
+       * @param {object} state - Babel state object.
+       */
       JSXOpeningElement(path, state) {
         const { node } = path
 
