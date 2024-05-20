@@ -3,14 +3,13 @@ import SignalHandles from '../../signals/SignalHandles'
 
 import Title from '../../components/Title'
 import { baseClassNames } from './baseClassNames'
+import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 
 const Schemas = ['URL', 'Article title', 'Web page text', 'Person']
 
-const SchemaNode = ({ id, data, selected }) => {
+const SchemaNode = ({ id, data }) => {
   // Prepare the class names based on the selected state
-  const selectedClassNames = selected
-    ? ['outline-offset-8', 'outline-2']
-    : ['outline-offset-0', 'outline-0']
+  const selectedClassNames = useSelectedClassNames()
 
   // Collapse the node if the semaphore is red as schema will not apply
   const semaphoreClass = data.semaphore === 'red' ? 'h-8' : 'h-36'
@@ -22,7 +21,7 @@ const SchemaNode = ({ id, data, selected }) => {
     <div x-id={id} className={classNames.join(' ')}>
       <Title id={id}>🧬 Schema</Title>
       <SignalHandles />
-      <Semaphore />
+      <Semaphore colors={['red', 'blue']} />
       {data.semaphore !== 'red' && (
         <div className="flex flex-col font-thin text-xs text-zinc-300 gap-2 pl-2 pt-4">
           {Schemas.map(schema => (

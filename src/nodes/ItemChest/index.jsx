@@ -12,6 +12,8 @@ import { useStore } from '@xyflow/react'
 
 import Countdown from './Countdown'
 
+import useSelectedClassNames from '../../hooks/useSelectedClassNames'
+
 /**
  * Renders a Chest node component.
  * @param {Object} props - The component props.
@@ -19,18 +21,14 @@ import Countdown from './Countdown'
  * @param {Object} props.data - The data associated with the Chest node.
  * @returns {JSX.Element} The rendered Chest node component.
  */
-const ItemChestNode = ({ id, selected }) => {
+const ItemChestNode = ({ id }) => {
   // Get the number of items in the chest
   const itemCount = useStore(
     store => store.itemLocationLookup?.get(id)?.length || 0
   )
 
-  const tickCounter = useStore(s => s.tickCounter)
-
-  // Prepare the class names based on the selected state
-  const selectedClassNames = selected
-    ? ['outline-offset-8', 'outline-2']
-    : ['outline-offset-0', 'outline-0']
+  // Get the selected class names
+  const selectedClassNames = useSelectedClassNames()
 
   // Combine the base and selected class names
   const classNames = [...baseClassNames, ...selectedClassNames]

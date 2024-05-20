@@ -12,5 +12,5 @@ export const baseClassNames = [
   'transition-all',
   'transition-duration-1000',
   'outline',
-  'outline-orange-700',
+  'outline-orange-900',
 ]
