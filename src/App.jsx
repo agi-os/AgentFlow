@@ -1,4 +1,4 @@
-import { useContext, useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 
 import {
   Background,
@@ -12,8 +12,6 @@ import {
 
 import SchemaButton from './tmp/SchemaButton'
 import SpeedRange from './components/SpeedRange'
-
-import { SocketContext } from './Socket'
 
 import nodeTypes from './nodes/nodeTypes'
 import edgeTypes from './edges/edgeTypes'
@@ -66,8 +64,6 @@ const App = () => {
   // Handle connection events
   const onConnect = useOnConnect(setEdges)
 
-  const socket = useContext(SocketContext)
-
   // Handle copy
   const onCopy = useCallback(() => {
     const selectedNodes = nodes.filter(node => node.selected)
@@ -116,21 +112,21 @@ const App = () => {
   }, [onCopy, onPaste])
 
   // load schema
-  useEffect(() => {
-    if (!socket) return
+  // useEffect(() => {
+  //   if (!socket) return
 
-    // when schema is loaded to the server
-    socket.on('schema loaded', ({ schemaJson }) => {
-      const schemaNode = nodes.find(node => node.type === 'schema')
-      schemaNode.data.schema = JSON.parse(schemaJson)
-      setNodes([...nodes])
-    })
+  //   // when schema is loaded to the server
+  //   socket.on('schema loaded', ({ schemaJson }) => {
+  //     const schemaNode = nodes.find(node => node.type === 'schema')
+  //     schemaNode.data.schema = JSON.parse(schemaJson)
+  //     setNodes([...nodes])
+  //   })
 
-    // cleanup
-    return () => {
-      socket.off('schema loaded')
-    }
-  }, [socket, setNodes, nodes])
+  //   // cleanup
+  //   return () => {
+  //     socket.off('schema loaded')
+  //   }
+  // }, [socket, setNodes, nodes])
 
   return (
     <>
@@ -147,6 +143,9 @@ const App = () => {
         colorMode="dark"
         minZoom={0.01}
         maxZoom={40}
+        panOnDrag={[1, 2, 3, 4]}
+        selectionOnDrag={true}
+        selectionMode="partial"
         connectionMode="loose">
         <Background />
         <Panel position="top-left">

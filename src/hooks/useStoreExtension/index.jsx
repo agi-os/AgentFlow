@@ -14,6 +14,7 @@ import lookup from './lookup'
 import useTickFeature from './useTickFeature'
 import useBeltDriveFeature from './useBeltDriveFeature'
 import useItemFeature from './useItemFeature'
+import useSocketFeature from './useSocketFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.
@@ -141,6 +142,9 @@ const useEnhancedStore = ({ initialItems }) => {
 
   // Extend the store with the belt drive functionality
   useBeltDriveFeature()
+
+  // Extend the store with the socket.io functionality
+  useSocketFeature()
 
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)
