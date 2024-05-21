@@ -20,10 +20,6 @@
         "streetsidesoftware.code-spell-checker",
         // Git graph visualization
         "mhutchie.git-graph",
-        // GitHub Copilot AI-powered code completion
-        "GitHub.copilot",
-        // GitHub Copilot chat integration
-        "GitHub.copilot-chat",
         // ESLint integration
         "dbaeumer.vscode-eslint",
         // Markdown mermaid syntax highlighting
