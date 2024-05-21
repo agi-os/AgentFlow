@@ -1,13 +1,16 @@
 import { useCallback, useState } from 'react'
 import { useReactFlow, useStore } from '@xyflow/react'
-import Title from '../../components/Title'
 import baseClassNames from '../classNames'
-import Semaphore from '../../components/Semaphore'
 import Item from '../../components/Item'
 
 import { BeltSource } from '../../components/BeltPort'
 import Countdown from '../ItemChest/Countdown'
 import getRandomData from '../getRandomData'
+
+import Header from './Header'
+import Details from './Details'
+
+import useClipboard from '../../hooks/useClipboard'
 
 const EntryNode = ({ id, data, selected }) => {
   // Prepare the class names based on the selected state
@@ -73,16 +76,17 @@ const EntryNode = ({ id, data, selected }) => {
   // Get the id of the outbox edge
   const outboxEdgeId = useStore(
     store =>
-      store.getNodeEdges('lcc-r8a').find(edge => edge.sourceHandle === 'outbox')
-        ?.id
+      store.getNodeEdges(id).find(edge => edge.sourceHandle === 'outbox')?.id
   )
 
   // Get reference to the store function setItemLocation
   const setItemLocation = useStore(state => state.setItemLocation)
 
+  const { readFromClipboard } = useClipboard()
+
   const pasteFromClipboard = async () => {
     try {
-      const clipboardContent = await navigator.clipboard.readText()
+      const clipboardContent = await readFromClipboard()
       const item = JSON.parse(clipboardContent)
 
       // Assign the item's location to this node
@@ -96,8 +100,8 @@ const EntryNode = ({ id, data, selected }) => {
 
   return (
     <div x-id={id} className={classNames.join(' ')}>
-      <Title id={id}>✏️ Manual Entry</Title>
-      <Semaphore />
+      <Header />
+      <Details />
       <div className="grid grid-cols-6 gap-4 p-2 pt-4">
         {keys &&
           keys?.map((keyObj, index) => [
