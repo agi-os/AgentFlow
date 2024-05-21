@@ -7,6 +7,7 @@ import {
   useNodesState,
   useEdgesState,
   useStoreApi,
+  useStore,
 } from '@xyflow/react'
 
 import SchemaButton from './tmp/SchemaButton'
@@ -38,7 +39,6 @@ const initialItems = randomProspects(10)
 import {
   copyToClipboard,
   fetchDataFromClipboard,
-  calculateNewPositions,
   createNewGraphElements,
   handleCopyPasteKeypress,
   updateStates,
@@ -47,6 +47,11 @@ import {
 const App = () => {
   // Extend the ReactFlow store with custom functionality
   useStoreExtension({ initialItems })
+
+  // Get the x and y offset from store
+  const [x, y, z] = useStore(s => s.transform)
+  const width = useStore(s => s.width)
+  const height = useStore(s => s.height)
 
   // Get a handle to the store api
   const storeApi = useStoreApi()
@@ -83,22 +88,24 @@ const App = () => {
   // Handle paste
   const onPaste = useCallback(async () => {
     try {
+      // Get offset by half of viewport width and height
+      const xOffset = (width / 2 - x) * (1 / z)
+      const yOffset = (height / 2 - y) * (1 / z)
+
       const data = await fetchDataFromClipboard()
       if (data.nodes && data.edges) {
-        const positions = calculateNewPositions(data.nodes)
-        const idMap = new Map()
         const { newNodes, newEdges } = createNewGraphElements(
           data.nodes,
           data.edges,
-          positions,
-          idMap
+          xOffset,
+          yOffset
         )
         updateStates({ setNodes, setEdges, newNodes, newEdges })
       }
     } catch (err) {
       console.error('Failed to paste: ', err)
     }
-  }, [setEdges, setNodes])
+  }, [height, setEdges, setNodes, width, x, y, z])
 
   // Start listening for clipboard keypress events
   useEffect(() => {
@@ -138,7 +145,7 @@ const App = () => {
         isValidConnection={isValidConnection}
         deleteKeyCode={'Delete'}
         colorMode="dark"
-        minZoom={0.05}
+        minZoom={0.01}
         maxZoom={40}
         connectionMode="loose">
         <Background />

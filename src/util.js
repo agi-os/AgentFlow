@@ -16,6 +16,8 @@ const compressData = ({ nodes, edges }) => {
     edge.sourceHandle,
     edge.target,
     edge.targetHandle,
+    edge.type || '',
+    edge.animated ? 1 : 0,
   ])
 
   // Return compressed data
@@ -35,11 +37,13 @@ export const decompressData = compressedData => {
 
   // Extract edges
   const edges = compressedData.e.map(
-    ([source, sourceHandle, target, targetHandle]) => ({
+    ([source, sourceHandle, target, targetHandle, type, animated]) => ({
       source,
       sourceHandle,
       target,
       targetHandle,
+      type,
+      animated: !!animated,
     })
   )
 
@@ -51,20 +55,22 @@ export const fetchDataFromClipboard = async () => {
   return decompressData(parsed)
 }
 
-export const calculateNewPositions = nodes => {
+export const calculateNewPositions = ({ nodes }) => {
   const { centroidX, centroidY } = calculateCentroid(nodes)
-  const targetCenterX = 100 * Math.random()
-  const targetCenterY = 300 * Math.random()
-  return { centroidX, centroidY, targetCenterX, targetCenterY }
+  return { centroidX, centroidY }
 }
 
-export const createNewGraphElements = (nodes, edges, positions, idMap) => {
+export const createNewGraphElements = (nodes, edges, x, y) => {
+  const positions = calculateNewPositions({ nodes })
+
+  const idMap = new Map()
+
   const newNodes = generateNewNodes(
     nodes,
     positions.centroidX,
     positions.centroidY,
-    positions.targetCenterX,
-    positions.targetCenterY,
+    x,
+    y,
     idMap
   )
   const newEdges = generateNewEdges(edges, idMap)
@@ -148,6 +154,7 @@ export const generateNewNodes = (
         x: node.position.x - centroidX + targetCenterX,
         y: node.position.y - centroidY + targetCenterY,
       },
+      selected: true,
     }
   })
 }
