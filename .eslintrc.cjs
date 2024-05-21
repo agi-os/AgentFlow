@@ -22,5 +22,6 @@ module.exports = {
     'func-style': ['error', 'expression'], // use arrow functions everywhere
     'react/no-unknown-property': ['error', { ignore: ['x-id'] }],
     'react/display-name': 'off',
+    'no-unused-vars': ['error', { ignoreRestSiblings: true }],
   },
 }

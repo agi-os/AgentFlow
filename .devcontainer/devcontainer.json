@@ -27,7 +27,9 @@
         // Markdown mermaid preview rendering
         "bierner.markdown-mermaid",
         // Tailwind CSS IntelliSense
-        "bradlc.vscode-tailwindcss"
+        "bradlc.vscode-tailwindcss",
+        // Codiumate
+        "Codium.codium"
       ],
       "settings": {
         // Enable GitHub Copilot everywhere
@@ -57,5 +59,8 @@
     }
   },
   // Automatically start the server when VS Code opens
-  "postAttachCommand": "bun i && bun dev"
+  "postAttachCommand": "bun i && bun dev",
+
+  // Expose port 3333 running the server
+  "forwardPorts": [3333]
 }
