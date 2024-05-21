@@ -17,7 +17,13 @@ const useSelectedClassNames = () => {
     : ['outline-offset-0', 'outline-0', 'hover:outline-1']
 
   // Return the class names
-  return [...selectedClassNames, 'transition-all']
+  return [
+    'outline',
+    'outline-orange-900',
+    'transition-all',
+    'transition-duration-1000',
+    ...selectedClassNames,
+  ]
 }
 
 export default useSelectedClassNames

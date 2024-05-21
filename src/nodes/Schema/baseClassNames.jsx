@@ -9,8 +9,4 @@ export const baseClassNames = [
   'overflow-hidden',
   'overflow-visible',
   'border-zinc-700',
-  'transition-all',
-  'transition-duration-1000',
-  'outline',
-  'outline-orange-900',
 ]
