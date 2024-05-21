@@ -4,22 +4,36 @@ const compressData = ({ nodes, edges }) => {
   // Pack nodes including the 'type' attribute
   const packedNodes = nodes.reduce(
     (obj, { id, data, position: { x, y }, type }) => {
-      obj[id] = [data, x, y, type]
+      // Use half-id keys to save space, trim decimals from coordinates
+      obj[id.split('-')[0]] = [data, x | 0, y | 0, type]
       return obj
     },
     {}
   )
 
-  // Pack edges
-  const packedEdges = edges.map(edge => [
-    edge.source,
-    edge.sourceHandle,
-    edge.target,
-    edge.targetHandle,
-    edge.type || '',
-    edge.animated ? 1 : 0,
-  ])
+  // Pack edges with compression for specific patterns
+  const packedEdges = edges.map(edge => {
+    // Check if the edge matches the queue pattern
+    if (
+      edge.sourceHandle === 'outbox' &&
+      edge.targetHandle === 'inbox' &&
+      edge.type === 'queue' &&
+      edge.animated
+    ) {
+      // Compress queue to a tuple
+      return [edge.source.split('-')[0], edge.target.split('-')[0]]
+    }
 
+    // Return full edge
+    return [
+      edge.source.split('-')[0],
+      edge.sourceHandle,
+      edge.target.split('-')[0],
+      edge.targetHandle,
+      edge.type || '',
+      edge.animated ? 1 : 0,
+    ]
+  })
   // Return compressed data
   return { n: packedNodes, e: packedEdges }
 }
@@ -36,16 +50,32 @@ export const decompressData = compressedData => {
   )
 
   // Extract edges
-  const edges = compressedData.e.map(
-    ([source, sourceHandle, target, targetHandle, type, animated]) => ({
+
+  const edges = compressedData.e.map(edge => {
+    if (edge.length === 2) {
+      // Handle compressed queue edge
+      const [source, target] = edge
+      return {
+        source,
+        target,
+        sourceHandle: 'outbox',
+        targetHandle: 'inbox',
+        type: 'queue',
+        animated: true,
+      }
+    }
+
+    // Handle the full edge
+    const [source, sourceHandle, target, targetHandle, type, animated] = edge
+    return {
       source,
       sourceHandle,
       target,
       targetHandle,
       type,
       animated: !!animated,
-    })
-  )
+    }
+  })
 
   return { nodes, edges }
 }
