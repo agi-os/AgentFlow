@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useCallback } from 'react'
 
 import {
   Background,
@@ -7,12 +7,10 @@ import {
   useNodesState,
   useEdgesState,
   useStoreApi,
-  useStore,
 } from '@xyflow/react'
 
-import { MIN_SPEED, MAX_SPEED } from './constants/_mainConfig'
-
 import SchemaButton from './tmp/SchemaButton'
+import SpeedRange from './components/SpeedRange'
 
 import { SocketContext } from './Socket'
 
@@ -37,6 +35,15 @@ const initialItems = randomProspects(10)
   // add type 'prospect'
   .map(item => ({ type: 'prospect', ...item }))
 
+import {
+  copyToClipboard,
+  fetchDataFromClipboard,
+  calculateNewPositions,
+  createNewGraphElements,
+  handleCopyPasteKeypress,
+  updateStates,
+} from './util'
+
 const App = () => {
   // Extend the ReactFlow store with custom functionality
   useStoreExtension({ initialItems })
@@ -55,6 +62,51 @@ const App = () => {
   const onConnect = useOnConnect(setEdges)
 
   const socket = useContext(SocketContext)
+
+  // Handle copy
+  const onCopy = useCallback(() => {
+    const selectedNodes = nodes.filter(node => node.selected)
+
+    const selectedEdges = edges.filter(edge => {
+      const isSourceSelected = selectedNodes.some(
+        node => node.id === edge.source
+      )
+      const isTargetSelected = selectedNodes.some(
+        node => node.id === edge.target
+      )
+      return isSourceSelected && isTargetSelected
+    })
+
+    copyToClipboard({ nodes: selectedNodes, edges: selectedEdges })
+  }, [nodes, edges])
+
+  // Handle paste
+  const onPaste = useCallback(async () => {
+    try {
+      const data = await fetchDataFromClipboard()
+      if (data.nodes && data.edges) {
+        const positions = calculateNewPositions(data.nodes)
+        const idMap = new Map()
+        const { newNodes, newEdges } = createNewGraphElements(
+          data.nodes,
+          data.edges,
+          positions,
+          idMap
+        )
+        updateStates({ setNodes, setEdges, newNodes, newEdges })
+      }
+    } catch (err) {
+      console.error('Failed to paste: ', err)
+    }
+  }, [setEdges, setNodes])
+
+  // Start listening for clipboard keypress events
+  useEffect(() => {
+    const handleKeydown = event =>
+      handleCopyPasteKeypress({ event, onCopy, onPaste })
+    document.addEventListener('keydown', handleKeydown)
+    return () => document.removeEventListener('keydown', handleKeydown)
+  }, [onCopy, onPaste])
 
   // load schema
   useEffect(() => {
@@ -101,23 +153,6 @@ const App = () => {
         </Panel>
       </ReactFlow>
     </>
-  )
-}
-
-const SpeedRange = () => {
-  const speed = useStore(s => s.speed) ?? 37
-  const setSpeed = useStore(s => s.setSpeed)
-
-  return (
-    <input
-      type="range"
-      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-      value={speed}
-      onChange={e => setSpeed(e.target.value)}
-      min={MIN_SPEED}
-      max={MAX_SPEED}
-      step="1"
-    />
   )
 }
 
