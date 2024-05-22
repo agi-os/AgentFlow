@@ -1,5 +1,5 @@
-import { useCallback } from 'react'
-import { useReactFlow } from '@xyflow/react'
+import { useCallback, useMemo, useEffect, useState } from 'react'
+import { useReactFlow, useStore } from '@xyflow/react'
 import baseClassNames from '../../constants/classNames'
 import Title from '../../components/Title'
 import Inputs from '../../components/Inputs'
@@ -11,6 +11,8 @@ import { BeltSource, BeltTarget } from '../../components/BeltPort'
 import Semaphore from '../../components/Semaphore'
 import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 
+import Pre from '../../components/Pre'
+
 /**
  * Agent identity node
  * @param {string} id - Node ID
@@ -19,6 +21,37 @@ import useSelectedClassNames from '../../hooks/useSelectedClassNames'
  */
 const AgentNode = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
+
+  // Id of the agent's toolbox
+  const [toolboxId, setToolboxId] = useState()
+
+  // Get store references
+  const getSignalNodes = useStore(s => s.getSignalNodes)
+  const getLocationItems = useStore(s => s.getLocationItems)
+
+  const signalNodes = useMemo(() => {
+    console.log({ id, getSignalNodes })
+    return getSignalNodes?.(id)
+  }, [id, getSignalNodes])
+
+  // Find the first toolbox signal
+  useEffect(() => {
+    // Sanity check
+    if (!signalNodes || !signalNodes.find) return
+
+    // Try to find the toolbox
+    const id = signalNodes.find(node => node.type === 'tool')?.id
+
+    // List items in the toolbox
+    setToolboxId(id)
+  }, [signalNodes, setToolboxId])
+
+  const locationItems = useMemo(() => {
+    console.log({ toolboxId, getLocationItems })
+    return getLocationItems?.(toolboxId)
+  }, [toolboxId, getLocationItems])
+
+  // console.log(locationItems)
 
   // Prepare the class names based on the selected state
   const selectedClassNames = useSelectedClassNames()
@@ -50,7 +83,7 @@ const AgentNode = ({ id, data }) => {
   const inputs = [
     { label: 'Name', field: 'agentName' },
     { label: 'Description', field: 'agentDescription' },
-    { label: 'Tools', field: 'tools' },
+    // { label: 'Tools', field: 'tools' },
   ]
 
   return (
@@ -72,6 +105,8 @@ const AgentNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
+
+      <Pre>{locationItems}</Pre>
 
       <BeltSource />
     </div>
