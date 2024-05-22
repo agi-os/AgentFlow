@@ -3,6 +3,7 @@ import { useReactFlow, useStore } from '@xyflow/react'
 import baseClassNames from '../../constants/classNames'
 import Title from '../../components/Title'
 import Inputs from '../../components/Inputs'
+import ItemDetails from '../../components/ItemDetails'
 
 import agentPresets from '../presets/agents.json'
 
@@ -12,6 +13,7 @@ import Semaphore from '../../components/Semaphore'
 import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 
 import Pre from '../../components/Pre'
+import useAgent from './useAgent'
 
 /**
  * Agent identity node
@@ -21,37 +23,6 @@ import Pre from '../../components/Pre'
  */
 const AgentNode = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
-
-  // Id of the agent's toolbox
-  const [toolboxId, setToolboxId] = useState()
-
-  // Get store references
-  const getSignalNodes = useStore(s => s.getSignalNodes)
-  const getLocationItems = useStore(s => s.getLocationItems)
-
-  const signalNodes = useMemo(() => {
-    console.log({ id, getSignalNodes })
-    return getSignalNodes?.(id)
-  }, [id, getSignalNodes])
-
-  // Find the first toolbox signal
-  useEffect(() => {
-    // Sanity check
-    if (!signalNodes || !signalNodes.find) return
-
-    // Try to find the toolbox
-    const id = signalNodes.find(node => node.type === 'tool')?.id
-
-    // List items in the toolbox
-    setToolboxId(id)
-  }, [signalNodes, setToolboxId])
-
-  const locationItems = useMemo(() => {
-    console.log({ toolboxId, getLocationItems })
-    return getLocationItems?.(toolboxId)
-  }, [toolboxId, getLocationItems])
-
-  // console.log(locationItems)
 
   // Prepare the class names based on the selected state
   const selectedClassNames = useSelectedClassNames()
@@ -85,6 +56,9 @@ const AgentNode = ({ id, data }) => {
     { label: 'Description', field: 'agentDescription' },
   ]
 
+  // Function to trigger the LLM call
+  const { triggerLLMCall, items } = useAgent()
+
   return (
     <div className={classNames.join(' ')}>
       <Title id={id}>🧑‍💼 {data?.agentName ? data?.agentName : 'Agent'}</Title>
@@ -104,8 +78,18 @@ const AgentNode = ({ id, data }) => {
         ))}
       </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
+      {items?.map(item => (
+        <ItemDetails key={item.id} id={item.id} />
+      ))}
+      <button
+        className="border border-zinc-600 transition-all hover:border-zinc-400 hover:bg-zinc-700 bg-zinc-800 rounded-full p-3"
+        onClick={triggerLLMCall}>
+        triggerLLMCall
+      </button>
 
-      <Pre>{locationItems}</Pre>
+      {items?.map(item => (
+        <ItemDetails key={item.id} itemId={item.id} />
+      ))}
 
       <BeltSource />
     </div>
