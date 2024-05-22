@@ -13,7 +13,7 @@ import Countdown from '../ItemChest/Countdown'
 import baseClassNames from '../ItemChest/classNames'
 
 import useSelectedClassNames from '../../hooks/useSelectedClassNames'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 
 import Item from '../../components/Item'
 import ChestBody from './ChestBody'
@@ -26,6 +26,24 @@ import ChestBody from './ChestBody'
  * @returns {JSX.Element} The rendered Chest node component.
  */
 const ToolChestNode = ({ id }) => {
+  // Get the websocket connection from the store
+  const socket = useStore(s => s.socket)
+
+  const [isSocketReady, setIsSocketReady] = useState(false)
+
+  useEffect(() => {
+    // Check if socket is available and set state
+    if (socket && socket.emit) {
+      setIsSocketReady(true)
+    } else {
+      const timer = setTimeout(() => {
+        setIsSocketReady(false) // Trigger re-check
+      }, 2000) // Retry after 2 seconds
+
+      return () => clearTimeout(timer) // Cleanup timeout on component unmount
+    }
+  }, [isSocketReady, socket]) // Dependency array includes isSocketReady to re-run effect when it changes
+
   // Get the setItem function
   const setItem = useStore(s => s.setItem)
 
@@ -35,21 +53,22 @@ const ToolChestNode = ({ id }) => {
   )
   const itemCount = itemIds.length
 
-  // Get the websocket connection from the store
-  const socket = useStore(s => s.socket)
-
   // Get the selected class names
   const selectedClassNames = useSelectedClassNames()
 
   // Combine the base and selected class names
   const classNames = [...baseClassNames, ...selectedClassNames]
 
+  // Call emit when isSocketReady changes to true
   useEffect(() => {
     // If tool chest is not empty we're done
     if (itemCount > 0) return
 
+    // If socket is unavailable, try later
+    if (!isSocketReady) return
+
     // Fetch the tool schemas from the server
-    socket.emit('tool schemas', tools => {
+    socket?.emit('tool schemas', tools => {
       const data = tools.map(tool => reverseToolSchema(tool))
 
       for (const item of data) {
@@ -64,7 +83,7 @@ const ToolChestNode = ({ id }) => {
       }
     })
     // chest has no content, fetch the tools them from the server
-  }, [id, itemCount, setItem, socket])
+  }, [id, isSocketReady, itemCount, setItem, socket])
 
   return (
     <div x-id={id} className={classNames.join(' ')}>

@@ -115,23 +115,6 @@ const App = () => {
     return () => document.removeEventListener('keydown', handleKeydown)
   }, [onCopy, onPaste])
 
-  // load schema
-  // useEffect(() => {
-  //   if (!socket) return
-
-  //   // when schema is loaded to the server
-  //   socket.on('schema loaded', ({ schemaJson }) => {
-  //     const schemaNode = nodes.find(node => node.type === 'schema')
-  //     schemaNode.data.schema = JSON.parse(schemaJson)
-  //     setNodes([...nodes])
-  //   })
-
-  //   // cleanup
-  //   return () => {
-  //     socket.off('schema loaded')
-  //   }
-  // }, [socket, setNodes, nodes])
-
   return (
     <>
       <ReactFlow

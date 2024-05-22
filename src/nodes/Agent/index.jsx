@@ -83,7 +83,6 @@ const AgentNode = ({ id, data }) => {
   const inputs = [
     { label: 'Name', field: 'agentName' },
     { label: 'Description', field: 'agentDescription' },
-    // { label: 'Tools', field: 'tools' },
   ]
 
   return (
