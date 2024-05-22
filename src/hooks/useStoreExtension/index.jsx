@@ -18,6 +18,21 @@ import useSocketFeature from './useSocketFeature'
 import useSignalFeature from './useSignalFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
 
+// Function to save specific parts of the store state to localStorage under separate keys
+const saveToLocalStorage = debounce(
+  'saveToLocalStorage',
+  (key, value) => {
+    try {
+      JSON.parse(value)
+      localStorage.setItem(key, value)
+      console.log('writing', key, JSON.parse(value))
+    } catch (error) {
+      console.error(`Error saving ${key} to localStorage:`, error)
+    }
+  },
+  250
+) // Debounce with a 1/4-second delay
+
 /**
  * Custom hook that enhances the store with additional functionality.
  * @param {Object} options - The options for the enhanced store.
@@ -121,28 +136,64 @@ const useEnhancedStore = ({ initialItems }) => {
     updateNodeEdgeLookup()
   }, [tickCounter, updateNodeEdgeLookup])
 
-  // Get the handle to setItem in the store
-  const setItem = useStore(s => s.setItem)
-  const items = useStore(s => s.items)
-
-  // Initializing with initial items
-  useEffect(() => {
-    // Sanity check
-    if (!setItem || !items) return
-
-    // If the store.items has more than 0 entries, abort
-    if (items?.length > 0) return
-
-    // Add initial items as needed
-    addInitialItemsToStore({ setItem, initialItems })
-  }, [setItem, initialItems, items])
-
   // Create a subscription to the store updating the window.store object
   useEffect(() => {
     if (!window.store) {
       window.store = store.getState()
       store.subscribe(s => (window.store = s))
     }
+  }, [store])
+
+  // Add autosave functionality
+  useEffect(() => {
+    const nodeExcludeKeys = new Set([
+      'location',
+      'selected',
+      'dragging',
+      'measured',
+    ])
+
+    const nodeFilter = (key, value) => {
+      if (nodeExcludeKeys.has(key)) return undefined
+      if (key === 'position') {
+        value.x = Math.floor(value.x)
+        value.y = Math.floor(value.y)
+      }
+      return value
+    }
+
+    const edgeExcludeKeys = new Set(['length', 'selected'])
+
+    const edgeFilter = (key, value) => {
+      if (edgeExcludeKeys.has(key)) return undefined
+      return value
+    }
+
+    // Cache of last writes as JSON
+    const writeCache = {
+      nodes: '',
+      edges: '',
+    }
+
+    // Subscribe to store changes and trigger saveToLocalStorage when change is detected
+    const unsubscribe = store.subscribe(() => {
+      const currentState = store.getState()
+      const currentNodesJSON = JSON.stringify(currentState.nodes, nodeFilter)
+      const currentEdgesJSON = JSON.stringify(currentState.edges, edgeFilter)
+
+      if (currentNodesJSON !== writeCache.nodes) {
+        saveToLocalStorage('nodes', currentNodesJSON)
+        writeCache.nodes = currentNodesJSON
+      }
+
+      if (currentEdgesJSON !== writeCache.edges) {
+        saveToLocalStorage('edges', currentEdgesJSON)
+        writeCache.edges = currentEdgesJSON
+      }
+    })
+
+    // Cleanup function to unsubscribe on unmount
+    return unsubscribe
   }, [store])
 
   return store

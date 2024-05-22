@@ -58,8 +58,12 @@ const App = () => {
   const isValidConnection = useIsValidConnection(storeApi)
 
   // Link the nodes and edges to the store
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [nodes, setNodes, onNodesChange] = useNodesState(
+    JSON.parse(localStorage.getItem('nodes') || '[]')
+  )
+  const [edges, setEdges, onEdgesChange] = useEdgesState(
+    JSON.parse(localStorage.getItem('edges') || '[]')
+  )
 
   // Handle connection events
   const onConnect = useOnConnect(setEdges)
