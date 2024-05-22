@@ -15,6 +15,8 @@ import useTickFeature from './useTickFeature'
 import useBeltDriveFeature from './useBeltDriveFeature'
 import useItemFeature from './useItemFeature'
 import useSocketFeature from './useSocketFeature'
+import useSignalFeature from './useSignalFeature'
+import useNodeEdgesFeature from './useNodeEdgesFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.
@@ -88,63 +90,26 @@ const useEnhancedStore = ({ initialItems }) => {
       getNode: id => store.getState().nodeLookup.get(id),
       getEdge: id => store.getState().edgeLookup.get(id),
       lookup: id => lookup({ store, id }),
-
-      nodeEdgeLookup: new Map(),
-
-      // Get all edges connected to the node
-      getNodeEdges: nodeId =>
-        store
-          .getState()
-          .edges.filter(
-            edge => edge.source === nodeId || edge.target === nodeId
-          ),
-
-      // Update the nodeEdgeLookup map
-      updateNodeEdgeLookup: debounce('updateNodeEdgeLookup', () => {
-        // Get the existing nodeEdgeLookup map
-        const nodeEdgeLookup = store.getState().nodeEdgeLookup
-
-        store.getState().nodes.forEach(node => {
-          // Prepare the new value for the nodeEdgeLookup value
-          const newValue = store.getState().getNodeEdges(node.id)
-
-          const stringifiedOldValue = JSON.stringify(
-            nodeEdgeLookup.get(node.id)
-          )
-          const stringifiedNewValue = JSON.stringify(newValue)
-
-          // Abort if the new value is the same as the old value
-          if (
-            stringifiedOldValue === stringifiedNewValue ||
-            stringifiedNewValue === '[]'
-          ) {
-            return
-          }
-
-          // Update the nodeEdgeLookup map with the new value
-          nodeEdgeLookup.set(node.id, newValue)
-        })
-
-        // Update the store with the new nodeEdgeLookup map
-        store.setState(draft => ({
-          ...draft,
-          nodeEdgeLookup,
-        }))
-      }),
     }))
   }, [store, tickLength, speed])
 
-  // Extend the store with the tick functionality
+  // Extend store with node edge functionality
+  useNodeEdgesFeature()
+
+  // Extend store with tick functionality
   useTickFeature()
 
-  // Extend the store with the item functionality
+  // Extend store with item functionality
   useItemFeature()
 
-  // Extend the store with the belt drive functionality
+  // Extend store with belt drive functionality
   useBeltDriveFeature()
 
-  // Extend the store with the socket.io functionality
+  // Extend store with socket.io functionality
   useSocketFeature()
+
+  // Extend store with signal functionality
+  useSignalFeature()
 
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)
