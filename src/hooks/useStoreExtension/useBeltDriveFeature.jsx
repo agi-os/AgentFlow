@@ -104,7 +104,10 @@ const useBeltDriveFeature = () => {
             const destinationType = destination?.type
 
             // Put the item on the belt if the destination is an item chest
-            if (destinationType === 'itemChest') {
+            if (
+              destinationType === 'itemChest' ||
+              destinationType === 'agent'
+            ) {
               const itemId = item?.id
               const locationId = destination?.id
               setItemLocation({ itemId, locationId })

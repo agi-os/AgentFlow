@@ -45,6 +45,9 @@ const ItemDetails = ({
     }
   }
 
+  // Sanity check
+  if (!item || !item.id) return null
+
   return [
     <button
       className="absolute transition-all 
