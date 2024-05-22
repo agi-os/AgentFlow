@@ -96,7 +96,6 @@ export const buttonsOld = [
     secondParam: 'constantCombinator',
   },
   { schema: {}, label: 'Splitter', secondParam: 'splitter' },
-  { schema: {}, label: '🛠️ Tool', secondParam: 'tool' },
   { schema: {}, label: '🏗️ Workbench', secondParam: 'workbench' },
   { schema: {}, label: '🐣 Action', secondParam: 'action' },
   { schema: {}, label: '🛎️ Result', secondParam: 'result' },
@@ -106,6 +105,8 @@ export const buttons = [
   { schema: {}, label: '✏️ Entry', secondParam: 'entry' },
   { schema: {}, label: '🗄️ Item Chest', secondParam: 'itemChest' },
   { schema: {}, label: '🧑‍💼 Agent', secondParam: 'agent' },
+  { schema: {}, label: '🛠️ Tool Chest', secondParam: 'tool' },
+
   { schema: schema, label: '🧬 Schema' },
   { schema: {}, label: '🔗 InPortal', secondParam: 'inputPortal' },
   { schema: {}, label: '🔗 OutPortal', secondParam: 'outputPortal' },
