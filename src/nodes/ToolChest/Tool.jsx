@@ -1,46 +1,3 @@
-const generateToolSchema = ({
-  functionName,
-  functionDescription,
-  propertyName,
-  propertyType,
-  propertyDescription,
-}) => {
-  return {
-    type: 'function',
-    function: {
-      name: functionName,
-      description: functionDescription,
-      parameters: {
-        type: 'object',
-        properties: {
-          [propertyName]: {
-            type: propertyType,
-            description: propertyDescription,
-          },
-        },
-        required: [propertyName],
-      },
-    },
-  }
-}
-
-const reverseToolSchema = schema => {
-  const functionName = schema.function.name
-  const functionDescription = schema.function.description
-  const propertyName = Object.keys(schema.function.parameters.properties)[0]
-  const propertyType = schema.function.parameters.properties[propertyName].type
-  const propertyDescription =
-    schema.function.parameters.properties[propertyName].description
-
-  return {
-    functionName,
-    functionDescription,
-    propertyName,
-    propertyType,
-    propertyDescription,
-  }
-}
-
 import { useCallback, useContext, useEffect, useState } from 'react'
 import {
   Position,
@@ -48,14 +5,17 @@ import {
   useReactFlow,
   useHandleConnections,
   useNodesData,
+  useStore,
 } from '@xyflow/react'
-import classNames from '../constants/classNames'
-import Title from '../components/Title'
-import Inputs from '../components/Inputs'
-import { SocketContext } from '../Socket'
-import ResultHandles from './ResultHandles'
-import colorMap from '../constants/colorMap'
-import useOutput from '../hooks/useOutput'
+import classNames from '../../constants/classNames'
+import Title from '../../components/Title'
+import Inputs from '../../components/Inputs'
+// import { SocketContext } from '../Socket'
+import ResultHandles from '../ResultHandles'
+import colorMap from '../../constants/colorMap'
+import useOutput from '../../hooks/useOutput'
+import { reverseToolSchema } from './reverseToolSchema'
+import { generateToolSchema } from './generateToolSchema'
 
 /**
  * List of inputs for the tool node
@@ -76,7 +36,7 @@ const inputs = [
  */
 const ToolNode = ({ id, data }) => {
   // Get the socket from the context
-  const socket = useContext(SocketContext)
+  const socket = useStore(s => s.socket)
 
   // List of tools available in form of presets
   const [toolPresets, setTools] = useState([])

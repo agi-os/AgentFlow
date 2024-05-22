@@ -4,7 +4,7 @@ import Result from './Result'
 import Action from './Action'
 import Actions from './Actions'
 import Agent from './Agent/index'
-import Tool from './Tool'
+import ToolChest from './ToolChest/index'
 import Workbench from './Workbench'
 import Chest from './Chest/index.jsx'
 import ConstantCombinator from './ConstantCombinator'
@@ -22,7 +22,7 @@ const components = {
   result: Result,
   action: Action,
   actions: Actions,
-  tool: Tool,
+  tool: ToolChest,
   workbench: Workbench,
   chest: Chest,
   constantCombinator: ConstantCombinator,
