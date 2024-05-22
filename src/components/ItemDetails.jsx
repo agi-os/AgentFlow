@@ -1,5 +1,9 @@
 import { useStore } from '@xyflow/react'
 import { useState } from 'react'
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import ZoomCompensated from '../nodes/ZoomCompensated'
+import ZoomResponsiveWrapper from '../nodes/ZoomCompensated/ZoomResponsiveWrapper'
 
 /**
  * Renders the details of an item.
@@ -48,18 +52,37 @@ const ItemDetails = ({
   // Sanity check
   if (!item || !item.id) return null
 
+  if (item.markdown) {
+    return [
+      <button
+        className="absolute transition-all 
+      right-0 top-0 p-2 text-[0.5rem] opacity-10 hover:opacity-100"
+        key="copy"
+        title="Copy to clipboard"
+        onClick={copyToClipboard}>
+        {copySuccess || '🗐'}
+      </button>,
+      <ZoomCompensated key="main">
+        <ZoomResponsiveWrapper key="main" depth={4}>
+          <ItemMarkdown>{item.markdown}</ItemMarkdown>
+        </ZoomResponsiveWrapper>
+      </ZoomCompensated>,
+    ]
+  }
+
+  // Render regular content if not large
   return [
     <button
       className="absolute transition-all 
-      right-0 top-0 p-2 text-[0.5rem] opacity-10 hover:opacity-100"
+    right-0 top-0 p-2 text-[0.5rem] opacity-10 hover:opacity-100"
       key="copy"
       title="Copy to clipboard"
       onClick={copyToClipboard}>
       {copySuccess || '🗐'}
     </button>,
     <div
-      key="main"
       x-id={itemId}
+      key="main"
       className={classNames.join(' ')}
       style={{ fontSize }}>
       {Object.keys(item)
@@ -80,6 +103,32 @@ const ItemDetails = ({
         ])}
     </div>,
   ]
+}
+
+const ItemMarkdown = ({ dimensions, children }) => {
+  // Get the zoom level from the store
+  const zoom = useStore(s => s.transform[2])
+
+  // Calculate the scale factor for the container
+  const scaleFactor = 1 / zoom
+
+  // Adjust font size inversely to the zoom level
+  const fontSize = `${zoom * 25}%`
+
+  return (
+    <div
+      style={{
+        transformOrigin: 'center center',
+        width: dimensions.width * 2.5,
+        height: dimensions.height * 2.5,
+        marginLeft: -dimensions.width * 0.75,
+        marginTop: -dimensions.height * 0.75,
+        fontSize,
+        overflow: 'scroll',
+      }}>
+      <Markdown remarkPlugins={[remarkGfm]}>{children}</Markdown>,
+    </div>
+  )
 }
 
 export default ItemDetails
