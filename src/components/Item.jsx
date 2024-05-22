@@ -2,12 +2,20 @@ import React from 'react'
 import { useStore } from '@xyflow/react'
 import ItemDetails from './ItemDetails'
 
-const Item = React.memo(({ itemId }) => {
+const Item = React.memo(({ onClick = () => {}, itemId }) => {
   const item = useStore(state => state.getItem(itemId))
   const removeItem = useStore(state => state.removeItem)
 
   return (
-    <div x-id={itemId} className={classNames.join(' ')}>
+    <div
+      x-id={itemId}
+      className={classNames.join(' ')}
+      onClick={onClick}
+      title={JSON.stringify(
+        item,
+        (key, value) => (key === 'location' ? undefined : value),
+        2
+      )}>
       <div className={emojiClassNames.join(' ')}>{item.emoji}</div>
       <div className={typeClassNames.join(' ')}>{item.type}</div>
       <div className={idClassNames.join(' ')}>{itemId}</div>

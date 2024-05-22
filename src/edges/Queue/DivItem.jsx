@@ -15,6 +15,11 @@ const DivItem = ({ item, transform = '' }) => {
       x-id={item.id}
       xmlns="http://www.w3.org/1999/xhtml"
       className={classNames.join(' ')}
+      title={JSON.stringify(
+        item,
+        (key, value) => (key === 'location' ? undefined : value),
+        2
+      )}
       style={{
         opacity,
         transform,
