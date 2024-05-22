@@ -1,5 +1,4 @@
 import AddItemButton from './AddItemButton'
-import EmptyChest from './EmptyChest'
 import useNodeItems from '../../hooks/useNodeItems'
 import PutOnBeltButton from './PutOnBeltButton'
 
@@ -15,11 +14,6 @@ import PutOnBeltButton from './PutOnBeltButton'
 const CounterView = ({ dimensions: { width, height } }) => {
   // Get all items at this location
   const items = useNodeItems()
-
-  // If there are no items, render an empty chest
-  if (items.length === 0) {
-    return <EmptyChest />
-  }
 
   // Define the desired cell size
   const desiredCellSize = 40

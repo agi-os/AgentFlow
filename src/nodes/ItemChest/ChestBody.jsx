@@ -1,7 +1,8 @@
-import CounterView from './CounterView'
-import CompactView from './CompactView'
+// import CounterView from './CounterView'
+// import CompactView from './CompactView'
 import Item from '../../components/Item'
 import { useNodeId, useStore } from '@xyflow/react'
+import EmptyChest from './EmptyChest'
 
 /**
  * Renders the body of the chest component.
@@ -24,8 +25,15 @@ const ChestBody = ({ dimensions }) => {
 
   // Calculate the zoom factor based on the width and height and item count, to make items fill the chest viewport
   const itemCount = itemIds.length
+
+  // If there are no items, render an empty chest
+  if (itemCount === 0) {
+    return <EmptyChest />
+  }
+
+  // Calculate the zoom factor to use from item area
   const availableSpace = width * height
-  const itemSpace = 190 * 190 * itemCount
+  const itemSpace = 210 * 210 * itemCount
   const zoomFactor = Math.sqrt(availableSpace / itemSpace)
 
   // Prepare the zoom level to make items fit the chest viewport
@@ -35,16 +43,10 @@ const ChestBody = ({ dimensions }) => {
     width: `${width / zoomFactor}px`,
   }
 
-  // When the width+hight become too small, switch to a compact grid and zoom out to fit
-  // const compactLimit = 600
-
-  // if (width + height < compactLimit) {
-  //   return <CompactView dimensions={dimensions} compactLimit={compactLimit} />
-  // }
-
-  // return <CounterView dimensions={dimensions} />
   return (
-    <div className="flex flex-wrap justify-center gap-3 p-2" style={style}>
+    <div
+      className="flex flex-wrap justify-center transition-all duration-300 gap-3 p-2"
+      style={style}>
       {itemIds.map(itemId => (
         <Item key={itemId} itemId={itemId} />
       ))}
