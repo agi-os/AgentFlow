@@ -1,16 +1,21 @@
 import { Position, Handle, useReactFlow, useNodeId } from '@xyflow/react'
+import { validateDataPacket } from '../util'
+import { useStore } from '@xyflow/react'
 
 /**
- * Renders the belt port for a source or target signal.
+ * Renders a belt port for a source or target signal.
  * @param {object} props - The component props.
  * @returns {JSX.Element} - The rendered belt.
  */
 export const Belt = props => {
-  // Extract the type from the props.
-  const { type } = props
+  const { type, id: providedId, data: providedData } = props
+
+  // Get the functions from the store
+  const putOnBelt = useStore(s => s.putOnBelt)
+  const getNodeEdges = useStore(s => s.getNodeEdges)
 
   // If the id is not provided, default to 'outbox' for sources and 'inbox' for targets.
-  const id = props?.id ? props.id : type === 'source' ? 'outbox' : 'inbox'
+  const id = providedId ? providedId : type === 'source' ? 'outbox' : 'inbox'
 
   // Set the color based on the type.
   let color = type === 'source' ? 'bg-lime-900' : 'bg-zinc-700'
@@ -21,14 +26,11 @@ export const Belt = props => {
   // Get the node id from the store.
   const nodeId = useNodeId()
 
+  // If the nodeId is available, adjust the color based on the node's semaphore.
   if (nodeId) {
-    // Get the node from the react flow instance.
     const node = reactFlow.getNode(nodeId)
-
-    // Get the data from the node.
     const data = node?.data || {}
 
-    // If the node data has a color, use it.
     switch (data?.semaphore) {
       case 'red':
         color = 'bg-red-500 animate-pulse'
@@ -38,6 +40,7 @@ export const Belt = props => {
         break
       case 'green':
         color = 'bg-green-500'
+        break
     }
   }
 
@@ -47,15 +50,75 @@ export const Belt = props => {
   // Set the class names based on the type and color.
   const classNames = ['w-16', 'rounded-full', color]
 
-  // Return the rendered belt.
+  // If this is a source belt, handle data emission
+  const handleEmitData = () => {
+    console.log('handle emit')
+    // If no data is provided, abort
+    if (!providedData) return
+
+    // Validate the data packet against the schema
+    if (!validateDataPacket(providedData)) {
+      console.error('Invalid data packet:', providedData)
+      return
+    }
+
+    // Find the edge connected to this belt port
+    const edgeId = getNodeEdges(nodeId).find(
+      edge => edge.source === nodeId && edge.sourceHandle === id
+    )?.id
+
+    // If no connected edge is found, log an error and abort
+    if (!edgeId) {
+      console.error(
+        `No connected edge found for node ${nodeId} and handle ${id}`
+      )
+      return
+    }
+
+    // Put the validated data packet on the belt
+    putOnBelt({ itemId: providedData.id, beltId: edgeId })
+  }
+
+  // Return the rendered belt handle.
   return (
-    <Handle
-      id={id}
+    <>
+      <Handle
+        id={id}
+        className={classNames.join(' ')}
+        type={type}
+        position={position}
+        {...props}
+      />
+      {type === 'source' && <ReleaseButton onClick={handleEmitData} />}
+    </>
+  )
+}
+const ReleaseButton = ({
+  onClick,
+  classNames = [
+    'absolute',
+    '-bottom-12',
+    '-translate-x-1/2',
+    'left-1/2',
+    'cursor-pointer',
+    'grid',
+    'w-20',
+    'h-20',
+    'rounded-full',
+    'opacity-25',
+    'hover:opacity-100',
+    'place-content-center',
+  ],
+}) => {
+  // Combine the default class names with any additional class names provided via props
+
+  return (
+    <div
+      onClick={onClick}
       className={classNames.join(' ')}
-      type={type}
-      position={position}
-      {...props}
-    />
+      title="emit a single item">
+      🔻
+    </div>
   )
 }
 
