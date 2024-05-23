@@ -110,4 +110,5 @@ export const buttons = [
   { schema: schema, label: '🧬 Schema' },
   { schema: {}, label: '🔗 InPortal', secondParam: 'inputPortal' },
   { schema: {}, label: '🔗 OutPortal', secondParam: 'outputPortal' },
+  { schema: {}, label: '🗄️ Database', secondParam: 'database' },
 ]

@@ -12,6 +12,7 @@ import ArithmeticCombinator from './ArithmeticCombinator'
 import Splitter from './Splitter'
 import ItemChest from './ItemChest/index'
 import { InputPortal, OutputPortal } from './Portal/index'
+import Database from './DatabaseNode.jsx'
 
 import ErrorBoundary from './ErrorBoundary'
 
@@ -31,6 +32,7 @@ const components = {
   itemChest: ItemChest,
   inputPortal: InputPortal,
   outputPortal: OutputPortal,
+  database: Database,
 }
 
 const WrappedComponents = Object.keys(components).reduce((acc, key) => {
