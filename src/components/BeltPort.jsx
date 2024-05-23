@@ -79,6 +79,9 @@ export const Belt = props => {
     putOnBelt({ itemId: providedData.id, beltId: edgeId })
   }
 
+  // Extract the onReceive from props, so Handle doesn't complain
+  const { onReceive, ...rest } = props
+
   // Return the rendered belt handle.
   return (
     <>
@@ -87,9 +90,11 @@ export const Belt = props => {
         className={classNames.join(' ')}
         type={type}
         position={position}
-        {...props}
+        {...rest}
       />
-      {type === 'source' && <ReleaseButton onClick={handleEmitData} />}
+      {type === 'source' && (
+        <ReleaseButton onReceive={onReceive} onClick={handleEmitData} />
+      )}
     </>
   )
 }
@@ -110,8 +115,7 @@ const ReleaseButton = ({
     'place-content-center',
   ],
 }) => {
-  // Combine the default class names with any additional class names provided via props
-
+  // Render the release button
   return (
     <div
       onClick={onClick}
