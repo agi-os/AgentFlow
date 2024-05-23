@@ -36,6 +36,20 @@ export default {
   },
 
   /**
+   * Schema for ITEM_RATED signal.
+   * Emitted when sending feedback on item quality.
+   */
+  ITEM_RATED: {
+    toString: () => 'ITEM_RATED',
+    type: 'object',
+    properties: {
+      rating: { type: 'integer', min: 1, max: 10 },
+      feedback: { type: 'string' },
+    },
+    required: ['rating', 'feedback'],
+  },
+
+  /**
    * Schema for SEMAPHORE_CHANGE signal.
    * Emitted when the color of a semaphore changes.
    */

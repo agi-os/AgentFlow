@@ -87,14 +87,14 @@ const ToolChestNode = ({ id }) => {
 
   return (
     <div x-id={id} className={classNames.join(' ')}>
-      <SignalHandles />
       <Title id={id}>🛠️ Tool Chest ({itemCount})</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
         <ZoomResponsiveWrapper>
           <ChestBody />
         </ZoomResponsiveWrapper>
-      </ZoomCompensated>
+      </ZoomCompensated>{' '}
+      <SignalHandles />
     </div>
   )
 }

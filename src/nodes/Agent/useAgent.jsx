@@ -6,6 +6,28 @@ const useAgent = ({ id, data }) => {
   const store = useStore()
 
   const signalHubEmit = useStore(s => s.signalHubEmit)
+  const signalHubSubscribe = useStore(s => s.signalHubSubscribe)
+  const signalHubUnsubscribe = useStore(s => s.signalHubSubscribe)
+
+  // Subscribe to own ratings when created
+  useEffect(() => {
+    // Sanity check
+    if (!signalHubSubscribe || !signalHubUnsubscribe) return
+
+    const handleRatingSignal = (...props) => {
+      // Update internal rating state
+      console.log(props)
+    }
+
+    // Add subscription
+    const ratingChannel = `rating-${id}`
+    signalHubSubscribe(ratingChannel, handleRatingSignal)
+
+    return () => {
+      // Unsubscribe on cleanup
+      signalHubUnsubscribe(ratingChannel, handleRatingSignal)
+    }
+  }, [id, signalHubSubscribe, signalHubUnsubscribe])
 
   // Agent data and settings
   const batchSize = parseInt(data?.batchSize, 10) || 1

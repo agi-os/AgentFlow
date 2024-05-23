@@ -15,8 +15,8 @@ const TriggerLLMButton = ({ onClick, enabled }) => {
     </button>
   ) : (
     <div className="grid place-content-center text-balance text-center">
-      Batch size not reached. Please wait for the batch size to reach the
-      required amount.
+      Batch size not reached. Waiting for the batch size to reach the required
+      amount.
     </div>
   )
 }
