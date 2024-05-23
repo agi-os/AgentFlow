@@ -44,9 +44,7 @@ const ChestBody = ({ dimensions }) => {
   }
 
   return (
-    <div
-      className="flex flex-wrap justify-center transition-all duration-300 gap-3 p-2"
-      style={style}>
+    <div className="flex flex-wrap justify-center gap-3 p-2" style={style}>
       {itemIds.map(itemId => (
         <Item key={itemId} itemId={itemId} />
       ))}

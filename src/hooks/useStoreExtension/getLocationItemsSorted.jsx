@@ -1,20 +1,31 @@
 import getLocationItems from './getLocationItems'
 
 /**
- * Retrieves and sorts the items for a specific location.
- * @param {Object} options - The options for retrieving and sorting the items.
- * @param {Object} options.store - The store object.
- * @param {string} options.locationId - The ID of the location.
- * @returns {Array} The sorted items for the location.
+ * Retrieves items from a store based on a location ID, sorts them by distance, and if distances are equal, sorts by delivery time.
+ * @param {Object} options - An object containing store and locationId.
+ * @param {Object} options.store - An object representing the store with getItem and itemLocationLookup.
+ * @param {number|string} options.locationId - Identifier for fetching items specific to a location.
+ * @returns {Array} - Sorted array of items based on distance and deliveryTime.
  */
 const getLocationItemsSorted = ({ store, locationId }) => {
   // Get the items for the location
   const items = getLocationItems({ store, locationId })
 
-  // Sort the items by distance
-  items.sort((a, b) => a.location.distance - b.location.distance)
+  // Sort the items by distance, and if distances are equal, sort by deliveryTime
+  items.sort((a, b) => {
+    const aDeliveryTime = a.location.deliveryTime ?? 0
+    const bDeliveryTime = b.location.deliveryTime ?? 0
 
-  // Return the sorted items
+    const distanceDifference =
+      (a.location.distance ?? 0) - (b.location.distance ?? 0)
+
+    if (distanceDifference === 0) {
+      return aDeliveryTime - bDeliveryTime
+    }
+
+    return distanceDifference
+  })
+
   return items
 }
 

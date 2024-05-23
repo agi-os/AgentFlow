@@ -87,10 +87,11 @@ const useItemFeature = () => {
         // If the item does not exist, abort
         if (!item) return
 
-        // Update the item's location
+        // Update the item's location and delivery time
         item.location = {
           id: locationId,
           distance: 0,
+          deliveryTime: new Date().getTime(),
         }
 
         // Update the store with the new item

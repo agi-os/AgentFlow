@@ -29,6 +29,7 @@ const setItem = ({ store, item }) => {
     item.location = {
       id: lastItemChest?.id,
       distance: 0 + Math.random() * 0.1,
+      deliveryTime: new Date().getTime(),
     }
   }
 
