@@ -17,7 +17,7 @@ import useItemFeature from './useItemFeature'
 import useSocketFeature from './useSocketFeature'
 import useSignalFeature from './useSignalFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
-
+import { loadFromIndexedDB, saveToIndexedDB } from './useDatabase'
 // Function to save specific parts of the store state to localStorage under separate keys
 const saveToLocalStorage = debounce(
   'saveToLocalStorage',
@@ -195,6 +195,19 @@ const useEnhancedStore = ({ initialItems }) => {
     // Cleanup function to unsubscribe on unmount
     return unsubscribe
   }, [store])
+
+  // // Save the nodes and edges to IndexedDB
+  // useEffect(() => {
+  //   // IndexedDB setup
+  //   loadFromIndexedDB(store)
+
+  //   // Subscribe to store changes and save to IndexedDB
+  //   const unsubscribe = store.subscribe(() => {
+  //     saveToIndexedDB(store)
+  //   })
+
+  //   return unsubscribe
+  // }, [store])
 
   return store
 }
