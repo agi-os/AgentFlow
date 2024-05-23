@@ -27,7 +27,7 @@ const Item = React.memo(({ onClick = () => {}, itemId }) => {
         }}>
         🗑️
       </div>
-      <ItemDetails item={item} itemId={itemId} />
+      <ItemDetails onClick={onClick} item={item} itemId={itemId} />
     </div>
   )
 })

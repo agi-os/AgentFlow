@@ -25,6 +25,7 @@ const ItemDetails = ({
     'p-2',
     'text-[0.5rem]',
   ],
+  onClick,
 }) => {
   const zoom = useStore(store => store.transform[2])
   const item = useStore(store => store.getItem(itemId))
@@ -62,11 +63,23 @@ const ItemDetails = ({
         onClick={copyToClipboard}>
         {copySuccess || '🗐'}
       </button>,
-      <ZoomCompensated key="main">
-        <ZoomResponsiveWrapper key="main" depth={4}>
-          <ItemMarkdown>{item.markdown}</ItemMarkdown>
-        </ZoomResponsiveWrapper>
-      </ZoomCompensated>,
+      <div
+        key="main"
+        onClick={e => {
+          if (!onClick) return
+          e.preventDefault()
+          e.stopPropagation()
+          onClick()
+        }}
+        className={[
+          ...classNames,
+          '!block',
+          'text-[0.3rem]',
+          'leading-tight',
+        ].join(' ')}
+        style={{ fontSize }}>
+        <Markdown remarkPlugins={[remarkGfm]}>{item.markdown}</Markdown>
+      </div>,
     ]
   }
 
@@ -103,32 +116,6 @@ const ItemDetails = ({
         ])}
     </div>,
   ]
-}
-
-const ItemMarkdown = ({ dimensions, children }) => {
-  // Get the zoom level from the store
-  const zoom = useStore(s => s.transform[2])
-
-  // Calculate the scale factor for the container
-  const scaleFactor = 1 / zoom
-
-  // Adjust font size inversely to the zoom level
-  const fontSize = `${zoom * 25}%`
-
-  return (
-    <div
-      style={{
-        transformOrigin: 'center center',
-        width: dimensions.width * 2.5,
-        height: dimensions.height * 2.5,
-        marginLeft: -dimensions.width * 0.75,
-        marginTop: -dimensions.height * 0.75,
-        fontSize,
-        overflow: 'scroll',
-      }}>
-      <Markdown remarkPlugins={[remarkGfm]}>{children}</Markdown>,
-    </div>
-  )
 }
 
 export default ItemDetails

@@ -15,7 +15,7 @@ const classNames = [
   'rounded',
   'hover:border-zinc-600',
   'gap-4',
-  'min-w-64',
+  'w-[30rem]',
 ]
 
 export default classNames

@@ -3,17 +3,20 @@ import { useReactFlow, useStore } from '@xyflow/react'
 import baseClassNames from '../../constants/classNames'
 import Title from '../../components/Title'
 import Inputs from '../../components/Inputs'
-import ItemDetails from '../../components/ItemDetails'
 
-import agentPresets from '../presets/agents.json'
+import { inputs } from './constants'
 
 import SignalHandles from '../../signals/SignalHandles/index'
 import { BeltSource, BeltTarget } from '../../components/BeltPort'
 import Semaphore from '../../components/Semaphore'
 import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 
-import Pre from '../../components/Pre'
 import useAgent from './useAgent'
+import TriggerLLMButton from './TriggerLLMButton'
+import AutoRunButton from './AutoRunButton'
+import ItemDetailsList from './ItemDetailsList'
+
+// Functional component for the Item Details list
 
 /**
  * Agent identity node
@@ -23,26 +26,8 @@ import useAgent from './useAgent'
  */
 const AgentNode = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
-
-  // Prepare the class names based on the selected state
   const selectedClassNames = useSelectedClassNames()
-
-  // Combine the base and selected class names
   const classNames = [...baseClassNames, ...selectedClassNames]
-
-  const handleSelect = event => {
-    const agent = agentPresets.find(
-      agent => agent.agentName === event.target.value
-    )
-
-    if (!agent) return
-
-    updateNodeData(id, {
-      agentName: agent.agentName,
-      agentDescription: agent.agentDescription,
-      tools: agent.tools,
-    })
-  }
 
   const onChange = useCallback(
     ({ value, field }) => {
@@ -51,13 +36,13 @@ const AgentNode = ({ id, data }) => {
     [id, updateNodeData]
   )
 
-  const inputs = [
-    { label: 'Name', field: 'agentName' },
-    { label: 'Description', field: 'agentDescription' },
-  ]
+  const { triggerLLMCall, toggleAutoRun, autoRun, items } = useAgent({
+    id,
+    data,
+  })
 
-  // Function to trigger the LLM call
-  const { triggerLLMCall, items } = useAgent()
+  const batchSize = parseInt(data.batchSize, 10) || 1
+  const runEnabled = items.length >= batchSize
 
   return (
     <div className={classNames.join(' ')}>
@@ -65,32 +50,12 @@ const AgentNode = ({ id, data }) => {
       <BeltTarget />
       <SignalHandles />
       <Semaphore />
-      <div className="pl-2 -mb-3 text-slate-300 text-xs">Presets</div>
-      <select
-        value={data.agentName}
-        className="appearance-none  bg-zinc-900 text-white rounded-full p-2 pl-3 border border-zinc-700 outline-none"
-        onChange={handleSelect}>
-        <option value="">Select a preset</option>
-        {agentPresets.map((agent, index) => (
-          <option key={index} value={agent.agentName}>
-            {agent.agentName}
-          </option>
-        ))}
-      </select>
       <Inputs inputs={inputs} data={data} onChange={onChange} />
-      {items?.map(item => (
-        <ItemDetails key={item.id} id={item.id} />
-      ))}
-      <button
-        className="border border-zinc-600 transition-all hover:border-zinc-400 hover:bg-zinc-700 bg-zinc-800 rounded-full p-3"
-        onClick={triggerLLMCall}>
-        triggerLLMCall
-      </button>
-
-      {items?.map(item => (
-        <ItemDetails key={item.id} itemId={item.id} />
-      ))}
-
+      <div className="flex justify-between space-x-2">
+        <TriggerLLMButton onClick={triggerLLMCall} enabled={runEnabled} />
+        <AutoRunButton onClick={toggleAutoRun} autoRun={autoRun} />
+      </div>
+      <ItemDetailsList items={items} />
       <BeltSource />
     </div>
   )

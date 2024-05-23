@@ -1,61 +1,87 @@
-import { useCallback, useMemo } from 'react'
-import { useNodeId, useStore } from '@xyflow/react'
+import { useCallback, useState, useEffect } from 'react'
+import { useStore } from '@xyflow/react'
 
-const useAgent = () => {
-  const id = useNodeId()
+const useAgent = ({ id, data }) => {
+  const store = useStore()
+
+  // Agent data and settings
+  const batchSize = parseInt(data?.batchSize, 10) || 1
+
+  // Auto-run feature state
+  const [autoRun, setAutoRun] = useState(false)
 
   // Store references
-  const socket = useStore(s => s.socket)
-  const setItem = useStore(s => s.setItem)
-  const items = useStore(s => s.getLocationItemsSorted(id))
+  const socket = store.socket
+  const setItem = store.setItem
+  const items = store.getLocationItemsSorted(id)
+  const setItemLocation = store.setItemLocation
+  const outboxEdgeId = store
+    .getNodeEdges(id)
+    .find(edge => edge.source === id && edge.sourceHandle === 'outbox')?.id
 
-  const outboxEdgeId = useStore(
-    s =>
-      s
-        .getNodeEdges(id)
-        .find(edge => edge.source === id && edge.sourceHandle === 'outbox')?.id
-  )
+  // Toggle auto-run
+  const toggleAutoRun = useCallback(() => {
+    setAutoRun(prev => !prev)
+  }, [])
 
-  // Trigger the backend call
+  // Trigger the backend LLM call
   const triggerLLMCall = useCallback(async () => {
-    if (items.length < 2) {
+    // Check if enough items are available
+    if (items.length < batchSize) {
       console.warn(
-        'Agent needs at least system instructions and one context item.'
+        `Not enough items for LLM call. Need ${batchSize}, have ${items.length}.`
       )
       return
     }
 
-    const systemInstructions = items[0]
-    const contextItems = items.slice(1)
+    // Prepare user prompt from items
+    const userPrompt = JSON.parse(JSON.stringify(items)).slice(0, batchSize)
+    userPrompt.forEach((userPromptItem, index) => {
+      delete userPromptItem.id
+      delete userPromptItem.location
 
-    const dataToSend = {
-      systemInstructions: systemInstructions.data,
-      context: contextItems.map(item => item.data),
-    }
-
-    socket.emit('test', dataToSend, response => {
-      console.log('LLM Response:', response)
-
-      // If there's no outbox edge, do nothing
-      if (!outboxEdgeId) return
-
-      // 2. Create the new item object
-      const newItem = {
-        type: 'llmResponse', // Set the type from the response or a default
-        emoji: '💬', // Set an appropriate emoji
-        data: response,
-        location: {
-          id: outboxEdgeId,
-          distance: 0,
-        },
-      }
-      console.log({ newItem })
-      // 3. Add the new item to the store
-      setItem(newItem)
+      // Move the used items to the outbox
+      setItemLocation({ itemId: items[index].id, locationId: outboxEdgeId })
     })
-  }, [items, socket, outboxEdgeId, setItem])
 
-  return { triggerLLMCall, items }
+    // Prepare system prompt
+    const systemPrompt =
+      data?.systemPrompt && data?.outputSchema
+        ? `${data?.systemPrompt}. It is important to respond in output schema: ${data?.outputSchema}`
+        : 'Tell the user a fun fact about items they have in markdown format text'
+
+    // Emit LLM call to the backend
+    socket.emit('llm', { systemPrompt, userPrompt }, async response => {
+      try {
+        console.log('LLM Response:', response)
+
+        // Create a new item from the response
+        const newItem = {
+          type: data.outputType || 'llmResponse',
+          emoji: data.outputEmoji || '💬',
+          markdown: response,
+          location: {
+            id: outboxEdgeId,
+            distance: 0,
+          },
+        }
+
+        // Add the new item to the store
+        setItem(newItem)
+      } catch (error) {
+        console.error('Error processing LLM response:', error)
+      }
+    })
+  }, [items, setItemLocation, outboxEdgeId, data, socket, setItem, batchSize])
+
+  // Auto-run logic
+  useEffect(() => {
+    if (autoRun && items.length >= batchSize) {
+      triggerLLMCall()
+    }
+  }, [autoRun, items, batchSize, triggerLLMCall])
+
+  return { triggerLLMCall, items, autoRun, toggleAutoRun }
 }
 
 export default useAgent
