@@ -8,55 +8,126 @@
  * Valid signal types.
  * @type {Object}
  */
-export const signalTypes = {
+export default {
   /**
+   * Schema for ITEM_ARRIVED signal.
    * Emitted when a data packet arrives at a node.
-   * @property {string} id - Id of the received data packet.
    */
-  ITEM_ARRIVED: 'ITEM_ARRIVED',
+  ITEM_ARRIVED: {
+    toString: () => 'ITEM_ARRIVED',
+    type: 'object',
+    properties: {
+      id: { type: 'string' },
+    },
+    required: ['id'],
+  },
 
   /**
+   * Schema for ITEM_SENT signal.
    * Emitted when a data packet is sent from a node.
-   * @property {string} id - Id of the data packet being sent.
    */
-  ITEM_SENT: 'ITEM_SENT',
+  ITEM_SENT: {
+    toString: () => 'ITEM_SENT',
+    type: 'object',
+    properties: {
+      id: { type: 'string' },
+    },
+    required: ['id'],
+  },
 
   /**
+   * Schema for SEMAPHORE_CHANGE signal.
    * Emitted when the color of a semaphore changes.
-   * @property {string} color - The new color of the semaphore.
    */
-  SEMAPHORE_CHANGE: 'SEMAPHORE_CHANGE',
+  SEMAPHORE_CHANGE: {
+    toString: () => 'SEMAPHORE_CHANGE',
+    type: 'object',
+    properties: {
+      color: { type: 'string' },
+    },
+    required: ['color'],
+  },
 
   /**
+   * Schema for AUTOMATION_CHANGE signal.
+   * Emitted when the mode of automation changes.
+   */
+  AUTOMATION_CHANGE: {
+    toString: () => 'AUTOMATION_CHANGE',
+    type: 'object',
+    properties: {
+      autoRun: { type: 'boolean' },
+    },
+    required: ['autoRun'],
+  },
+
+  /**
+   * Schema for TASK_REQUEST signal.
    * Emitted to request an agent or node/IC to perform a task.
-   * @property {string} taskId - Unique identifier for the task.
-   * @property {string} taskDescription - Description of the task.
-   * @property {string[]} requiredTools - Array of tool names needed.
-   * @property {object|object[]} [inputData] - Optional input data packet(s).
    */
-  TASK_REQUEST: 'TASK_REQUEST',
+  TASK_REQUEST: {
+    toString: () => 'TASK_REQUEST',
+    type: 'object',
+    properties: {
+      taskId: { type: 'string' },
+      taskDescription: { type: 'string' },
+      requiredTools: {
+        type: 'array',
+        items: { type: 'string' },
+      },
+      inputData: {
+        type: ['object', 'array'],
+        items: { type: 'object' },
+      },
+    },
+    required: ['taskId', 'taskDescription', 'requiredTools'],
+  },
 
   /**
+   * Schema for TASK_ACCEPTED signal.
    * Emitted to confirm that a task request has been accepted.
-   * @property {string} taskId - The Id of the accepted task.
-   * @property {string} agentId - The Id of the agent/node/IC accepting the task.
    */
-  TASK_ACCEPTED: 'TASK_ACCEPTED',
+  TASK_ACCEPTED: {
+    toString: () => 'TASK_ACCEPTED',
+    type: 'object',
+    properties: {
+      taskId: { type: 'string' },
+      agentId: { type: 'string' },
+    },
+    required: ['taskId', 'agentId'],
+  },
 
   /**
+   * Schema for TASK_STATUS_UPDATE signal.
    * Emitted to provide updates on the progress of a task.
-   * @property {string} taskId - The Id of the task being updated.
-   * @property {string} status - The current status (e.g., "in progress", "completed", "failed").
-   * @property {number} [progress] - Optional progress indicator (e.g., percentage).
-   * @property {object} [intermediateData] - Optional intermediate data generated.
    */
-  TASK_STATUS_UPDATE: 'TASK_STATUS_UPDATE',
+  TASK_STATUS_UPDATE: {
+    toString: () => 'TASK_STATUS_UPDATE',
+    type: 'object',
+    properties: {
+      taskId: { type: 'string' },
+      status: { type: 'string' },
+      progress: { type: 'number' },
+      intermediateData: { type: 'object' },
+    },
+    required: ['taskId', 'status'],
+  },
 
   /**
+   * Schema for TASK_RESULT signal.
    * Emitted to deliver the results of a completed task.
-   * @property {string} taskId - The Id of the completed task.
-   * @property {object|object[]} resultData - The data packet(s) representing the output.
-   * @property {string} status -  "success" or "failure"
    */
-  TASK_RESULT: 'TASK_RESULT',
+  TASK_RESULT: {
+    toString: () => 'TASK_RESULT',
+    type: 'object',
+    properties: {
+      taskId: { type: 'string' },
+      resultData: {
+        type: ['object', 'array'],
+        items: { type: 'object' },
+      },
+      status: { type: 'string' },
+    },
+    required: ['taskId', 'resultData', 'status'],
+  },
 }

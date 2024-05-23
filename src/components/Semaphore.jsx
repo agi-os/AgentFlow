@@ -1,5 +1,6 @@
 import { useStore, useReactFlow, useNodeId, useKeyPress } from '@xyflow/react'
-import { signalTypes } from '../constants/signalTypes'
+import signalTypes from '../constants/signalTypes'
+import { useCallback } from 'react'
 
 /**
  * Renders a simple red-yellow-green semaphore with clickable toggles.
@@ -48,7 +49,7 @@ const Semaphore = ({
   const allClasses = [...classNames, colorClasses[color]].join(' ')
 
   // Toggle the color on click
-  const toggleColor = () => {
+  const toggleColor = useCallback(() => {
     // Get the index of the current color
     const colorIndex = colors.indexOf(color)
 
@@ -79,7 +80,7 @@ const Semaphore = ({
 
     // Emit the SEMAPHORE_CHANGE signal
     signalHubEmit(id, signalTypes.SEMAPHORE_CHANGE, { color: nextColor })
-  }
+  }, [color, colors, id, reactFlow, signalHubEmit])
 
   // Render the semaphore
   return (

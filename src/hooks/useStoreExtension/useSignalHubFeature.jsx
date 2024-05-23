@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useStore, useStoreApi } from '@xyflow/react'
-import { signalTypes } from '../../constants/signalTypes'
+import signalTypes from '../../constants/signalTypes'
 
 /**
  * Custom React hook to initialize and manage a signal hub in the store.
@@ -80,7 +80,7 @@ const useSignalHubFeature = () => {
         const subscribers = signalHubSubscribers.get(sourceNodeId) || []
 
         subscribers.forEach(callback => {
-          callback(signalType, payload)
+          callback(payload, signalType.toString(), sourceNodeId)
         })
       },
     }))

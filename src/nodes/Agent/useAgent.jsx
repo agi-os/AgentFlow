@@ -1,8 +1,11 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useStore } from '@xyflow/react'
+import signalTypes from '../../constants/signalTypes'
 
 const useAgent = ({ id, data }) => {
   const store = useStore()
+
+  const signalHubEmit = useStore(s => s.signalHubEmit)
 
   // Agent data and settings
   const batchSize = parseInt(data?.batchSize, 10) || 1
@@ -23,6 +26,15 @@ const useAgent = ({ id, data }) => {
   const toggleAutoRun = useCallback(() => {
     setAutoRun(prev => !prev)
   }, [])
+
+  // Emit a signal when automation state changes
+  useEffect(() => {
+    // Sanity check
+    if (!signalHubEmit) return
+
+    // Emit the change
+    signalHubEmit(id, signalTypes.AUTOMATION_CHANGE, { autoRun })
+  }, [id, signalHubEmit, autoRun])
 
   // Trigger the backend LLM call
   const triggerLLMCall = useCallback(async () => {
