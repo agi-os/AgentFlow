@@ -16,6 +16,7 @@ import useBeltDriveFeature from './useBeltDriveFeature'
 import useItemFeature from './useItemFeature'
 import useSocketFeature from './useSocketFeature'
 import useSignalFeature from './useSignalFeature'
+import useSignalHubFeature from './useSignalHubFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
 import { loadFromIndexedDB, saveToIndexedDB } from './useDatabase'
 // Function to save specific parts of the store state to localStorage under separate keys
@@ -125,6 +126,9 @@ const useEnhancedStore = ({ initialItems }) => {
 
   // Extend store with signal functionality
   useSignalFeature()
+
+  // Extend store with signal hub functionality
+  useSignalHubFeature()
 
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)

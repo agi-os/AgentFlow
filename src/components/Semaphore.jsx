@@ -1,4 +1,5 @@
 import { useStore, useReactFlow, useNodeId, useKeyPress } from '@xyflow/react'
+import { signalTypes } from '../constants/signalTypes'
 
 /**
  * Renders a simple red-yellow-green semaphore with clickable toggles.
@@ -25,6 +26,7 @@ const Semaphore = ({
 }) => {
   // Get a handle on the react flow instance
   const reactFlow = useReactFlow()
+  const signalHubEmit = useStore(s => s.signalHubEmit)
 
   const qPressed = useKeyPress('q')
 
@@ -74,6 +76,9 @@ const Semaphore = ({
 
     // Update the node in the store.
     reactFlow.setNodes(updatedNodes)
+
+    // Emit the SEMAPHORE_CHANGE signal
+    signalHubEmit(id, signalTypes.SEMAPHORE_CHANGE, { color: nextColor })
   }
 
   // Render the semaphore
