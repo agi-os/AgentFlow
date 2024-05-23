@@ -17,6 +17,7 @@
     "@faker-js/faker": "^8.4.1",
     "@leenguyen/react-flip-clock-countdown": "^1.6.0",
     "@xyflow/react": "^12.0.0-next.16",
+    "ajv": "^8.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.10.2",
