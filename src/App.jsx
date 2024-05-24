@@ -16,23 +16,10 @@ import SpeedRange from './components/SpeedRange'
 import nodeTypes from './nodes/nodeTypes'
 import edgeTypes from './edges/edgeTypes'
 
-import initialNodes from './initialNodes'
-import initialEdges from './initialEdges'
 import useStoreExtension from './hooks/useStoreExtension/index'
-
-import { randomProspects } from './initialNodes'
 
 import useIsValidConnection from './hooks/useIsValidConnection'
 import useOnConnect from './hooks/useOnConnect'
-
-const initialItems = randomProspects(10)
-  // remove ids
-  // eslint-disable-next-line no-unused-vars
-  .map(({ id, ...rest }) => rest)
-  // rename type to jobType
-  .map(({ type, ...rest }) => ({ jobType: type, ...rest }))
-  // add type 'prospect'
-  .map(item => ({ type: 'prospect', ...item }))
 
 import {
   copyToClipboard,
@@ -44,7 +31,7 @@ import {
 
 const App = () => {
   // Extend the ReactFlow store with custom functionality
-  useStoreExtension({ initialItems })
+  useStoreExtension()
 
   // Get the x and y offset from store
   const [x, y, z] = useStore(s => s.transform)
@@ -58,12 +45,8 @@ const App = () => {
   const isValidConnection = useIsValidConnection(storeApi)
 
   // Link the nodes and edges to the store
-  const [nodes, setNodes, onNodesChange] = useNodesState(
-    JSON.parse(localStorage.getItem('nodes') || '[]')
-  )
-  const [edges, setEdges, onEdgesChange] = useEdgesState(
-    JSON.parse(localStorage.getItem('edges') || '[]')
-  )
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
   // Handle connection events
   const onConnect = useOnConnect(setEdges)
@@ -114,6 +97,22 @@ const App = () => {
     document.addEventListener('keydown', handleKeydown)
     return () => document.removeEventListener('keydown', handleKeydown)
   }, [onCopy, onPaste])
+
+  const { setState } = useStoreApi()
+  const generateId = useStore(state => state.generateId)
+
+  useEffect(() => {
+    // Check for edges without IDs and generate them
+    const edgesNeedIDs = edges.filter(edge => !edge.id)
+    if (edgesNeedIDs.length > 0) {
+      setState(draft => ({
+        ...draft,
+        edges: draft.edges.map(edge =>
+          edge.id ? edge : { ...edge, id: generateId() }
+        ),
+      }))
+    }
+  }, [edges, generateId, setState])
 
   return (
     <>
