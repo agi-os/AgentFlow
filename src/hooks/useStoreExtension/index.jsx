@@ -1,5 +1,8 @@
 // File: ./hooks/useStoreExtension/index.jsx
-import { INITIAL_SPEED, TICKS_PER_SECOND } from '../../constants/_mainConfig'
+import {
+  INITIAL_SPEED,
+  TICKS_PER_SECOND,
+} from '../../constants/_mainConfiguration'
 
 import { useEffect } from 'react'
 

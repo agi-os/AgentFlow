@@ -1,6 +1,6 @@
 import { useStore } from '@xyflow/react'
 
-import { MIN_SPEED, MAX_SPEED } from '../constants/_mainConfig'
+import { MIN_SPEED, MAX_SPEED } from '../constants/_mainConfiguration'
 
 const SpeedRange = () => {
   const speed = useStore(s => s.speed) ?? 37

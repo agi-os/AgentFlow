@@ -11,7 +11,7 @@ import {
   YELLOW_COUNTDOWN,
   GREEN_COUNTDOWN,
   BLUE_COUNTDOWN,
-} from '../../constants/_mainConfig'
+} from '../../constants/_mainConfiguration'
 
 /**
  * Renders an output portal component.

@@ -7,7 +7,7 @@ import {
   YELLOW_COUNTDOWN,
   GREEN_COUNTDOWN,
   BLUE_COUNTDOWN,
-} from '../../constants/_mainConfig'
+} from '../../constants/_mainConfiguration'
 
 const Countdown = () => {
   // Get the node id
