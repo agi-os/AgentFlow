@@ -5,6 +5,7 @@ import debounce from '../debounce'
 import dataTypesConfig from './dataTypesConfig'
 import loadDataFromStore from './loadDataFromStore'
 import saveDataToStore from './saveDataToStore'
+import { normalizePositions } from '../../../utils/graph'
 
 const useDatabaseFeature = () => {
   const { setNodes, setEdges } = useReactFlow()
@@ -46,8 +47,34 @@ const useDatabaseFeature = () => {
       'saveDataToIndexedDB',
       async dataToSave => {
         try {
+          // Apply normalizePositions to nodes before saving
+          const normalizedData = { ...dataToSave }
+          if (normalizedData.nodes) {
+            // Transform nodes into format expected by normalizePositions
+            const nodesForNormalization = normalizedData.nodes.reduce(
+              (obj, node) => {
+                obj[node.id] = [null, node.position.x, node.position.y, null]
+                return obj
+              },
+              {}
+            )
+
+            // Center nodes around (0, 0)
+            const normalizedNodes = normalizePositions({
+              n: nodesForNormalization,
+            })
+
+            // Transform back to original format
+            normalizedData.nodes = Object.entries(normalizedNodes.n).map(
+              ([id, [, x, y]]) => ({
+                ...normalizedData.nodes.find(n => n.id === id), // Get other node properties
+                position: { x, y },
+              })
+            )
+          }
+
           await Promise.all(
-            Object.entries(dataToSave).map(async ([type, data]) => {
+            Object.entries(normalizedData).map(async ([type, data]) => {
               const store = dataTypesConfig[type].store
               await saveDataToStore(store, data)
             })
