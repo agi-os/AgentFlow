@@ -81,6 +81,9 @@ const onConnect = ({ connection, lookup, generateId, setEdges }) => {
   setEdges(edges => addEdge(connection, edges))
 }
 
+const lookupSelector = state => state.lookup
+const generateIdSelector = state => state.generateId
+
 /**
  * Custom hook that returns a memoized version of the onConnect function.
  * @param {Object} storeApi - The store API object.
@@ -89,8 +92,8 @@ const onConnect = ({ connection, lookup, generateId, setEdges }) => {
  */
 const useOnConnect = setEdges => {
   // Get lookup and generateId functions from the store
-  const lookup = useStore(state => state.lookup)
-  const generateId = useStore(state => state.generateId)
+  const lookup = useStore(lookupSelector)
+  const generateId = useStore(generateIdSelector)
 
   return useCallback(
     connection => onConnect({ connection, lookup, generateId, setEdges }),
