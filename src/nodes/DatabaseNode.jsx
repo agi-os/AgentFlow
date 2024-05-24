@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useReactFlow, useStore } from '@xyflow/react'
 import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import { BeltSource, BeltTarget } from '../components/BeltPort'
 import Semaphore from '../components/Semaphore'
-import { dataPacketSchema, validateDataPacket } from '../util'
+import { validateDataPacket } from '../utils/validation'
 
 const DATABASE_NAME = 'AgentFlowDB'
 const DATA_STORE_NAME = 'dataItems'

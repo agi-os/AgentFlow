@@ -24,10 +24,9 @@ import useOnConnect from './hooks/useOnConnect'
 import {
   copyToClipboard,
   fetchDataFromClipboard,
-  createNewGraphElements,
   handleCopyPasteKeypress,
-  updateStates,
-} from './util'
+} from './utils/clipboard'
+import { updateStates, createNewGraphElements } from './utils/graph'
 
 const App = () => {
   // Extend the ReactFlow store with custom functionality

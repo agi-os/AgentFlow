@@ -1,5 +1,5 @@
 import { Position, Handle, useReactFlow, useNodeId } from '@xyflow/react'
-import { validateDataPacket } from '../util'
+import { validateDataPacket } from '../utils/validation'
 import { useStore } from '@xyflow/react'
 
 /**

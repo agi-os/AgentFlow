@@ -36,7 +36,6 @@ const ItemChestNode = ({ id }) => {
   return (
     <div x-id={id} className={classNames.join(' ')}>
       <BeltTarget />
-      <SignalHandles />
       <Title id={id}>📦 Item Chest ({itemCount})</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
@@ -46,6 +45,7 @@ const ItemChestNode = ({ id }) => {
       </ZoomCompensated>
       <BeltSource />
       <Countdown />
+      <SignalHandles />
     </div>
   )
 }
