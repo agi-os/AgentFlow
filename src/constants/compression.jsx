@@ -23,4 +23,6 @@ export const compressionMap = {
   outputEmoji: 3,
   outputType: 4,
   systemPrompt: 5,
+  schemaName: 6,
+  schemaYaml: 7,
 }

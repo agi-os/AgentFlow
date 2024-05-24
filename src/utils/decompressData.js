@@ -25,7 +25,7 @@ export const decompressData = compressedData => {
     const rawData = convertFlatArrayToObject(data)
 
     // update data keys to original keys
-    const decompressedData = rawData.map(([key, value]) => [
+    const decompressedData = Object.entries(rawData).map(([key, value]) => [
       decompressionMap.get(key) || key,
       value,
     ])
