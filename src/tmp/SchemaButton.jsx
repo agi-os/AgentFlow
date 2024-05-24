@@ -21,9 +21,7 @@ const SchemaButton = ({ old = false }) => {
           y: Math.random() * 500,
         },
         type,
-        data: {
-          label: `Node ${id}`,
-        },
+        data: {},
       }
       reactFlowInstance.addNodes(newNode)
 
@@ -31,7 +29,7 @@ const SchemaButton = ({ old = false }) => {
         socket.emit('schema', JSON.stringify(schema))
       }
     },
-    [socket, reactFlowInstance]
+    [generateId, reactFlowInstance, socket]
   )
 
   return (

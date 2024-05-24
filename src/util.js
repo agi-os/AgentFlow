@@ -1,11 +1,25 @@
 import generateId from './hooks/useStoreExtension/generateId'
+import { compressionMap } from './constants/compression'
+
+// Create Maps from the compressionMap object
+const stringCompressionMap = new Map(Object.entries(compressionMap))
+
+// For decompression (invert key-value pairs):
+const decompressionMap = new Map(
+  Object.entries(compressionMap).map(([key, value]) => [value, key])
+)
 
 const compressData = ({ nodes, edges }) => {
   // Pack nodes including the 'type' attribute
   const packedNodes = nodes.reduce(
     (obj, { id, data, position: { x, y }, type }) => {
       // Use half-id keys to save space, trim decimals from coordinates
-      obj[id.split('-')[0]] = [data, x | 0, y | 0, type]
+      obj[id.split('-')[0]] = [
+        data,
+        x | 0,
+        y | 0,
+        stringCompressionMap.get(type) || type,
+      ]
       return obj
     },
     {}
@@ -27,10 +41,10 @@ const compressData = ({ nodes, edges }) => {
     // Return full edge
     return [
       edge.source.split('-')[0],
-      edge.sourceHandle,
+      stringCompressionMap.get(edge.sourceHandle) || edge.sourceHandle,
       edge.target.split('-')[0],
-      edge.targetHandle,
-      edge.type || '',
+      stringCompressionMap.get(edge.targetHandle) || edge.targetHandle,
+      stringCompressionMap.get(edge.type) || edge.type || '',
       edge.animated ? 1 : 0,
     ]
   })
@@ -45,7 +59,7 @@ export const decompressData = compressedData => {
       id,
       data,
       position: { x, y },
-      type,
+      type: decompressionMap.get(type) || type,
     })
   )
 
@@ -69,10 +83,10 @@ export const decompressData = compressedData => {
     const [source, sourceHandle, target, targetHandle, type, animated] = edge
     return {
       source,
-      sourceHandle,
+      sourceHandle: decompressionMap.get(sourceHandle) || sourceHandle,
       target,
-      targetHandle,
-      type,
+      targetHandle: decompressionMap.get(targetHandle) || targetHandle,
+      type: decompressionMap.get(type) || type,
       animated: !!animated,
     }
   })
