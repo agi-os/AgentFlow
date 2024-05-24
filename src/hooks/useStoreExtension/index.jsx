@@ -1,9 +1,9 @@
+// File: ./hooks/useStoreExtension/index.jsx
 import { INITIAL_SPEED, TICKS_PER_SECOND } from '../../constants/_mainConfig'
 
 import { useEffect } from 'react'
 
 import generateId from './generateId'
-import addInitialItemsToStore from './addInitialItemsToStore'
 import { useStore, useStoreApi } from '@xyflow/react'
 import debounce from './debounce'
 
@@ -18,29 +18,13 @@ import useSocketFeature from './useSocketFeature'
 import useSignalFeature from './useSignalFeature'
 import useSignalHubFeature from './useSignalHubFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
-import { loadFromIndexedDB, saveToIndexedDB } from './useDatabase'
-// Function to save specific parts of the store state to localStorage under separate keys
-const saveToLocalStorage = debounce(
-  'saveToLocalStorage',
-  (key, value) => {
-    try {
-      JSON.parse(value)
-      localStorage.setItem(key, value)
-      console.log('writing', key, JSON.parse(value))
-    } catch (error) {
-      console.error(`Error saving ${key} to localStorage:`, error)
-    }
-  },
-  250
-) // Debounce with a 1/4-second delay
+import useDatabaseFeature from './useDatabaseFeature/index'
 
 /**
- * Custom hook that enhances the store with additional functionality.
- * @param {Object} options - The options for the enhanced store.
- * @param {Array} options.initialItems - The initial items to add to the store.
+ * Custom hook that enhances the store with additional functionality.đ
  * @returns {Object} - The enhanced store object.
  */
-const useEnhancedStore = ({ initialItems }) => {
+const useEnhancedStore = () => {
   const store = useStoreApi()
 
   // Get the reference to items initialized in first useEffect
@@ -106,6 +90,22 @@ const useEnhancedStore = ({ initialItems }) => {
       getNode: id => store.getState().nodeLookup.get(id),
       getEdge: id => store.getState().edgeLookup.get(id),
       lookup: id => lookup({ store, id }),
+
+      // Add functions for Innodb (IndexedDB) storage interaction
+      flushToInnodb: nodeId => {
+        console.log('flush', nodeId)
+        // const items = draft.getLocationItems(nodeId)
+        // saveToIndexedDB(store) // Save only items to IndexedDB
+        // console.log(
+        //   `Flushed ${items.length} items from node ${nodeId} to Innodb.`
+        // )
+      },
+      loadFromInnodb: async nodeId => {
+        // await loadFromIndexedDB(store) // Load all data, including items
+        // After loading, you might want to move loaded items to the specific nodeId
+        // ... (Implement your logic for moving items to the nodeId)
+        console.log(`Loaded items from Innodb.`, nodeId)
+      },
     }))
   }, [store, tickLength, speed])
 
@@ -130,6 +130,9 @@ const useEnhancedStore = ({ initialItems }) => {
   // Extend store with signal hub functionality
   useSignalHubFeature()
 
+  // Extend store with database functionality
+  useDatabaseFeature()
+
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)
   const updateNodeEdgeLookup = useStore(s => s.updateNodeEdgeLookup)
@@ -147,71 +150,6 @@ const useEnhancedStore = ({ initialItems }) => {
       store.subscribe(s => (window.store = s))
     }
   }, [store])
-
-  // Add autosave functionality
-  useEffect(() => {
-    const nodeExcludeKeys = new Set([
-      'location',
-      'selected',
-      'dragging',
-      'measured',
-    ])
-
-    const nodeFilter = (key, value) => {
-      if (nodeExcludeKeys.has(key)) return undefined
-      if (key === 'position') {
-        value.x = Math.floor(value.x)
-        value.y = Math.floor(value.y)
-      }
-      return value
-    }
-
-    const edgeExcludeKeys = new Set(['length', 'selected'])
-
-    const edgeFilter = (key, value) => {
-      if (edgeExcludeKeys.has(key)) return undefined
-      return value
-    }
-
-    // Cache of last writes as JSON
-    const writeCache = {
-      nodes: '',
-      edges: '',
-    }
-
-    // Subscribe to store changes and trigger saveToLocalStorage when change is detected
-    const unsubscribe = store.subscribe(() => {
-      const currentState = store.getState()
-      const currentNodesJSON = JSON.stringify(currentState.nodes, nodeFilter)
-      const currentEdgesJSON = JSON.stringify(currentState.edges, edgeFilter)
-
-      if (currentNodesJSON !== writeCache.nodes) {
-        saveToLocalStorage('nodes', currentNodesJSON)
-        writeCache.nodes = currentNodesJSON
-      }
-
-      if (currentEdgesJSON !== writeCache.edges) {
-        saveToLocalStorage('edges', currentEdgesJSON)
-        writeCache.edges = currentEdgesJSON
-      }
-    })
-
-    // Cleanup function to unsubscribe on unmount
-    return unsubscribe
-  }, [store])
-
-  // // Save the nodes and edges to IndexedDB
-  // useEffect(() => {
-  //   // IndexedDB setup
-  //   loadFromIndexedDB(store)
-
-  //   // Subscribe to store changes and save to IndexedDB
-  //   const unsubscribe = store.subscribe(() => {
-  //     saveToIndexedDB(store)
-  //   })
-
-  //   return unsubscribe
-  // }, [store])
 
   return store
 }

@@ -12,3 +12,8 @@ export const NODE_STORE = 'nodes'
  * The name of the store within the database used for storing edges.
  */
 export const EDGE_STORE = 'edges'
+
+/**
+ * The name of the store within the database used for storing items.
+ */
+export const ITEM_STORE = 'items'
