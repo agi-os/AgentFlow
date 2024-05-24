@@ -24,7 +24,6 @@ const filterNode = node =>
     )
   )
 
-// --- End Data Filtering Functions ---
 // Data Type Configuration (Includes Filtering)
 
 const dataTypesConfig = {
