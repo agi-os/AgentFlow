@@ -26,6 +26,8 @@ export const Belt = props => {
   // Get the node id from the store.
   const nodeId = useNodeId()
 
+  const nodeItems = useStore(state => state.getLocationItems(nodeId))
+
   // If the nodeId is available, adjust the color based on the node's semaphore.
   if (nodeId) {
     const node = reactFlow.getNode(nodeId)
@@ -92,7 +94,7 @@ export const Belt = props => {
         position={position}
         {...rest}
       />
-      {type === 'source' && (
+      {type === 'source' && nodeItems.length > 0 && (
         <ReleaseButton onReceive={onReceive} onClick={handleEmitData} />
       )}
     </>
@@ -120,7 +122,7 @@ const ReleaseButton = ({
     <div
       onClick={onClick}
       className={classNames.join(' ')}
-      title="emit a single item">
+      title="release one item">
       🔻
     </div>
   )
