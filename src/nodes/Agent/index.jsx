@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useEffect, useState } from 'react'
-import { useReactFlow, useStore } from '@xyflow/react'
+import { useCallback } from 'react'
+import { useReactFlow } from '@xyflow/react'
 import baseClassNames from '../../constants/classNames'
 import Title from '../../components/Title'
 import Inputs from '../../components/Inputs'
 
-import { inputs } from './constants'
+import { inputs } from './config'
 
 import SignalHandles from '../../signals/SignalHandles/index'
 import { BeltSource, BeltTarget } from '../../components/BeltPort'

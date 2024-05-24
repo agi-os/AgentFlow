@@ -1,23 +1,19 @@
 const Input = ({
-  classNames = [
-    'w-full',
-    'min-w-32',
-    'p-2',
-    'pl-3',
-    'border',
-    'border-zinc-700',
-    'focus:border-zinc-500',
-    'focus:bg-black',
-    'focus:outline-none',
-    'bg-zinc-900',
-    'rounded-full',
-    'nodrag',
-  ],
+  classNames,
+  inputClassNames = [],
   onChange,
   text = '',
+  children,
 }) => {
   return (
-    <input className={classNames.join(' ')} onChange={onChange} value={text} />
+    <div className={classNames.join(' ')}>
+      {children}
+      <input
+        className={inputClassNames.join(' ')}
+        onChange={onChange}
+        value={text}
+      />
+    </div>
   )
 }
 
