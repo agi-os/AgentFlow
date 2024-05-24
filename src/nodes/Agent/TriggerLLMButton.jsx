@@ -4,19 +4,18 @@
  * @param {boolean} enabled - Flag to determine if the button is enabled or disabled.
  * @returns {JSX.Element} - A button element to trigger LLM call if enabled, or a message if disabled.
  */
-const TriggerLLMButton = ({ onClick, enabled }) => {
+const TriggerLLMButton = ({ batchSize, onClick, enabled }) => {
   const handleClick = onClick || (() => {})
 
   return enabled ? (
     <button
       className="border border-zinc-600 transition-all hover:border-zinc-400 hover:bg-zinc-700 bg-zinc-800 rounded-full p-3 w-1/2"
       onClick={handleClick}>
-      Trigger LLM Call
+      Send {batchSize} item{batchSize > 1 && 's'} to AI
     </button>
   ) : (
-    <div className="grid place-content-center text-balance text-center">
-      Batch size not reached. Waiting for the batch size to reach the required
-      amount.
+    <div className="grid place-content-center text-balance text-center w-1/2">
+      I need {batchSize} item{batchSize > 1 && 's'} to start work.
     </div>
   )
 }

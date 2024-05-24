@@ -52,10 +52,14 @@ const AgentNode = ({ id, data }) => {
       <Semaphore />
       <Inputs inputs={inputs} data={data} onChange={onChange} />
       <div className="flex justify-between space-x-2">
-        <TriggerLLMButton onClick={triggerLLMCall} enabled={runEnabled} />
+        <TriggerLLMButton
+          batchSize={batchSize}
+          onClick={triggerLLMCall}
+          enabled={runEnabled}
+        />
         <AutoRunButton onClick={toggleAutoRun} autoRun={autoRun} />
       </div>
-      <ItemDetailsList items={items} />
+      <ItemDetailsList batchSize={batchSize} items={items} />
       <BeltSource />
     </div>
   )

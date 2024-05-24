@@ -5,9 +5,9 @@ import AddItemButton from './AddItemButton'
  * @returns {JSX.Element} The empty chest component.
  */
 const EmptyChest = () => (
-  <div className="flex flex-col gap-16 items-center justify-center w-full h-full">
+  <div className="flex flex-col items-center justify-evenly pb-[15%] h-full w-full">
+    <div className="text-4xl mb-12">?📦</div>
     <div>This chest is empty</div>
-    <div className="text-3xl mb-12">📦</div>
     <AddItemButton />
   </div>
 )
