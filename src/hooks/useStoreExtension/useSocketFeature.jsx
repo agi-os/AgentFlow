@@ -33,7 +33,7 @@ const useSocketFeature = () => {
     socketDone = true
 
     // Connect to server
-    const newSocket = io('http://localhost:3000')
+    const newSocket = io('http://localhost:4444')
     setSocket(newSocket)
   }, [socket])
 
