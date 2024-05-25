@@ -68,44 +68,44 @@ const useAgent = ({ id, data }) => {
       return
     }
 
-    // Prepare user prompt from items
+    // Prepare user prompt from copied items
     const userPrompt = JSON.parse(JSON.stringify(items)).slice(0, batchSize)
     userPrompt.forEach((userPromptItem, index) => {
+      // Cleanup
       delete userPromptItem.id
+      delete userPromptItem.emoji
       delete userPromptItem.location
 
       // Move the used items to the outbox
       setItemLocation({ itemId: items[index].id, locationId: outboxEdgeId })
     })
 
-    // Prepare system prompt
-    const systemPrompt =
-      data?.systemPrompt && data?.outputSchema
-        ? `${data?.systemPrompt}. It is important to respond in output schema: ${data?.outputSchema}`
-        : 'Tell the user a fun fact about items they have in markdown format text'
-
     // Emit LLM call to the backend
-    socket.emit('llm', { systemPrompt, userPrompt }, async response => {
-      try {
-        console.log('LLM Response:', response)
+    socket.emit(
+      'llmSchema',
+      { preset: 'markdown', content: userPrompt },
+      response => {
+        try {
+          console.log('LLM Response:', response)
 
-        // Create a new item from the response
-        const newItem = {
-          type: data.outputType || 'llmResponse',
-          emoji: data.outputEmoji || '💬',
-          markdown: response,
-          location: {
-            id: outboxEdgeId,
-            distance: 0,
-          },
+          // Create a new item from the response
+          const newItem = {
+            type: data.outputType || 'llmResponse',
+            emoji: data.outputEmoji || '💬',
+            markdown: response,
+            location: {
+              id: outboxEdgeId,
+              distance: 0,
+            },
+          }
+
+          // Add the new item to the store
+          setItem(newItem)
+        } catch (error) {
+          console.error('Error processing LLM response:', error)
         }
-
-        // Add the new item to the store
-        setItem(newItem)
-      } catch (error) {
-        console.error('Error processing LLM response:', error)
       }
-    })
+    )
   }, [items, setItemLocation, outboxEdgeId, data, socket, setItem, batchSize])
 
   // Auto-run logic
