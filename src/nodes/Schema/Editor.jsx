@@ -1,6 +1,43 @@
 import { useCallback } from 'react'
-import { useReactFlow } from '@xyflow/react'
-import { textAreaClassNames } from './config'
+import { useReactFlow, useStore } from '@xyflow/react'
+import { textAreaClassNames, buttonClassNames } from './config'
+
+/**
+ * Writes the schema for the user using LLM help
+ */
+const writeYamlForMe = (e, socket, handleChange) => {
+  e.preventDefault()
+  e.stopPropagation()
+
+  const whatUserWants = prompt(
+    "I'm here to help, please tell me a little about the data you wish to get in each result?"
+  )
+
+  // Abort if user cancelled or entered blank value
+  if (!whatUserWants) {
+    return
+  }
+
+  // Send request to server
+  socket.emit(
+    'llmSchema',
+    {
+      customSystemReference: 'createYamlSchema',
+      user: whatUserWants,
+    },
+    response => {
+      const { yamlSchemaString } = response
+
+      // Skip first line as it is always the same
+      const trimmedYamlSchemaString = yamlSchemaString
+        .split('\n')
+        .slice(1)
+        .join('\n')
+
+      handleChange({ target: { value: trimmedYamlSchemaString } })
+    }
+  )
+}
 
 /**
  * Editor component for rendering a textarea input with specific styling and functionality.
@@ -11,6 +48,7 @@ import { textAreaClassNames } from './config'
  */
 const Editor = ({ id, data }) => {
   const { setNodes } = useReactFlow()
+  const socket = useStore(s => s.socket)
 
   const handleChange = useCallback(
     e => {
@@ -34,13 +72,20 @@ const Editor = ({ id, data }) => {
   )
 
   return (
-    <textarea
-      x-id={id}
-      spellCheck={false}
-      onChange={handleChange}
-      className={textAreaClassNames.join(' ')}
-      value={data.schemaYaml}
-    />
+    <>
+      <textarea
+        x-id={id}
+        spellCheck={false}
+        onChange={handleChange}
+        className={textAreaClassNames.join(' ')}
+        value={data.schemaYaml}
+      />
+      <button
+        className={buttonClassNames.join(' ')}
+        onClick={e => writeYamlForMe(e, socket, handleChange)}>
+        ✨
+      </button>
+    </>
   )
 }
 

@@ -1,5 +1,4 @@
-import { useContext, useCallback } from 'react'
-import { SocketContext } from '../Socket'
+import { useCallback } from 'react'
 import { useReactFlow, useStore } from '@xyflow/react'
 import { useState } from 'react'
 import { classNames } from './classNames'
@@ -8,7 +7,7 @@ import { buttonsOld, buttons } from './schema'
 const SchemaButton = ({ old = false }) => {
   const generateId = useStore(s => s.generateId)
   const [isCollapsed, setIsCollapsed] = useState(true)
-  const socket = useContext(SocketContext)
+  const socket = useStore(s => s.socket)
   const reactFlowInstance = useReactFlow()
 
   const onClick = useCallback(

@@ -3,7 +3,7 @@ export const baseClassNames = [
   'rounded',
   'text-zinc-300',
   'font-thin',
-  'w-32',
+  'w-56',
   'bg-zinc-800',
   'border-[1px]',
   'overflow-hidden',
@@ -15,36 +15,36 @@ export const Schemas = ['URL', 'Article title', 'Web page text', 'Person']
 
 export const schemaYaml = {
   URL: `properties:
-url:
-  type: string
-  format: uri
+  url:
+    type: string
+    format: uri
 required:
-- url
+  - url
 `,
   'Article title': `properties:
-title:
-  type: string
-  minLength: 3
+  title:
+    type: string
+    minLength: 3
 required:
-- title
+  - title
 `,
   'Web page text': `properties:
-text:
-  type: string
-  minLength: 10
+  text:
+    type: string
+    minLength: 10
 required:
-- text
+  - text
 `,
   Person: `properties:
-name:
-  type: string
-  minLength: 3
-age:
-  type: integer
-  minimum: 18
+  name:
+    type: string
+    minLength: 3
+  age:
+    type: integer
+    minimum: 18
 required:
-- name
-- age
+  - name
+  - age
 `,
 }
 
@@ -74,7 +74,7 @@ export const textAreaClassNames = [
   'border-none',
   'resize-none',
   'overflow-hidden',
-  'text-[0.5rem]',
+  'text-[0.45rem]',
   'leading-none',
   'h-[7.2rem]',
   'shadow-inner',
@@ -90,4 +90,17 @@ export const labelClassNames = [
   'items-center',
   'gap-2',
   'cursor-pointer',
+]
+
+export const buttonClassNames = [
+  'absolute',
+  'bottom-0',
+  'cursor-pointer',
+  'right-0',
+  'opacity-20',
+  'hover:opacity-100',
+  'focus:outline-none',
+  'transition-opacity',
+  'p-2',
+  'rounded-full',
 ]
