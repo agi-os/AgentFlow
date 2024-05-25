@@ -68,7 +68,7 @@ const ToolChestNode = ({ id }) => {
     if (!isSocketReady) return
 
     // Fetch the tool schemas from the server
-    socket?.emit('tool schemas', tools => {
+    socket?.emit('toolSchemas', tools => {
       const data = tools.map(tool => reverseToolSchema(tool))
 
       for (const item of data) {

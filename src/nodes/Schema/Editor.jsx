@@ -22,8 +22,8 @@ const writeYamlForMe = (e, socket, handleChange) => {
   socket.emit(
     'llmSchema',
     {
-      customSystemReference: 'createYamlSchema',
-      user: whatUserWants,
+      preset: 'createYamlSchema',
+      content: whatUserWants,
     },
     response => {
       const { yamlSchemaString } = response

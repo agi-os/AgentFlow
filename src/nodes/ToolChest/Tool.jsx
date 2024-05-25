@@ -67,7 +67,7 @@ const ToolNode = ({ id, data }) => {
 
   // Fetch the tool schemas from the server
   useEffect(() => {
-    socket.emit('tool schemas', tools => {
+    socket.emit('toolSchemas', tools => {
       const data = tools.map(tool => reverseToolSchema(tool))
       setTools(data)
     })
