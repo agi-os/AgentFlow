@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState, useEffect } from 'react'
 import { getBezierPath, useStore } from '@xyflow/react'
 import BaseEdgeComponent from '../BaseEdgeComponent'
 import signalTypes from '../../constants/signalTypes'
@@ -16,12 +16,22 @@ const SignalEdge = memo(
   }) => {
     const speed = useStore(s => s.speed)
 
+    const signalEdgeLookup = useStore(s => s.signalEdgeLookup)
+
+    // Use state to store the edge data to trigger re-renders only when it changes
+    const [edgeData, setEdgeData] = useState(signalEdgeLookup.get(id) || {})
+
+    useEffect(() => {
+      // Update edgeData when the corresponding data in signalEdgeLookup changes
+      setEdgeData(signalEdgeLookup.get(id) || {})
+    }, [id, signalEdgeLookup])
+
     // Example color mapping based on signalType
-    let color = 'stroke-zinc-700'
+    let color = 'text-zinc-700'
     if (data.signalType === signalTypes.CONFIGURATION_UPDATED) {
-      color = 'stroke-orange-600'
+      color = 'text-orange-600'
     } else if (data.signalType === signalTypes.ALARM) {
-      color = 'stroke-red-600'
+      color = 'text-red-600'
     }
 
     // Get the path data
@@ -44,19 +54,21 @@ const SignalEdge = memo(
           pathD={edgePath}
           style={{
             animation: `signalPulse ${animationSpeed}ms linear infinite`,
+            stroke: 'currentColor', // make path inherit from classNames
           }}
           classNames={[color, 'stroke-1']}
         />
 
-        {/* Optional label rendering for signalType */}
+        {/* Label rendering */}
         <text
           x={labelX}
           y={labelY}
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={10}
-          fill={color}>
-          {data.signalType}
+          stroke="none"
+          fill="currentColor"
+          className={[color, 'text-xs'].join(' ')}>
+          {edgeData.signalType}
         </text>
       </>
     )
