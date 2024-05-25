@@ -144,4 +144,113 @@ export default {
     },
     required: ['taskId', 'resultData', 'status'],
   },
+
+  /**
+   * DataChange Event
+   * Emitted when the value of a Variable (configuration or data) changes.
+   */
+  DATA_CHANGE: {
+    toString: () => 'DATA_CHANGE',
+    type: 'object',
+    properties: {
+      nodeId: {
+        type: 'string',
+        description: 'OPC UA NodeId of the changed variable',
+      },
+      value: { type: 'any', description: 'New value of the variable' },
+    },
+    required: ['nodeId', 'value'],
+  },
+
+  /**
+   * AlarmConditionType Event
+   * Emitted by an agent to signal an anomaly or potential issue.
+   */
+  ALARM: {
+    toString: () => 'ALARM',
+    type: 'object',
+    properties: {
+      message: {
+        type: 'string',
+        description: 'Description of the alarm condition',
+      },
+      severity: {
+        type: 'integer',
+        description: 'Severity level (1-100, higher is more severe)',
+      },
+      sourceNodeId: {
+        type: 'string',
+        description: 'NodeId of the agent that emitted the alarm',
+      },
+    },
+    required: ['message', 'severity', 'sourceNodeId'],
+  },
+
+  /**
+   * LimitAlarmType Event
+   * Emitted when a limit or threshold is exceeded.
+   */
+  LIMIT_EXCEEDED: {
+    toString: () => 'LIMIT_EXCEEDED',
+    type: 'object',
+    properties: {
+      limitType: {
+        type: 'string',
+        description: 'Type of limit exceeded (e.g., tool usage, queue length)',
+      },
+      threshold: {
+        type: 'number',
+        description: 'The threshold that was exceeded',
+      },
+      currentValue: {
+        type: 'number',
+        description: 'The current value that triggered the alarm',
+      },
+    },
+    required: ['limitType', 'threshold', 'currentValue'],
+  },
+
+  /**
+   * SystemEventType Event
+   * For general system-level events.
+   */
+  SYSTEM_EVENT: {
+    toString: () => 'SYSTEM_EVENT',
+    type: 'object',
+    properties: {
+      eventType: {
+        type: 'string',
+        description: 'Type of system event (e.g., NODE_STARTUP, NODE_SHUTDOWN)',
+      },
+      message: {
+        type: 'string',
+        description: 'Optional message providing more details',
+      },
+    },
+    required: ['eventType'],
+  },
+
+  /**
+   * AuditEventType Event
+   * Tracks security and configuration changes.
+   */
+  AUDIT_EVENT: {
+    toString: () => 'AUDIT_EVENT',
+    type: 'object',
+    properties: {
+      eventType: {
+        type: 'string',
+        description: 'Type of audit event (e.g., CONFIG_CHANGE, LOGIN)',
+      },
+      user: {
+        type: 'string',
+        description: 'User or client associated with the event',
+      },
+      targetNodeId: {
+        type: 'string',
+        description: 'NodeId of the target of the event',
+      },
+    },
+    required: ['eventType', 'user', 'targetNodeId'],
+  },
 }
