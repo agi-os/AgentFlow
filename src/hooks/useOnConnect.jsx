@@ -63,10 +63,19 @@ const warnIfNodesNotFound = (sourceNode, targetNode) => {
  */
 const onConnect = ({ connection, lookup, generateId, setEdges }) => {
   connection.id = generateId()
-  connection.type = 'default'
 
   // Get the source and target nodes
   const { sourceNode, targetNode } = getNodes(connection, lookup)
+
+  // Set edge type to 'signal' if either handle is a SignalHandle
+  if (
+    connection.sourceHandle.includes('-') ||
+    connection.targetHandle.includes('-')
+  ) {
+    connection.type = 'signal'
+  } else {
+    connection.type = 'default'
+  }
 
   // Log a warning if either the source or target node is not found
   warnIfNodesNotFound(sourceNode, targetNode)

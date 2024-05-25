@@ -8,7 +8,7 @@ import {
   MAX_DASH_DELAY,
 } from '../constants/_mainConfiguration'
 
-import { classNames } from './classNames'
+import { classNames as defaultClassNames } from './classNames'
 
 /**
  * Renders a base edge component.
@@ -16,7 +16,7 @@ import { classNames } from './classNames'
  * @param {string} props.pathD - The path data for the edge.
  * @returns {JSX.Element} The rendered base edge component.
  */
-const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
+const BaseEdgeComponent = memo(({ edgeId, pathD, classNames, style }) => {
   // Get the belt speed
   const speed = useStore(s => s.speed)
 
@@ -32,10 +32,17 @@ const BaseEdgeComponent = memo(({ edgeId, pathD }) => {
     <BaseEdge
       x-id={edgeId}
       path={pathD}
-      className={classNames.join(' ')}
-      style={{
-        animation: `dashdraw ${dashSpeed}ms linear infinite`,
-      }}
+      className={(classNames
+        ? classNames // use custom classNames array if provided
+        : defaultClassNames
+      ).join(' ')}
+      style={
+        style
+          ? style // use custom style if provided
+          : {
+              animation: `dashdraw ${dashSpeed}ms linear infinite`,
+            }
+      }
     />
   )
 })

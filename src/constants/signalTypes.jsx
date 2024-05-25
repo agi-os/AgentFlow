@@ -253,4 +253,20 @@ export default {
     },
     required: ['eventType', 'user', 'targetNodeId'],
   },
+
+  /**
+   * Configuration change notification
+   * Subscribed node can update own configuration from the item id provided.
+   */
+  CONFIGURATION_UPDATED: {
+    toString: () => 'CONFIGURATION_UPDATED',
+    type: 'object',
+    properties: {
+      itemId: {
+        type: 'string',
+        description: 'ID of the item containing the configuration',
+      },
+    },
+    required: ['itemId'],
+  },
 }

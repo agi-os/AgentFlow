@@ -24,13 +24,16 @@ const isValidConnection = (connection, lookup) => {
     return false
 
   // Extract the values from the connection object
-  const { source, sourceHandle, target, targetHandle } = connection
+  const { source, type, sourceHandle, target, targetHandle } = connection
 
   // If there are no source or target handles, allow the connection
   if (!sourceHandle || !targetHandle) return true
 
   // Block all loopback connections
   if (source === target) return false
+
+  // Allow signal connections unconditionally
+  if (type === 'signal') return true
 
   // When sourceHandle and targetHandle both contain '-' allow the signal
   if (sourceHandle.includes('-') && targetHandle.includes('-')) return true
