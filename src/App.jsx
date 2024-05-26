@@ -10,7 +10,7 @@ import {
   useStore,
 } from '@xyflow/react'
 
-import SchemaButton from './tmp/SchemaButton'
+import NodeButtons from './components/NodeButtons'
 import SpeedRange from './components/SpeedRange'
 
 import nodeTypes from './nodes/nodeTypes'
@@ -134,10 +134,7 @@ const App = () => {
         connectionMode="loose">
         <Background />
         <Panel position="top-left">
-          <SchemaButton />
-        </Panel>
-        <Panel position="bottom-left">
-          <SchemaButton old />
+          <NodeButtons />
         </Panel>
         <Panel position="top-right">
           <SpeedRange />

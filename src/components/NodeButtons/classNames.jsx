@@ -1,4 +1,4 @@
-export const classNames = [
+const classNames = [
   'bg-zinc-900',
   'hover:bg-zinc-800',
   'text-zinc-400',
@@ -16,3 +16,5 @@ export const classNames = [
   'outline-4',
   'select-none',
 ]
+
+export default classNames
