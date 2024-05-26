@@ -32,13 +32,6 @@
         "Codium.codium"
       ],
       "settings": {
-        // Enable GitHub Copilot everywhere
-        "github.copilot.enable": {
-          "*": true,
-          "plaintext": true,
-          "markdown": true
-        },
-
         // Allow tailwind extension to detect classes in all strings
         "tailwindCSS.experimental.classRegex": ["([a-zA-Z0-9\\-:]+)"],
 
