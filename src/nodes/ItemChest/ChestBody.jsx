@@ -28,7 +28,7 @@ const ChestBody = ({ dimensions }) => {
 
   // If there are no items, render an empty chest
   if (itemCount === 0) {
-    return <EmptyChest />
+    return <EmptyChest dimensions={dimensions} />
   }
 
   // Calculate the zoom factor to use from item area
