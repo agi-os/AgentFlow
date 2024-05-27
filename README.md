@@ -1,5 +1,7 @@
 # Agent Flow
 
+[How to start? Click here](HELLO_WORLD.md)
+
 ## TL;DR
 
 - we have items 📦 containing information
