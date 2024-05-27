@@ -151,8 +151,8 @@ export const getRandomData = type => {
   const selectedType =
     type || faker.helpers.arrayElement(Object.keys(templates))
 
-  // Prepare the selected type
-  const selectedTemplate = templates[selectedType]
+  // Prepare the selected type, fallback to file template
+  const selectedTemplate = templates[selectedType] || templates.file
 
   // Sanity check of all generators in the selectedType
   selectedTemplate.forEach(item => {
