@@ -6,7 +6,7 @@ import Inputs from '../../components/Inputs'
 
 import { inputs } from './config'
 
-import SignalHandles from '../../signals/SignalHandles/index'
+import SignalHandles from '../../signals/SignalHandles'
 import { BeltSource, BeltTarget } from '../../components/BeltPort'
 import Semaphore from '../../components/Semaphore'
 import useSelectedClassNames from '../../hooks/useSelectedClassNames'

@@ -2,7 +2,7 @@ import classNames from '../constants/classNames'
 import Title from '../components/Title'
 import Pre from '../components/Pre'
 
-import SignalHandles from '../signals/SignalHandles/index'
+import SignalHandles from '../signals/SignalHandles'
 
 /**
  * Arithmetic combinator is a node that performs arithmetic operations on input signals and outputs the result on output signals.

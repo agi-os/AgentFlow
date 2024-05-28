@@ -1,4 +1,4 @@
-import SignalHandles from '../../signals/SignalHandles/index'
+import SignalHandles from '../../signals/SignalHandles'
 import Semaphore from '../../components/Semaphore'
 import baseClassNames from '../classNames'
 
