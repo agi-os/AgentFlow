@@ -44,7 +44,7 @@ const IdBadge = ({ id, children, outline = true }) => {
 
   // Render the badge
   return (
-    <div x-id={id} style={{ opacity }} className={classNames.join(' ')}>
+    <div x-node-id={id} style={{ opacity }} className={classNames.join(' ')}>
       {children}
     </div>
   )

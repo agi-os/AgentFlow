@@ -16,7 +16,7 @@ import Semaphore from '../../components/Semaphore'
  */
 const ChestNode = props => {
   return (
-    <div x-id={props.id} className={classNames.join(' ')}>
+    <div x-node-id={props.id} className={classNames.join(' ')}>
       <BeltTarget />
       <SignalHandles />
       <Title id={props.id}>🗄️ Chest</Title>

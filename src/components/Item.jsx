@@ -8,7 +8,7 @@ const Item = React.memo(({ onClick = () => {}, itemId }) => {
 
   return (
     <div
-      x-id={itemId}
+      x-node-id={itemId}
       className={classNames.join(' ')}
       onClick={onClick}
       title={JSON.stringify(

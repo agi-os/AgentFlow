@@ -22,7 +22,7 @@ const FirstItemOnBelt = ({ edgeId }) => {
 
   // Render the first item on the belt
   return (
-    <div x-id={itemId} className={beltItemClassNames.join(' ')}>
+    <div x-node-id={itemId} className={beltItemClassNames.join(' ')}>
       {emoji}
     </div>
   )

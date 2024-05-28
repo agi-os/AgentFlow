@@ -12,7 +12,7 @@ const DivItem = ({ item, transform = '' }) => {
   // Render the item
   return (
     <div
-      x-id={item.id}
+      x-node-id={item.id}
       xmlns="http://www.w3.org/1999/xhtml"
       className={classNames.join(' ')}
       title={JSON.stringify(
@@ -25,7 +25,7 @@ const DivItem = ({ item, transform = '' }) => {
         transform,
         transition: `transform ${tickLength}ms linear, opacity 500ms linear`,
       }}>
-      <div x-id={item.id} className="relative -top-0.5">
+      <div x-node-id={item.id} className="relative -top-0.5">
         {item.emoji}
       </div>
       <InViewContent item={item} />

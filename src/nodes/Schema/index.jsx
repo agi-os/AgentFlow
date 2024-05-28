@@ -23,7 +23,7 @@ const SchemaNode = ({ id, data }) => {
   const classNames = [...baseClassNames, ...selectedClassNames, semaphoreClass]
 
   return (
-    <div x-id={id} className={classNames.join(' ')}>
+    <div x-node-id={id} className={classNames.join(' ')}>
       <Title id={id}>🧬 Schema</Title>
       <Semaphore colors={['red', 'blue']} />
       {data.semaphore !== 'red' && (

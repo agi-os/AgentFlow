@@ -22,7 +22,7 @@ const Portal = ({ id, selected, children }) => {
 
   // Render the portal
   return (
-    <div x-id={id} className={classNames.join(' ')}>
+    <div x-node-id={id} className={classNames.join(' ')}>
       <SignalHandles />
       <Semaphore />
       {children}

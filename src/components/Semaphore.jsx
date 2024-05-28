@@ -85,7 +85,7 @@ const Semaphore = ({
   // Render the semaphore
   return (
     <div
-      x-id={id}
+      x-node-id={id}
       title="Click to toggle the semaphore state"
       className={allClasses}
       onClick={toggleColor}>

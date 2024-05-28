@@ -74,7 +74,7 @@ const Editor = ({ id, data }) => {
   return (
     <>
       <textarea
-        x-id={id}
+        x-node-id={id}
         spellCheck={false}
         onChange={handleChange}
         className={textAreaClassNames.join(' ')}

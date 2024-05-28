@@ -30,7 +30,7 @@ const BaseEdgeComponent = memo(({ edgeId, pathD, classNames, style }) => {
   // Render the base edge component
   return (
     <BaseEdge
-      x-id={edgeId}
+      x-node-id={edgeId}
       path={pathD}
       className={(classNames
         ? classNames // use custom classNames array if provided

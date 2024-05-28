@@ -25,7 +25,7 @@ const Item = ({ item, pathRef, pathLength }) => {
   // Render the item
   return (
     <foreignObject
-      x-id={item.id}
+      x-node-id={item.id}
       x={0}
       y={0}
       width="1"

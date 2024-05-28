@@ -29,7 +29,7 @@ const CompactView = ({ dimensions, compactLimit }) => {
   return (
     <div style={style} className={classNames.join(' ')}>
       {items?.map((item, index) => (
-        <div key={index} x-id={item.id}>
+        <div key={index} x-node-id={item.id}>
           {item.emoji}
         </div>
       ))}

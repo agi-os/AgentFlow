@@ -5,6 +5,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [
     react({
+      include: /\.(mdx|js|jsx|ts|tsx)$/,
       babel: {
         plugins: [path.resolve(__dirname, 'vite.config.plugin.js')],
       },

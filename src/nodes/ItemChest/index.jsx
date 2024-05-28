@@ -34,7 +34,7 @@ const ItemChestNode = ({ id }) => {
   const classNames = [...baseClassNames, ...selectedClassNames]
 
   return (
-    <div x-id={id} className={classNames.join(' ')}>
+    <div x-node-id={id} className={classNames.join(' ')}>
       <BeltTarget />
       <Title id={id}>📦 Item Chest ({itemCount})</Title>
       <Semaphore />

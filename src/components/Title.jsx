@@ -20,7 +20,7 @@ const Title = ({
           {id}
         </IdBadge>
       )}
-      <div x-id={id} key="title" className={classNames.join(' ')}>
+      <div x-node-id={id} key="title" className={classNames.join(' ')}>
         {children}
       </div>
     </>

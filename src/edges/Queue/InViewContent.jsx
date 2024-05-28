@@ -16,7 +16,7 @@ const InViewContent = ({ item }) => {
   if (!item) return null
 
   return (
-    <div x-id={item.id} ref={ref} className="absolute inset-0">
+    <div x-node-id={item.id} ref={ref} className="absolute inset-0">
       {inView && zoomLevel > 9 ? (
         <SuperZoom item={item} />
       ) : (

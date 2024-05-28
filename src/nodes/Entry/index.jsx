@@ -18,7 +18,7 @@ const EntryNode = ({ id, data, selected }) => {
 
   // Component JSX remains the same, replace className strings with the appropriate variables
   return (
-    <div x-id={id} className={classNames.join(' ')}>
+    <div x-node-id={id} className={classNames.join(' ')}>
       <Header />
       <Details />
       <OutboxItems />

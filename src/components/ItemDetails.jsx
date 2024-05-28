@@ -94,17 +94,17 @@ const ItemDetails = ({
       {copySuccess || '🗐'}
     </button>,
     <div
-      x-id={itemId}
+      x-node-id={itemId}
       key="main"
       className={classNames.join(' ')}
       style={{ fontSize }}>
       {Object.keys(item)
         .filter(key => !['type', 'emoji', 'id', 'location'].includes(key))
         .map(key => [
-          <div x-id={itemId} key={key}>
+          <div x-node-id={itemId} key={key}>
             {key}
           </div>,
-          <div x-id={itemId} key={key + 'v'}>
+          <div x-node-id={itemId} key={key + 'v'}>
             {typeof item[key] === 'object' && item[key] !== null
               ? Object.entries(item[key]).map(([subKey, subValue]) => (
                   <div key={subKey}>

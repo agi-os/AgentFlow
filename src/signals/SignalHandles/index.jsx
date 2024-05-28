@@ -14,7 +14,7 @@ const SignalHandles = memo(() => {
 
   // Render signal handles for all corners
   return (
-    <div x-id={id}>
+    <div x-node-id={id}>
       {cornerHandles.map(mode => (
         <Handle key={mode} mode={mode} />
       ))}

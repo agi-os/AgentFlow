@@ -40,7 +40,7 @@ const Selector = ({ id, data }) => {
   )
 
   return (
-    <div x-id={id} className={schemaNodeClassNames.join(' ')}>
+    <div x-node-id={id} className={schemaNodeClassNames.join(' ')}>
       {Schemas.map(schema => (
         <label key={schema} className={labelClassNames.join(' ')}>
           <input

@@ -167,11 +167,11 @@ const InputPortal = ({ id, selected }) => {
   return (
     <Portal id={id} selected={selected}>
       <Title id={id}>🔗 InPortal</Title> <BeltTarget />
-      <div x-id={id} className="flex justify-center">
+      <div x-node-id={id} className="flex justify-center">
         ♻️
       </div>
       <div
-        x-id={id}
+        x-node-id={id}
         className="w-full grid grid-cols-2 gap-1 text-[0.6rem] place-items-center">
         <div className="bg-zinc-800 shadow-inner shadow-zinc-900 rounded-lg p-2">
           {<div>📥 {incomingCount}</div>}

@@ -12,7 +12,7 @@ const SuperZoom = ({ item }) => {
 
   // Render the item's content
   return (
-    <div x-id={item.id} className={classNames.join(' ')}>
+    <div x-node-id={item.id} className={classNames.join(' ')}>
       <div className={classNames2.join(' ')}>
         {Object.entries(rest).map(([key, value]) => (
           <Fragment key={key}>

@@ -86,7 +86,7 @@ const ToolChestNode = ({ id }) => {
   }, [id, isSocketReady, itemCount, setItem, socket])
 
   return (
-    <div x-id={id} className={classNames.join(' ')}>
+    <div x-node-id={id} className={classNames.join(' ')}>
       <Title id={id}>🛠️ Tool Chest ({itemCount})</Title>
       <Semaphore />
       <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
