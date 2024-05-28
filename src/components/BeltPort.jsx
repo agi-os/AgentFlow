@@ -141,3 +141,15 @@ export const BeltTarget = props => <Belt type="target" {...props} />
  * @returns {JSX.Element} - The rendered source belt.
  */
 export const BeltSource = props => <Belt type="source" {...props} />
+
+/**
+ * Renders both the target and source belts.
+ * @param {object} props - The component props shared by both belts.
+ * @returns {JSX.Element} - The rendered target and source belts.
+ */
+export const Belts = props => (
+  <>
+    <BeltTarget {...props} key="targetBelt" />
+    <BeltSource {...props} key="sourceBelt" />
+  </>
+)
