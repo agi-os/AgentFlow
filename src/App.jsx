@@ -128,11 +128,13 @@ const App = () => {
         colorMode="dark"
         minZoom={0.01}
         maxZoom={40}
+        snapToGrid={true}
+        snapGrid={[30, 30]}
         panOnDrag={[1, 2, 3, 4]}
         selectionOnDrag={true}
         selectionMode="partial"
         connectionMode="loose">
-        <Background />
+        <Background gap={[30, 30]} color="#333" size={1} />
         <Panel position="top-left">
           <NodeButtons />
         </Panel>
