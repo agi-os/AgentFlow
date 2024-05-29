@@ -2,6 +2,7 @@ import baseClassNames from '../classNames'
 
 import { BeltSource } from '../../components/BeltPort'
 import Countdown from '../ItemChest/Countdown'
+import SignalHandles from '../../signals/SignalHandles'
 
 import Header from './Header'
 import Details from './Details'
@@ -14,7 +15,7 @@ const EntryNode = ({ id, data, selected }) => {
     ? ['outline-offset-8', 'outline-2']
     : ['outline-offset-0', 'outline-0']
 
-  const classNames = [...baseClassNames, ...selectedClassNames, 'max-w-xl']
+  const classNames = [...baseClassNames, ...selectedClassNames]
 
   // Component JSX remains the same, replace className strings with the appropriate variables
   return (
@@ -24,6 +25,7 @@ const EntryNode = ({ id, data, selected }) => {
       <OutboxItems />
       {data?.semaphore !== 'red' && <Countdown />}
       <BeltSource />
+      <SignalHandles />
     </div>
   )
 }

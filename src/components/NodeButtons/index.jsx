@@ -9,11 +9,12 @@ const buttons = [
   { label: '✏️ Entry', type: 'entry' },
   { label: '🗄️ Item Chest', type: 'itemChest' },
   { label: '🧑‍💼 Agent', type: 'agent' },
+  { label: '🧑‍💼 Crafting Agent', type: 'craftingAgent' },
   { label: '🛠️ Tool Chest', type: 'tool' },
   { label: '🧬 Schema', type: 'schema' },
   { label: '🔗 InPortal', type: 'inputPortal' },
   { label: '🔗 OutPortal', type: 'outputPortal' },
-  { label: '🗄️ Database', type: 'database' },
+  // { label: '🗄️ Database', type: 'database' },
 ]
 
 /**

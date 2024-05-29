@@ -38,7 +38,7 @@ const useAgent = ({ id, data }) => {
   // Store references
   const socket = store.socket
   const setItem = store.setItem
-  const items = store.getLocationItemsSorted(id)
+  const items = store.getLocationItems(id)
   const setItemLocation = store.setItemLocation
   const outboxEdgeId = store
     .getNodeEdges(id)

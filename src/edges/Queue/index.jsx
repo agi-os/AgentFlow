@@ -22,7 +22,7 @@ const Queue = ({
   targetPosition,
 }) => {
   // Get the items on the belt
-  const items = useStore(s => s.getLocationItemsSorted(id))
+  const items = useStore(s => s.getLocationItems(id))
 
   // Reference to the path element
   const pathRef = useRef(null)

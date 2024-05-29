@@ -90,7 +90,7 @@ export const outboxItemsClassNames = [
   'gap-3',
   'px-2',
   'py-3',
-  'max-h-48',
+  'h-48',
   'overflow-x-hidden',
-  'overflow-y-scroll',
+  'overflow-y-auto',
 ]

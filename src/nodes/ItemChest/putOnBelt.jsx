@@ -1,13 +1,13 @@
 const putOnBeltHandler = ({
   putOnBelt,
-  getLocationItemsSorted,
+  getLocationItems,
   setItem,
   edges,
   nodeId,
 }) => {
   // Sanity check
   if (!edges) return
-  if (!getLocationItemsSorted) return
+  if (!getLocationItems) return
   if (!setItem) return
   if (!nodeId) return
   if (!putOnBelt) return
@@ -18,7 +18,7 @@ const putOnBeltHandler = ({
   }
 
   // Get the next item from queue
-  const nextItem = getLocationItemsSorted(nodeId)[0]
+  const nextItem = getLocationItems(nodeId)[0]
 
   // Sanity check
   if (!nextItem) return

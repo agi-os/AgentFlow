@@ -1,18 +1,16 @@
-const baseClassNames = [
+export const nodeClassNames = [
   'p-1',
   'rounded',
   'text-zinc-300',
   'font-thin',
-  'bg-zinc-800',
-  'w-[35.62rem]',
-  'h-96',
   'border-[1px]',
-  'border-zinc-700',
   'overflow-hidden',
+  'overflow-visible',
+  'bg-zinc-800',
+  'border-zinc-700',
   'transition-all',
   'transition-duration-1000',
   'outline',
   'outline-orange-900',
+  'w-[16.86rem]',
 ]
-
-export default baseClassNames

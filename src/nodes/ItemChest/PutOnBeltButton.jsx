@@ -10,7 +10,7 @@ const PutOnBeltButton = () => {
   // Get store data
   const putOnBelt = useStore(s => s.putOnBelt)
   const setItem = useStore(s => s.setItem)
-  const getLocationItemsSorted = useStore(s => s.getLocationItemsSorted)
+  const getLocationItems = useStore(s => s.getLocationItems)
   const edges = useStore(s => s.edges)
 
   // Sanity check
@@ -22,7 +22,7 @@ const PutOnBeltButton = () => {
     <button
       className={classNames.join(' ')}
       onClick={() =>
-        onClick({ putOnBelt, getLocationItemsSorted, setItem, edges, nodeId })
+        onClick({ putOnBelt, getLocationItems, setItem, edges, nodeId })
       }>
       Emit 1 item
     </button>

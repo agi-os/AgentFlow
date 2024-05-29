@@ -1,4 +1,6 @@
+import { useNodeId } from '@xyflow/react'
 import IdBadge from './IdBadge/index'
+import Semaphore from './Semaphore'
 
 /**
  * Renders a title component with optional classNames, children, and id.
@@ -9,18 +11,18 @@ import IdBadge from './IdBadge/index'
  * @returns {JSX.Element} The rendered title component.
  */
 const Title = ({
-  classNames = ['text-lg', 'font-thin', 'text-zinc-400', 'leading-none'],
+  classNames = ['text-lg', 'font-thin', 'text-zinc-400', 'leading-none', 'p-2'],
   children,
-  id,
 }) => {
+  const nodeId = useNodeId()
+
   return (
     <>
-      {id && (
-        <IdBadge id={id} key="badge">
-          {id}
-        </IdBadge>
-      )}
-      <div x-node-id={id} key="title" className={classNames.join(' ')}>
+      <IdBadge id={nodeId} key="badge">
+        {nodeId}
+      </IdBadge>
+      <Semaphore />
+      <div x-node-id={nodeId} key="title" className={classNames.join(' ')}>
         {children}
       </div>
     </>

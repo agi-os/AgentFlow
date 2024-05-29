@@ -34,7 +34,7 @@ const Countdown = () => {
   })
 
   // Get store data
-  const getLocationItemsSorted = useStore(s => s.getLocationItemsSorted)
+  const getLocationItems = useStore(s => s.getLocationItems)
   const edges = useStore(s => s.edges)
   const putOnBelt = useStore(s => s.putOnBelt)
 
@@ -46,10 +46,10 @@ const Countdown = () => {
     if (!outputAllowed) return
 
     // Sanity check
-    if (!getLocationItemsSorted || !putOnBelt || !edges || !nodeId) return
+    if (!getLocationItems || !putOnBelt || !edges || !nodeId) return
 
     // Get the next items in the queue
-    const nextItems = getLocationItemsSorted(nodeId)
+    const nextItems = getLocationItems(nodeId)
 
     // Filter out items that have a location.id already on the belt
     const nextItemFiltered = nextItems
@@ -102,7 +102,7 @@ const Countdown = () => {
     putOnBelt({ itemId: nextItem.id, beltId: edgeId })
   }, [
     outputAllowed,
-    getLocationItemsSorted,
+    getLocationItems,
     nodeId,
     putOnBelt,
     edges,

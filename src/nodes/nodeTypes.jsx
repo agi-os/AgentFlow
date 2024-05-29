@@ -15,6 +15,7 @@ import { InputPortal, OutputPortal } from './Portal/index'
 import Database from './DatabaseNode.jsx'
 
 import ErrorBoundary from './ErrorBoundary'
+import CraftingAgentNode from './CraftingAgent/index.jsx'
 
 const components = {
   agent: Agent,
@@ -33,6 +34,7 @@ const components = {
   inputPortal: InputPortal,
   outputPortal: OutputPortal,
   database: Database,
+  craftingAgent: CraftingAgentNode,
 }
 
 const WrappedComponents = Object.keys(components).reduce((acc, key) => {

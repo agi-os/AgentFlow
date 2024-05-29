@@ -23,7 +23,10 @@ const Details = () => {
   const setItem = useStore(state => state.setItem)
 
   // Get the getLocationItems function from the store
-  const locationItems = useStore(state => state.getLocationItems(id))
+  const locationItems = useStore(
+    state => state.getLocationItems(id),
+    (a, b) => a.length === b.length
+  )
 
   const { readFromClipboard } = useClipboard()
 
@@ -144,7 +147,7 @@ const Details = () => {
         </button>
         <button
           onClick={() => {
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 10; i++) {
               setKeys(getRandomData(keys[0]?.value))
               createNewItem()
             }
