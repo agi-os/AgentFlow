@@ -22,6 +22,7 @@ import useSignalFeature from './useSignalFeature'
 import useSignalHubFeature from './useSignalHubFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
 import useDatabaseFeature from './useDatabaseFeature/index'
+import useSkillFeature from './useSkillFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.đ
@@ -135,6 +136,9 @@ const useEnhancedStore = () => {
 
   // Extend store with database functionality
   useDatabaseFeature()
+
+  // Extend store with level functionality
+  useSkillFeature()
 
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)
