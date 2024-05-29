@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useStore, useStoreApi } from '@xyflow/react'
-import _setItem from './setItem'
 import useItemLocationFeature from './useItemLocationFeature'
 
 /**
@@ -32,21 +31,6 @@ const useItemFeature = () => {
 
   // Get the handle to the item setter
   const setItem = useStore(s => s.setItem)
-
-  // Add the item setter functionality
-  useEffect(() => {
-    // Sanity check
-    if (!store) return
-
-    // If the store is already set up with item setter, abort
-    if (typeof setItem === 'function') return
-
-    // Update the store with the new item functionality
-    store.setState(draft => ({
-      ...draft,
-      setItem: item => _setItem({ store, item }),
-    }))
-  }, [setItem, store])
 
   // Get the handle to the item getter
   const getItem = useStore(s => s.getItem)

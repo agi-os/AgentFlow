@@ -10,19 +10,17 @@ import generateId from './generateId'
 import { useStore, useStoreApi } from '@xyflow/react'
 import debounce from './debounce'
 
-import _updateItemLookup from './updateItemLookup'
-import _getLocationItems from './getLocationItems'
-import getLocationItemsSorted from './getLocationItemsSorted'
 import lookup from './lookup'
 import useTickFeature from './useTickFeature'
 import useBeltDriveFeature from './useBeltDriveFeature'
-import useItemFeature from './useItemFeature'
 import useSocketFeature from './useSocketFeature'
 import useSignalFeature from './useSignalFeature'
 import useSignalHubFeature from './useSignalHubFeature'
 import useNodeEdgesFeature from './useNodeEdgesFeature'
 import useDatabaseFeature from './useDatabaseFeature/index'
 import useSkillFeature from './useSkillFeature'
+import useItemManagementFeature from './useItemManagementFeature'
+import useItemFeature from './useItemFeature'
 
 /**
  * Custom hook that enhances the store with additional functionality.đ
@@ -73,7 +71,17 @@ const useEnhancedStore = () => {
       // Id of the setInterval loop calling beltDriveTick
       beltDriveIntervalId: null,
 
-      updateItemLookup: () => _updateItemLookup(store),
+      // updateItemLookup: () => _updateItemLookup(store),
+
+      updateNodeData: (nodeId, dataUpdate) => {
+        store.setState(state => ({
+          nodes: state.nodes.map(node =>
+            node.id === nodeId
+              ? { ...node, data: { ...node.data, ...dataUpdate } }
+              : node
+          ),
+        }))
+      },
 
       removeItem: id => {
         store.getState().setItemLocation({ itemId: id, locationId: null })
@@ -86,30 +94,11 @@ const useEnhancedStore = () => {
         store.getState().updateItemLocationLookup()
       },
 
-      getLocationItems: locationId => _getLocationItems({ store, locationId }),
-      getLocationItemsSorted: locationId =>
-        getLocationItemsSorted({ store, locationId }),
-
       generateId,
+
       getNode: id => store.getState().nodeLookup.get(id),
       getEdge: id => store.getState().edgeLookup.get(id),
       lookup: id => lookup({ store, id }),
-
-      // Add functions for Innodb (IndexedDB) storage interaction
-      flushToInnodb: nodeId => {
-        console.log('flush', nodeId)
-        // const items = draft.getLocationItems(nodeId)
-        // saveToIndexedDB(store) // Save only items to IndexedDB
-        // console.log(
-        //   `Flushed ${items.length} items from node ${nodeId} to Innodb.`
-        // )
-      },
-      loadFromInnodb: async nodeId => {
-        // await loadFromIndexedDB(store) // Load all data, including items
-        // After loading, you might want to move loaded items to the specific nodeId
-        // ... (Implement your logic for moving items to the nodeId)
-        console.log(`Loaded items from Innodb.`, nodeId)
-      },
     }))
   }, [store, tickLength, speed])
 
@@ -120,7 +109,7 @@ const useEnhancedStore = () => {
   useTickFeature()
 
   // Extend store with item functionality
-  useItemFeature()
+  useItemManagementFeature()
 
   // Extend store with belt drive functionality
   useBeltDriveFeature()
@@ -139,6 +128,9 @@ const useEnhancedStore = () => {
 
   // Extend store with level functionality
   useSkillFeature()
+
+  // Extend store with legacy item functionality
+  useItemFeature()
 
   // Get the current tick
   const tickCounter = useStore(s => s.tickCounter)

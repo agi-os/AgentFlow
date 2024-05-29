@@ -7,7 +7,7 @@ import getLocationItems from './getLocationItems'
  * @param {number|string} options.locationId - Identifier for fetching items specific to a location.
  * @returns {Array} - Sorted array of items based on distance and deliveryTime.
  */
-const getLocationItemsSorted = ({ store, locationId }) => {
+const getLocationItems = ({ store, locationId }) => {
   // Get the items for the location
   const items = getLocationItems({ store, locationId })
 
@@ -29,4 +29,4 @@ const getLocationItemsSorted = ({ store, locationId }) => {
   return items
 }
 
-export default getLocationItemsSorted
+export default getLocationItems

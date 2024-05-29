@@ -8,16 +8,16 @@ const useNodeItems = () => {
   // Get the current node id
   const nodeId = useNodeId()
 
-  // Get the getLocationItemsSorted function from the store
-  const getLocationItemsSorted = useStore(s => s.getLocationItemsSorted)
+  // Get the getLocationItems function from the store
+  const getLocationItems = useStore(s => s.getLocationItems)
 
   // Sanity check
-  if (!nodeId || !getLocationItemsSorted) {
+  if (!nodeId || !getLocationItems) {
     return []
   }
 
   // Return sorted items for the current node
-  return getLocationItemsSorted(nodeId) || []
+  return getLocationItems(nodeId) || []
 }
 
 export default useNodeItems
