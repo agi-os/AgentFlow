@@ -1,8 +1,7 @@
 import Title from '../../components/Title'
 import SignalHandles from '../../signals/SignalHandles'
-import { BeltSource, BeltTarget } from '../../components/BeltPort'
+import { Belts } from '../../components/BeltPort'
 import ZoomCompensated from '../ZoomCompensated/index'
-import Semaphore from '../../components/Semaphore'
 
 import ZoomResponsiveWrapper from '../ZoomCompensated/ZoomResponsiveWrapper'
 import baseClassNames from './classNames'
@@ -35,16 +34,14 @@ const ItemChestNode = ({ id }) => {
 
   return (
     <div x-node-id={id} className={classNames.join(' ')}>
-      <BeltTarget />
-      <Title id={id}>📦 Item Chest ({itemCount})</Title>
-      <Semaphore />
-      <ZoomCompensated classNames={['mt-6', 'overflow-hidden']}>
+      <Title>📦 Item Chest ({itemCount})</Title>
+      <ZoomCompensated classNames={['mt-10', 'overflow-hidden']}>
         <ZoomResponsiveWrapper>
           <ChestBody />
         </ZoomResponsiveWrapper>
       </ZoomCompensated>
-      <BeltSource />
       <Countdown />
+      <Belts />
       <SignalHandles />
     </div>
   )

@@ -7,7 +7,8 @@ import { useCallback } from 'react'
  */
 const ALLOWED_CONNECTIONS = {
   outbox: ['inbox'],
-  inbox: ['outbox'],
+  outbox2: ['inbox'],
+  inbox: ['outbox', 'outbox2'],
   inputPortal: ['outputPortal'],
   outputPortal: ['inputPortal'],
 }

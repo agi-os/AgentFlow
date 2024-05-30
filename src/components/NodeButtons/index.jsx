@@ -14,6 +14,7 @@ const buttons = [
   { label: '🧬 Schema', type: 'schema' },
   { label: '🔗 InPortal', type: 'inputPortal' },
   { label: '🔗 OutPortal', type: 'outputPortal' },
+  { label: 'Splitter', type: 'splitter' },
   // { label: '🗄️ Database', type: 'database' },
 ]
 
