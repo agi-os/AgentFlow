@@ -7,6 +7,7 @@ import classNames from './classNames'
 // Define button data
 const buttons = [
   { label: '✏️ Entry', type: 'entry' },
+  { label: '🔀 Splitter', type: 'splitter' },
   { label: '🗄️ Item Chest', type: 'itemChest' },
   { label: '🧑‍💼 Agent', type: 'agent' },
   { label: '🧑‍💼 Crafting Agent', type: 'craftingAgent' },
@@ -14,7 +15,6 @@ const buttons = [
   { label: '🧬 Schema', type: 'schema' },
   { label: '🔗 InPortal', type: 'inputPortal' },
   { label: '🔗 OutPortal', type: 'outputPortal' },
-  { label: 'Splitter', type: 'splitter' },
   // { label: '🗄️ Database', type: 'database' },
 ]
 

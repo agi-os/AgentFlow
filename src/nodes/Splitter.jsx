@@ -11,8 +11,11 @@ import { useEffect, useState } from 'react'
  * @param {object} data - Node data
  * @returns {JSX.Element}
  */
-const SplitterNode = ({ id, data }) => {
-  const nodeId = useNodeId()
+const SplitterNode = ({ id: nodeId, selected, data }) => {
+  const selectedClassNames = selected
+    ? ['outline-offset-8', 'outline-2']
+    : ['outline-offset-0', 'outline-0']
+
   const getLocationItems = useStore(s => s.getLocationItems)
   const setItemLocation = useStore(s => s.setItemLocation)
   const getNodeEdges = useStore(s => s.getNodeEdges)
@@ -63,7 +66,9 @@ const SplitterNode = ({ id, data }) => {
   ])
 
   return (
-    <div x-node-id={nodeId} className={classNames.join(' ')}>
+    <div
+      x-node-id={nodeId}
+      className={[...classNames, ...selectedClassNames].join(' ')}>
       <BeltTarget />
       <Title>🔀 Splitter</Title>
       <BeltSource style={{ left: '30%' }} id="outbox" />
@@ -76,17 +81,26 @@ const SplitterNode = ({ id, data }) => {
 export default SplitterNode
 
 const classNames = [
+  'rounded',
+  'text-zinc-300',
+  'font-thin',
+  'border-[1px]',
+  'transition-all',
+  'transition-duration-1000',
+  'outline',
+  'outline-orange-900',
+
   'flex',
   'flex-col',
   'text-xs',
   'border',
   'border-zinc-700',
-  'px-2',
-  'py-3',
+  'p-2.5',
   'text-white',
   'bg-zinc-800',
   'rounded',
   'hover:border-zinc-600',
   'gap-4',
   'w-[13.1rem]',
+  'h-[3.7rem]',
 ]
