@@ -28,6 +28,18 @@ import {
 } from './utils/clipboard'
 import { updateStates, createNewGraphElements } from './utils/graph'
 
+/**
+ * App component for the ReactFlow application.
+ *
+ * This component sets up the main functionality for the application, including:
+ * - Extending the ReactFlow store with custom functionality
+ * - Handling copy and paste operations for nodes and edges
+ * - Listening for clipboard keypress events to trigger copy and paste
+ * - Generating IDs for edges that do not have them
+ * - Rendering the ReactFlow component with nodes, edges, and custom components
+ *
+ * @component
+ */
 const App = () => {
   // Extend the ReactFlow store with custom functionality
   useStoreExtension()
@@ -91,9 +103,14 @@ const App = () => {
 
   // Start listening for clipboard keypress events
   useEffect(() => {
+    // Definite the keydown event handler
     const handleKeydown = event =>
       handleCopyPasteKeypress({ event, onCopy, onPaste })
+
+    // Add the event listener
     document.addEventListener('keydown', handleKeydown)
+
+    // Remove the event listener on cleanup
     return () => document.removeEventListener('keydown', handleKeydown)
   }, [onCopy, onPaste])
 

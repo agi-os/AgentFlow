@@ -6,6 +6,8 @@ import '@xyflow/react/dist/style.css'
 import './index.css'
 import '@leenguyen/react-flip-clock-countdown/dist/index.css'
 
+import './blueprints.js'
+
 import { ReactFlowProvider } from '@xyflow/react'
 import App from './App.jsx'
 

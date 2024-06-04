@@ -27,6 +27,7 @@ import useItemFeature from './useItemFeature'
  * @returns {Object} - The enhanced store object.
  */
 const useEnhancedStore = () => {
+  // Get the reference to the store
   const store = useStoreApi()
 
   // Get the reference to items initialized in first useEffect
