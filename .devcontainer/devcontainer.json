@@ -28,8 +28,8 @@
         "bierner.markdown-mermaid",
         // Tailwind CSS IntelliSense
         "bradlc.vscode-tailwindcss",
-        // Codiumate
-        "Codium.codium"
+        // Continue extension
+        "Continue.continue"
       ],
       "settings": {
         // Allow tailwind extension to detect classes in all strings
