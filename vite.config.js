@@ -108,6 +108,9 @@ const loadItems = async repoUrl => {
 }
 
 export default defineConfig({
+  test: {
+    environment: 'jsdom', // TODO: this doesn't work, remove header comment workaround from tests when they fix it
+  },
   plugins: [
     react({
       include: /\.(mdx|js|jsx|ts|tsx)$/,
