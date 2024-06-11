@@ -92,7 +92,7 @@ const useBeltDriveFeature = () => {
             setItemDistance({ itemId: item.id, distance })
           })
 
-          // Put all items that have reached the destination into the destination if type is 'itemChest'
+          // Put all items that have reached the destination into the destination
           itemsAtDestination.forEach(item => {
             // Get the destination from the belt item is on
             const belt = getEdge(item?.location?.id)
