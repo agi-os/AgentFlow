@@ -1,17 +1,13 @@
-import { jest, describe, beforeEach, it, expect } from '@jest/globals'
-import { JSDOM } from 'jsdom'
+// @vitest-environment jsdom
+
+import { expect, it, vi, describe } from 'vitest'
+
 import generateId from './generateId'
 
 describe('generateId', () => {
-  beforeEach(() => {
-    const dom = new JSDOM('<!doctype html><html><body></body></html>')
-    globalThis.window = dom.window
-    globalThis.document = dom.window.document
-  })
-
   it('should generate a unique ID', () => {
     // Mock the window.crypto.getRandomValues function
-    const mockGetRandomValues = jest.fn().mockImplementation(array => {
+    const mockGetRandomValues = vi.fn().mockImplementation(array => {
       for (let i = 0; i < array.length; i++) {
         array[i] = Math.floor(Math.random() * 256)
       }

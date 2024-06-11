@@ -3,7 +3,10 @@ import { useStore, useStoreApi } from '@xyflow/react'
 
 const useTickFeature = () => {
   // Get the handle to the store api
-  const { getState, setState } = useStoreApi()
+  const storeApi = useStoreApi()
+
+  // Extract functions from the API
+  const { getState, setState } = storeApi
 
   // Get the tick count from the store
   const tickCounter = useStore(s => s.tickCounter)
@@ -20,6 +23,14 @@ const useTickFeature = () => {
     setState(draft => {
       return {
         ...draft,
+        /**
+         * Extends the store with the initial tick counter value.
+         *
+         * This property is used to keep track of the number of ticks that have occurred.
+         * It is initialized with a value of 0, and it will be incremented by 1 on each tick.
+         *
+         * @type {number}
+         */
         tickCounter: 0,
       }
     })
@@ -40,6 +51,14 @@ const useTickFeature = () => {
     setState(draft => {
       return {
         ...draft,
+        /**
+         * Extends the store with a new Map for tick callbacks.
+         *
+         * This property is used to store functions that need to be called on every tick.
+         * It is initialized as an empty Map, and functions can be added to it as needed.
+         *
+         * @type {Map<string, Function>}
+         */
         tickCallbacks: new Map(),
       }
     })
@@ -62,6 +81,14 @@ const useTickFeature = () => {
     setState(draft => {
       return {
         ...draft,
+        /**
+         * The tick function that increments the tick counter and calls all tick callbacks.
+         *
+         * This function is responsible for updating the tick counter in the store by incrementing its value by 1.
+         * It then retrieves all the tick callbacks from the store and executes each of them.
+         *
+         * @returns {void}
+         */
         tick: () => {
           // Increment the tick counter
           setState(draft => {
@@ -115,18 +142,36 @@ const useTickFeature = () => {
     return () => clearInterval(tickLoop)
   }, [tick, tickLength])
 
+  // Get the set tick length function
+  const setTickLength = useStore(s => s.setTickLength)
+
   // Allow changing the tick length
   useEffect(() => {
+    // Check if function is already defined
+    if (setTickLength && typeof setTickLength === 'function') return
+
+    // Update store
     setState(draft => ({
       ...draft,
+      /**
+       * Updates the tick length in the store based on the provided new tick length.
+       * If the new tick length is not a valid number, the tick length will default to 1000.
+       *
+       * @param {number} newTickLength - The new tick length to be set in the store.
+       * @returns {void}
+       */
       setTickLength: newTickLength => {
+        const parsedLength = Number(newTickLength)
         setState(draft => ({
           ...draft,
-          tickLength: parseInt(newTickLength) || 1000,
+          tickLength: Number.isNaN(parsedLength) ? 1000 : parsedLength,
         }))
       },
     }))
-  }, [setState])
+  }, [setState, setTickLength])
+
+  // Return the store api for testing
+  return storeApi
 }
 
 export default useTickFeature
