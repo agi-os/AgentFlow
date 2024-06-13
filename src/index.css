@@ -45,3 +45,15 @@ body,
     stroke-opacity: 0.5;
   }
 }
+
+::-webkit-scrollbar {
+  outline: none;
+  background: transparent;
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10rem;
+  border: 1px solid hsl(0 0% 16% / 1);
+}

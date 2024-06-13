@@ -36,10 +36,14 @@ const createTransportBeltStore = id =>
       id,
       length: -1,
       bucketCenters: [],
+      bucketContents: [],
       pathD: '',
       pathRef: null,
       bucketSize: 38,
       bucketCapacity: 1,
+
+      // Tick modulo is number of ticks it takes to shift item one bucket
+      tickModulo: 60,
 
       // Set the reference to the SVG path element
       setPathRef: pathRef => set({ pathRef }),
@@ -78,7 +82,72 @@ const createTransportBeltStore = id =>
 
       // Handle the tick event
       tick: tickCounter => {
-        console.log('tick', tickCounter)
+        // Ignore ticks that are not multiples of tickModulo
+        if (tickCounter % get().tickModulo !== 0) {
+          return
+        }
+
+        // Get the current state
+        const state = get()
+
+        // Extract the relevant properties
+        let { bucketCenters, bucketContents, bucketCapacity } = state
+
+        // Sanity check
+        if (!bucketCenters || !bucketContents) {
+          return
+        }
+
+        // Move all buckets contents one bucket forwards, starting from the end and checking for capacity
+        const numBuckets = bucketCenters.length
+
+        // If bucketContents is not initialized, initialize it
+        if (bucketContents.length !== numBuckets) {
+          // Initialize bucketContents with empty arrays for each bucket
+          bucketContents = Array.from({ length: numBuckets }, () => [])
+
+          bucketContents[2].push('test')
+
+          console.log('Initializing bucketContents', bucketContents)
+
+          // Updating the state with the new bucketContents
+          set({ bucketContents })
+        }
+
+        console.log('Ticking', tickCounter, numBuckets)
+
+        // Loop through the buckets in reverse order
+        for (let i = numBuckets - 1; i >= 0; i--) {
+          // If the current bucket is the last bucket, skip it
+          if (i === numBuckets - 1) {
+            console.log('This bucket is last, skipping', i)
+            continue
+          }
+
+          // Get the current bucket contents
+          const currentBucketContents = bucketContents[i]
+
+          // If the current bucket is empty, skip it
+          if (currentBucketContents.length === 0) {
+            console.log('This bucket is empty, skipping', i)
+            continue
+          }
+
+          // If the next bucket is full, we can'd work on this bucket
+          if (bucketContents[i + 1].length >= bucketCapacity) {
+            console.log('Next bucket is full, skipping this bucket', i)
+            continue
+          }
+
+          // Move the first item from the current bucket to the next bucket
+          const item = currentBucketContents.shift()
+          bucketContents[i + 1].push(item)
+
+          console.table(bucketContents)
+
+          // Update the state with the new bucketContents
+          set({ bucketContents })
+        }
       },
     }))
   )

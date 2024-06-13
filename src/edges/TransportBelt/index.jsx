@@ -59,7 +59,7 @@ const TransportBelt = ({
           x={center.x}
           y={center.y}
           className="overflow-visible">
-          <Bucket index={i} />
+          <Bucket id={id} index={i} />
         </foreignObject>
       ))}
     </>

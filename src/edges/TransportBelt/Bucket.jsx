@@ -1,5 +1,14 @@
-const Bucket = ({ index }) => {
-  return <div className={className.join(' ')}>{index}</div>
+import useTransportBeltStore from '../../hooks/useTransportBeltStore'
+
+const Bucket = ({ id, index }) => {
+  const { bucketContents } = useTransportBeltStore(id)
+
+  return (
+    <div className={className.join(' ')}>
+      {index}
+      {JSON.stringify(bucketContents[index])}
+    </div>
+  )
 }
 
 const className = [

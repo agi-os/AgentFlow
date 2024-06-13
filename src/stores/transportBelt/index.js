@@ -21,7 +21,7 @@ const getTransportBeltStore = (id, storeApi) => {
     // Get the handle to the tick event of the new store.
     const tick = stores.get(id).getState().tick
 
-    // Subscribe to the tick event
+    // Subscribe to the global tick event
     storeApi.getState().tickCallbacks.set(id, tick)
   }
 
