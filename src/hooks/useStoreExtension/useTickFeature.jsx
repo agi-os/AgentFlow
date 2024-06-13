@@ -98,8 +98,11 @@ const useTickFeature = () => {
             }
           })
 
+          // Get the current tick value
+          const tickCounter = getState().tickCounter
+
           // Call all of tick callbacks
-          getState().tickCallbacks.forEach(callback => callback())
+          getState().tickCallbacks.forEach(callback => callback(tickCounter))
         },
       }
     })
