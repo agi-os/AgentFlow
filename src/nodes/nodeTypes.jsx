@@ -17,6 +17,7 @@ import Database from './DatabaseNode.jsx'
 import ErrorBoundary from './ErrorBoundary'
 import CraftingAgentNode from './CraftingAgent/index.jsx'
 import WebAgent from './WebAgent/index.jsx'
+import SiteWhisperer from './SiteWhisperer/index.jsx'
 
 const components = {
   agent: Agent,
@@ -37,6 +38,7 @@ const components = {
   database: Database,
   craftingAgent: CraftingAgentNode,
   webAgent: WebAgent,
+  siteWhisperer: SiteWhisperer,
 }
 
 const WrappedComponents = Object.keys(components).reduce((acc, key) => {

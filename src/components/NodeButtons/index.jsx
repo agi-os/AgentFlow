@@ -10,6 +10,7 @@ const buttons = [
   { label: '🔀 Splitter', type: 'splitter' },
   { label: '🗄️ Item Chest', type: 'itemChest' },
   { label: '🛰️ Web Agent', type: 'webAgent' },
+  { label: '🌠 Site Whisperer', type: 'siteWhisperer' },
   { label: '🧑‍💼 Agent', type: 'agent' },
   { label: '🧑‍💼 Crafting Agent', type: 'craftingAgent' },
   { label: '🛠️ Tool Chest', type: 'tool' },

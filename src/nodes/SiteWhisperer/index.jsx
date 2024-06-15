@@ -9,6 +9,7 @@ import useSelectedClassNames from '../../hooks/useSelectedClassNames'
 import { useCallback, useState } from 'react'
 import StartSearchButton from './StartSearchButton'
 import Outbox from './Outbox'
+import { Spinner } from './Spinner'
 
 const WebAgent = ({ id, data }) => {
   const { updateNodeData } = useReactFlow()
@@ -33,37 +34,41 @@ const WebAgent = ({ id, data }) => {
     setIsExecuting(true)
 
     // Get the params from data
-    const { query, domain } = data
+    const { query, domain, placeholder, value } = data
 
     // Emit web browser call to the backend
-    socket.emit('useWeb', { query, domain }, response => {
-      try {
-        console.log('LLM Response:', response)
+    socket.emit(
+      'webZombie',
+      { query, domain, placeholder, value },
+      response => {
+        try {
+          console.log('LLM Response:', response)
 
-        // Loop over all items in the response array
-        response.forEach(({ title, href }) => {
-          // Create a new item from the response
-          const newItem = {
-            type: data.outputType || 'llmResponse',
-            emoji: data.outputEmoji || '💬',
-            title,
-            href,
-            location: {
-              id,
-              distance: 0,
-            },
-          }
+          // Loop over all items in the response array
+          response.forEach(({ title, href }) => {
+            // Create a new item from the response
+            const newItem = {
+              type: data.outputType || 'llmResponse',
+              emoji: data.outputEmoji || '💬',
+              title,
+              href,
+              location: {
+                id,
+                distance: 0,
+              },
+            }
 
-          // Add the new item to the store
-          setItem(newItem)
-        })
-      } catch (error) {
-        console.error('Error processing LLM response:', error)
-      } finally {
-        // Set the execution state to false
-        setIsExecuting(false)
+            // Add the new item to the store
+            setItem(newItem)
+          })
+        } catch (error) {
+          console.error('Error processing LLM response:', error)
+        } finally {
+          // Set the execution state to false
+          setIsExecuting(false)
+        }
       }
-    })
+    )
   }, [data, id, setItem, socket])
 
   const onChange = useCallback(
@@ -75,8 +80,8 @@ const WebAgent = ({ id, data }) => {
 
   return (
     <div x-node-id={id} className={classNames.join(' ')}>
-      <Title description="Uses a web site like a regular human would. Collects what it sees to the output items.">
-        🛰️ Web Agent
+      <Title description="Upgrades the site behavior to produce more optimal output, then uses the upgraded web site like a regular human would.">
+        🌠 Site Whisperer
       </Title>
       <Inputs
         classNames={['grid', 'grid-cols-12', 'gap-x-4', 'gap-y-3', 'p-3']}
@@ -100,27 +105,3 @@ const WebAgent = ({ id, data }) => {
 }
 
 export default WebAgent
-
-/**
- * Spinner indicating web interaction is in progress
- * @returns {JSX.Element} Spinner component
- */
-const Spinner = () => (
-  <svg
-    className="animate-spin h-5 w-5 text-white"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24">
-    <circle
-      className="opacity-25"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="4"></circle>
-    <path
-      className="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-  </svg>
-)

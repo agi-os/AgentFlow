@@ -1,6 +1,7 @@
 import { useNodeId } from '@xyflow/react'
 import IdBadge from './IdBadge/index'
 import Semaphore from './Semaphore'
+import HoverableInfoIcon from './HoverableInfoIcon'
 
 /**
  * Renders a title component with optional classNames, children, and id.
@@ -13,6 +14,7 @@ import Semaphore from './Semaphore'
 const Title = ({
   classNames = ['text-lg', 'font-thin', 'text-zinc-400', 'leading-none', 'p-2'],
   children,
+  description,
 }) => {
   const nodeId = useNodeId()
 
@@ -23,7 +25,7 @@ const Title = ({
       </IdBadge>
       <Semaphore />
       <div x-node-id={nodeId} key="title" className={classNames.join(' ')}>
-        {children}
+        {children} {description && <HoverableInfoIcon text={description} />}
       </div>
     </>
   )
