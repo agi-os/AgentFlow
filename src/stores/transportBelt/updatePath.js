@@ -13,7 +13,8 @@ const updatePath = id => {
   const store = getStore(id)
 
   // Destructure the necessary functions and values from the store's state
-  const { setLength, setBucketCenters, pathRef, bucketSize } = store.getState()
+  const { setLength, getBucket, pathRef, bucketSize, setBuckets, buckets } =
+    store.getState()
 
   // If there is no path reference, exit the function early
   if (!pathRef) return
@@ -27,8 +28,22 @@ const updatePath = id => {
   // Calculate the bucket centers using the length, bucket size, and path reference
   const bucketCenters = calculateBucketCenters(length, bucketSize, pathRef)
 
-  // Update the bucket centers in the store's state
-  setBucketCenters(bucketCenters)
+  // Update coordinates in stores of each bucket
+  bucketCenters.forEach((center, index) => {
+    // Get a reference to the bucket's store function using the index
+    const { setCoordinates } = getBucket(index)
+    // Update the coordinates
+    setCoordinates(center)
+  })
+
+  // If we have overflow buckets, delete them from the array
+  if (buckets.length > bucketCenters.length) {
+    // Trim the array to the desired length
+    const trimmedBuckets = buckets.slice(0, bucketCenters.length)
+
+    // Update the buckets in the store's state
+    setBuckets(trimmedBuckets)
+  }
 }
 
 export default updatePath

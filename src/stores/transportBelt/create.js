@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import updatePath from './updatePath'
+import getTransportBeltBucketStore from '../transportBeltBucket'
 
 /**
  * Represents the state of a transport belt.
@@ -35,18 +36,55 @@ const createTransportBeltStore = id =>
     immer((set, get) => ({
       id,
       length: -1,
-      bucketCenters: [],
-      bucketContents: [],
       pathD: '',
       pathRef: null,
       bucketSize: 38,
       bucketCapacity: 1,
 
+      // Buckets is an array of zustand bucket stores
+      buckets: [],
+
+      // Update the buckets array
+      setBuckets: buckets =>
+        set(draft => {
+          draft.buckets = buckets
+        }),
+
+      // Gets a bucket or creates a new one if it doesn't exist
+      getBucket: index => {
+        if (!get().buckets[index]) {
+          console.log('creating bucket', index)
+
+          set(draft => {
+            draft.buckets[index] = getTransportBeltBucketStore({
+              transportBeltIndex: index,
+              transportBeltId: id,
+            })
+
+            if (Math.random() > 0.5) {
+              draft.buckets[index].getState().setData(['test'])
+            }
+          })
+        }
+
+        // Return the state of the bucket
+        return get().buckets[index].getState()
+      },
+
+      // Updates the bucket store at the given index
+      setBucketData: (index, value) => {
+        const bucket = get().getBucket(index)
+        bucket.setData(value)
+      },
+
       // Tick modulo is number of ticks it takes to shift item one bucket
       tickModulo: 60,
 
       // Set the reference to the SVG path element
-      setPathRef: pathRef => set({ pathRef }),
+      setPathRef: pathRef =>
+        set(draft => {
+          draft.pathRef = pathRef
+        }),
 
       // Set the path data string for the SVG path element
       setPathD: pathD => {
@@ -54,7 +92,9 @@ const createTransportBeltStore = id =>
         if (typeof pathD !== 'string' || pathD.trim() === '') {
           return
         }
-        set({ pathD })
+        set(draft => {
+          draft.pathD = pathD
+        })
 
         // Get the references
         const { pathRef, updatePath } = get()
@@ -75,78 +115,60 @@ const createTransportBeltStore = id =>
       updatePath: () => updatePath(id),
 
       // Set the length of the path
-      setLength: length => set({ length }),
-
-      // Set the array of bucket centers
-      setBucketCenters: bucketCenters => set({ bucketCenters }),
+      setLength: length =>
+        set(draft => {
+          draft.length = length
+        }),
 
       // Handle the tick event
       tick: tickCounter => {
-        // Ignore ticks that are not multiples of tickModulo
-        if (tickCounter % get().tickModulo !== 0) {
-          return
-        }
-
         // Get the current state
         const state = get()
 
         // Extract the relevant properties
-        let { bucketCenters, bucketContents, bucketCapacity } = state
+        let { bucketCapacity, buckets, tickModulo } = get()
 
-        // Sanity check
-        if (!bucketCenters || !bucketContents) {
+        // Ignore ticks that are not multiples of tickModulo
+        if (tickCounter % tickModulo !== 0) {
           return
         }
 
         // Move all buckets contents one bucket forwards, starting from the end and checking for capacity
-        const numBuckets = bucketCenters.length
-
-        // If bucketContents is not initialized, initialize it
-        if (bucketContents.length !== numBuckets) {
-          // Initialize bucketContents with empty arrays for each bucket
-          bucketContents = Array.from({ length: numBuckets }, () => [])
-
-          bucketContents[2].push('test')
-
-          console.log('Initializing bucketContents', bucketContents)
-
-          // Updating the state with the new bucketContents
-          set({ bucketContents })
-        }
-
-        console.log('Ticking', tickCounter, numBuckets)
+        const numBuckets = buckets.length
 
         // Loop through the buckets in reverse order
         for (let i = numBuckets - 1; i >= 0; i--) {
-          // If the current bucket is the last bucket, skip it
+          // If the current bucket is the last bucket
           if (i === numBuckets - 1) {
-            console.log('This bucket is last, skipping', i)
+            // We can not move anything from the last bucket, so skip this bucket
             continue
           }
+
+          // Get the current and next buckets
+          const currBucket = state.getBucket(i)
+          const nextBucket = state.getBucket(i + 1)
 
           // Get the current bucket contents
-          const currentBucketContents = bucketContents[i]
+          const currentBucketContents = state.getBucket(i).data
 
-          // If the current bucket is empty, skip it
+          // Get the next bucket contents
+          const nextBucketContents = state.getBucket(i + 1).data
+
+          // If the current bucket is empty
           if (currentBucketContents.length === 0) {
-            console.log('This bucket is empty, skipping', i)
+            // We have nothing to move, so skip this bucket
             continue
           }
 
-          // If the next bucket is full, we can'd work on this bucket
-          if (bucketContents[i + 1].length >= bucketCapacity) {
-            console.log('Next bucket is full, skipping this bucket', i)
+          // If the next bucket is full
+          if (nextBucketContents.length >= bucketCapacity) {
+            // We are blocked from moving the item, so skip this bucket
             continue
           }
 
-          // Move the first item from the current bucket to the next bucket
-          const item = currentBucketContents.shift()
-          bucketContents[i + 1].push(item)
-
-          console.table(bucketContents)
-
-          // Update the state with the new bucketContents
-          set({ bucketContents })
+          // Move the contents from the current bucket to the next bucket
+          nextBucket.setData(currentBucketContents)
+          currBucket.setData([])
         }
       },
     }))

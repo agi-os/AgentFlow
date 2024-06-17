@@ -1,10 +1,10 @@
-import createTransportBeltStore from './createTransportBeltStore'
+import createTransportBeltStore from './create'
 
-// Map of stores, keyed by id
+// Map of belt stores, keyed by id
 const stores = new Map()
 
 /**
- * @typedef {import('./createTransportBeltStore')} TransportBeltStore
+ * @typedef {import('./create')} TransportBeltStore
  */
 
 /**

@@ -3,13 +3,16 @@ import useTransportBeltStore from '../../hooks/useTransportBeltStore'
 
 // A memoized React component passing path data to the store
 const PathComponent = memo(({ id }) => {
-  const { pathD, setPathRef } = useTransportBeltStore(id)
+  // Get the latest state from the store
+  const { pathD, setPathRef } = useTransportBeltStore(id).getState()
 
-  // Reference to the path element
-  const pathRef = useRef(null)
+  // Reference to the path element in React context
+  const reactPathRef = useRef(null)
 
   // Update the path reference in the store when it changes
-  useEffect(() => setPathRef(pathRef.current), [pathRef.current, setPathRef])
+  useEffect(() => {
+    setPathRef(reactPathRef.current)
+  }, [reactPathRef, setPathRef])
 
   // Render the path component with the calculated path data
   return (
@@ -17,7 +20,7 @@ const PathComponent = memo(({ id }) => {
       x-id={id}
       style={{ fill: 'none', stroke: 'none' }}
       d={pathD}
-      ref={pathRef}
+      ref={reactPathRef}
     />
   )
 })

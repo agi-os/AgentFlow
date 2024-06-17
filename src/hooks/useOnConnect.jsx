@@ -39,7 +39,7 @@ const setConnectionTypeAndAnimation = (connection, sourceType, targetType) => {
     (connection.sourceHandle === 'inbox' &&
       connection.targetHandle === 'outbox2')
   ) {
-    connection.type = 'queue'
+    connection.type = 'transport'
     connection.animated = true
   }
 }

@@ -33,7 +33,7 @@ const TransportBelt = ({
   targetPosition,
 }) => {
   // Use the transport belt store to get the length, bucket centers and pathD
-  const { pathD, bucketCenters } = useTransportBeltStore(id)
+  const { pathD, buckets } = useTransportBeltStore(id).getState()
 
   // Use the custom hook to handle pathD updates
   useBezierPath({
@@ -53,16 +53,26 @@ const TransportBelt = ({
 
       <PathComponent id={id} />
 
-      {bucketCenters.map((center, i) => (
-        <foreignObject
-          key={i}
-          x={center.x}
-          y={center.y}
-          className="overflow-visible">
-          <Bucket id={id} index={i} />
-        </foreignObject>
+      {buckets.map((_, index) => (
+        <BucketCoords key={index} id={id} index={index} />
       ))}
     </>
+  )
+}
+
+// Render each bucket on the center of it's coordinates
+const BucketCoords = ({ id, index }) => {
+  const { buckets } = useTransportBeltStore(id).getState()
+  const bucket = buckets[index]
+  const coordinates = bucket.getState().coordinates
+
+  return (
+    <foreignObject
+      x={coordinates.x}
+      y={coordinates.y}
+      className="overflow-visible">
+      <Bucket id={id} index={index} />
+    </foreignObject>
   )
 }
 

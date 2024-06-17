@@ -28,7 +28,7 @@ const useBezierPath = ({
   const [_, setPathD] = useState('')
 
   // Destructure the setPathD function from the transport belt store
-  const { setPathD: setStorePathD } = useTransportBeltStore(edgeId)
+  const { setPathD: setStorePathD } = useTransportBeltStore(edgeId).getState()
 
   // useEffect hook to calculate the Bezier path whenever the source or target coordinates or positions change
   useEffect(() => {
