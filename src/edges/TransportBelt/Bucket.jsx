@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
 import useTransportBeltBucketStore from '../../hooks/useTransportBeltBucketStore'
+import useItemStore from '../../hooks/useItemStore'
 import { className } from './config'
+import { useEffect, useState } from 'react'
 
 /**
  * Bucket component that displays the index and data of a transport belt bucket.
@@ -12,28 +13,34 @@ import { className } from './config'
  * @returns {JSX.Element} - The JSX element representing the Bucket component.
  */
 const Bucket = ({ id, index }) => {
-  // Use the custom hook useTransportBeltBucketStore to get a reference to the bucket from the state
-  const bucketStore = useTransportBeltBucketStore({
+  // Get the data for the transport belt bucket using the useTransportBeltBucketStore hook
+  const { itemId } = useTransportBeltBucketStore({
     transportBeltIndex: index,
     transportBeltId: id,
   })
 
-  // Initialize a state variable data with the initial value from the bucketStore
-  const [data, setData] = useState(bucketStore.getState().data)
-
-  // Use the useEffect hook to subscribe to changes in the bucketStore
-  useEffect(() => {
-    // Subscribe to the bucketStore and update the data state variable whenever the state changes
-    bucketStore.subscribe(state => {
-      setData(state.data)
-    })
-  }, [bucketStore]) // Only run this effect when bucketStore changes
-
   // Return JSX to render the component
   return (
     <div className={className.join(' ')}>
-      {index}
-      {JSON.stringify(data)}
+      {itemId && <ItemOnBelt itemId={itemId} />}
+    </div>
+  )
+}
+
+const ItemOnBelt = ({ itemId }) => {
+  // Get the coordinates and emoji for the item using the useItemStore hook
+  const { coordinates, emoji } = useItemStore(itemId)
+
+  // Return JSX to render the component
+  return (
+    <div
+      className="relative"
+      style={{
+        transition: 'all 900ms ease-in-out',
+        left: `${coordinates.x}px`,
+        top: `${coordinates.y}px`,
+      }}>
+      {emoji}
     </div>
   )
 }

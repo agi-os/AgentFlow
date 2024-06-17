@@ -53,28 +53,22 @@ const createTransportBeltStore = id =>
       // Gets a bucket or creates a new one if it doesn't exist
       getBucket: index => {
         if (!get().buckets[index]) {
-          console.log('creating bucket', index)
-
           set(draft => {
             draft.buckets[index] = getTransportBeltBucketStore({
               transportBeltIndex: index,
               transportBeltId: id,
             })
 
-            if (Math.random() > 0.5) {
-              draft.buckets[index].getState().setData(['test'])
+            if (Math.random() > 0.85) {
+              draft.buckets[index]
+                .getState()
+                .setItemId('test' + ((Math.random() * 1000) | 0))
             }
           })
         }
 
         // Return the state of the bucket
         return get().buckets[index].getState()
-      },
-
-      // Updates the bucket store at the given index
-      setBucketData: (index, value) => {
-        const bucket = get().getBucket(index)
-        bucket.setData(value)
       },
 
       // Tick modulo is number of ticks it takes to shift item one bucket
@@ -122,11 +116,8 @@ const createTransportBeltStore = id =>
 
       // Handle the tick event
       tick: tickCounter => {
-        // Get the current state
-        const state = get()
-
-        // Extract the relevant properties
-        let { bucketCapacity, buckets, tickModulo } = get()
+        // Extract the relevant properties from state
+        const { getBucket, buckets, tickModulo } = get()
 
         // Ignore ticks that are not multiples of tickModulo
         if (tickCounter % tickModulo !== 0) {
@@ -145,30 +136,49 @@ const createTransportBeltStore = id =>
           }
 
           // Get the current and next buckets
-          const currBucket = state.getBucket(i)
-          const nextBucket = state.getBucket(i + 1)
+          const currBucket = getBucket(i)
+          const nextBucket = getBucket(i + 1)
 
           // Get the current bucket contents
-          const currentBucketContents = state.getBucket(i).data
+          const currentBucketItemId = getBucket(i).itemId
 
           // Get the next bucket contents
-          const nextBucketContents = state.getBucket(i + 1).data
+          const nextBucketItemId = getBucket(i + 1).itemId
 
           // If the current bucket is empty
-          if (currentBucketContents.length === 0) {
+          if (currentBucketItemId === null) {
             // We have nothing to move, so skip this bucket
             continue
           }
 
-          // If the next bucket is full
-          if (nextBucketContents.length >= bucketCapacity) {
+          // If the next bucket is occupied
+          if (nextBucketItemId !== null) {
             // We are blocked from moving the item, so skip this bucket
             continue
           }
 
+          // Compensate the item movement by calculating the negative offset needed between the old and new bucket coordinates
+          const oldBucketCoordinates = currBucket.coordinates
+          const newBucketCoordinates = nextBucket.coordinates
+          const offset = {
+            x: oldBucketCoordinates.x - newBucketCoordinates.x,
+            y: oldBucketCoordinates.y - newBucketCoordinates.y,
+          }
+
           // Move the contents from the current bucket to the next bucket
-          nextBucket.setData(currentBucketContents)
-          currBucket.setData([])
+          nextBucket.setItemId(currentBucketItemId)
+          currBucket.setItemId(null)
+
+          // Get handle on the item state
+          const { setCoordinates, setLocationIndex } = nextBucket
+            .item()
+            .getState()
+
+          // Update the item offset coordinates to compensate for the new position
+          setCoordinates(offset)
+
+          // Update the item location
+          setLocationIndex(i + 1)
         }
       },
     }))

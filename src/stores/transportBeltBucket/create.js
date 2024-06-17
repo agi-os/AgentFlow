@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import getItemStore from '../item'
 
 /**
  * Represents the state of a single bucket on the transport belt.
@@ -25,21 +26,25 @@ const createTransportBeltBucketStore = ({
       transportBeltId,
       transportBeltIndex,
 
-      // Data property is an array that stores the data for the transport belt bucket.
-      data: [],
+      // Item id is the unique identifier for the item stored in the bucket.
+      itemId: null,
+
+      // Item returns the reference to the item store.
+      item: () => {
+        const { itemId } = get()
+        return itemId ? getItemStore(itemId) : null
+      },
 
       // Coordinates property is an object that stores the coordinates for the transport belt bucket.
       coordinates: {},
 
-      // SetData function is used to update the data property of the store.
-      // It takes a data argument and uses the set function from Zustand to update the state.
-      setData: data =>
+      // SetItem updates the item property of the store.
+      setItemId: itemId =>
         set(draft => {
-          draft.data = data
+          draft.itemId = itemId
         }),
 
-      // SetCoordinates function is used to update the coordinates property of the store.
-      // It takes a coordinates argument and uses the set function from Zustand to update the state.
+      // SetCoordinates updates the coordinates property of the store.
       setCoordinates: coordinates =>
         set(draft => {
           draft.coordinates = coordinates

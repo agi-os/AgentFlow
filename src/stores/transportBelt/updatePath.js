@@ -36,8 +36,25 @@ const updatePath = id => {
     setCoordinates(center)
   })
 
-  // If we have overflow buckets, delete them from the array
+  // If we have overflow buckets, shift all items to the beginning of the array, then trim the end
   if (buckets.length > bucketCenters.length) {
+    // Shift all items to the beginning of the array
+
+    // Find all items that are not null
+    const allItemIds = buckets
+      .map(bucket => bucket.getState().itemId)
+      .filter(Boolean)
+    console.log('allItemIds', allItemIds)
+
+    // Set all buckets to null itemId
+    buckets.forEach(bucket => bucket.getState().setItemId(null))
+
+    // Reset the item index to first bucket available
+    allItemIds.forEach((itemId, index) => {
+      const { setItemId } = getBucket(index)
+      setItemId(itemId)
+    })
+
     // Trim the array to the desired length
     const trimmedBuckets = buckets.slice(0, bucketCenters.length)
 

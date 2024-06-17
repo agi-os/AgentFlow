@@ -1,6 +1,6 @@
 export const className = [
-  'border',
-  'opacity-50',
+  // 'border',
+  // 'opacity-50',
   'grid',
   'place-content-center',
   'rounded-full',

@@ -1,4 +1,5 @@
 import getTransportBeltBucketStore from '../stores/transportBeltBucket'
+import { useEffect, useState } from 'react'
 
 /**
  * A custom hook that provides access to the transport belt store.
@@ -8,10 +9,22 @@ import getTransportBeltBucketStore from '../stores/transportBeltBucket'
  */
 const useTransportBeltBucketStore = props => {
   // Get the store for the given props
-  const store = getTransportBeltBucketStore(props)
+  const bucketStore = getTransportBeltBucketStore(props)
 
-  // Return the store
-  return store
+  // Initialize a state variable state with the initial value from the bucketStore
+  const [reactState, setReactState] = useState(bucketStore.getState())
+
+  // Use the useEffect hook to subscribe to changes in the bucketStore
+  useEffect(() => {
+    // Subscribe to the bucketStore
+    bucketStore.subscribe(storeState => {
+      // Update the state state variable whenever the state changes
+      setReactState(storeState)
+    })
+  }, [bucketStore])
+
+  // Return the state
+  return reactState
 }
 
 export default useTransportBeltBucketStore
