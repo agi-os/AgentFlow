@@ -28,14 +28,13 @@ const createItemStore = id =>
       // Location of the item
       location: {
         id: null,
-        type: 'inventory',
         index: 0,
       },
 
-      // Set the location of the item
-      setLocation: location =>
+      // Set the location id of the item
+      setLocationId: locationId =>
         set(draft => {
-          draft.location = location
+          draft.location.id = locationId
         }),
 
       // Set the location index of the item
@@ -69,11 +68,6 @@ const createItemStore = id =>
         set(draft => {
           draft.coordinates = coordinates
         })
-
-        // Reset coordinates after short delay
-        setTimeout(() => {
-          get().setCoordinates({ x: 0, y: 0 })
-        }, 100)
       },
     }))
   )

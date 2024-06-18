@@ -15,6 +15,35 @@ const getNodes = (connection, lookup) => {
 }
 
 /**
+ * Checks if a connection is a transport connection based on the source and target handles.
+ * A connection is considered a transport connection if the source handle starts with 'outbox'
+ * and the target handle starts with 'inbox', or if the source handle starts with 'inbox'
+ * and the target handle starts with 'outbox'.
+ *
+ * @param {string} sourceHandle - The source handle of the connection.
+ * @param {string} targetHandle - The target handle of the connection.
+ * @returns {boolean} - True if the connection is a transport connection, false otherwise.
+ */
+const isTransportConnection = (sourceHandle, targetHandle) => {
+  const sourcePrefix = 'outbox'
+  const targetPrefix = 'inbox'
+
+  // Check if the source and target handles have the correct prefixes in both directions
+  if (
+    (sourceHandle.startsWith(sourcePrefix) &&
+      targetHandle.startsWith(targetPrefix)) ||
+    (sourceHandle.startsWith(targetPrefix) &&
+      targetHandle.startsWith(sourcePrefix))
+  ) {
+    // Allow connections between any outbox# and any inbox#, and vice versa
+    return true
+  }
+
+  // If the handles don't have the correct prefixes in either direction, the type is not transport
+  return false
+}
+
+/**
  * Sets the connection type and animation based on the source and target types.
  * @param {object} connection - The connection object.
  * @param {string} sourceType - The source type.
@@ -29,16 +58,7 @@ const setConnectionTypeAndAnimation = (connection, sourceType, targetType) => {
     connection.animated = true
   }
 
-  if (
-    (connection.sourceHandle === 'outbox' &&
-      connection.targetHandle === 'inbox') ||
-    (connection.sourceHandle === 'inbox' &&
-      connection.targetHandle === 'outbox') ||
-    (connection.sourceHandle === 'outbox2' &&
-      connection.targetHandle === 'inbox') ||
-    (connection.sourceHandle === 'inbox' &&
-      connection.targetHandle === 'outbox2')
-  ) {
+  if (isTransportConnection(connection.sourceHandle, connection.targetHandle)) {
     connection.type = 'transport'
     connection.animated = true
   }

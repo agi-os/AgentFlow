@@ -10,6 +10,8 @@ import Bucket from './Bucket'
 import PathComponent from './PathComponent'
 import useTransportBeltStore from '../../hooks/useTransportBeltStore'
 import useBezierPath from '../../hooks/useBezierPath'
+import useItemStore from '../../hooks/useItemState'
+import ItemOnBelt from './ItemOnBelt'
 
 /**
  * TransportBelt component that renders a BaseEdge with animated items on it.
@@ -56,7 +58,57 @@ const TransportBelt = ({
       {buckets.map((_, index) => (
         <BucketCoords key={index} id={id} index={index} />
       ))}
+
+      <ItemWrapper id={id} />
     </>
+  )
+}
+
+// Wraps all items from all buckets in a foreignObject
+const ItemWrapper = ({ id }) => {
+  const { buckets } = useTransportBeltStore(id).getState()
+
+  return buckets.map((bucket, index) => {
+    const { itemId } = bucket.getState()
+    return <BucketItem key={index} itemId={itemId} />
+  })
+}
+
+import { useEffect, useState } from 'react'
+
+// Represents a single item in a bucket
+const BucketItem = ({ itemId }) => {
+  // Get the item coordinates
+  const item = useItemStore(itemId)
+  const { coordinates } = item
+
+  // Set the transition duration to 0ms initially and then to 950ms after a delay to prevent initial jump
+  const [transitionDuration, setTransitionDuration] = useState('0ms')
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setTransitionDuration('950ms')
+    }, 200)
+
+    return () => clearTimeout(timeoutId)
+  }, [])
+
+  // Do not render when coordinates are not defined
+  if (!coordinates || !coordinates.x || !coordinates.y) {
+    return null
+  }
+
+  return (
+    <foreignObject
+      x={coordinates.x}
+      y={coordinates.y}
+      className="overflow-visible transition-all"
+      style={{
+        transitionDuration,
+        transitionTimingFunction: 'linear',
+      }}>
+      <ItemOnBelt id={itemId} />
+    </foreignObject>
   )
 }
 

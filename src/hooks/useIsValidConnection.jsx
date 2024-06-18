@@ -6,9 +6,10 @@ import { useCallback } from 'react'
  * @type {Object.<string, string[]>}
  */
 const ALLOWED_CONNECTIONS = {
-  outbox: ['inbox'],
-  outbox2: ['inbox'],
+  outbox: ['inbox', 'inbox2'],
+  outbox2: ['inbox', 'inbox2'],
   inbox: ['outbox', 'outbox2'],
+  inbox2: ['outbox', 'outbox2'],
   inputPortal: ['outputPortal'],
   outputPortal: ['inputPortal'],
 }

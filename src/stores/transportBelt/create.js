@@ -38,7 +38,7 @@ const createTransportBeltStore = id =>
       length: -1,
       pathD: '',
       pathRef: null,
-      bucketSize: 38,
+      bucketSize: 22,
       bucketCapacity: 1,
 
       // Buckets is an array of zustand bucket stores
@@ -59,7 +59,7 @@ const createTransportBeltStore = id =>
               transportBeltId: id,
             })
 
-            if (Math.random() > 0.85) {
+            if (Math.random() > 0.65) {
               draft.buckets[index]
                 .getState()
                 .setItemId('test' + ((Math.random() * 1000) | 0))
@@ -157,25 +157,17 @@ const createTransportBeltStore = id =>
             continue
           }
 
-          // Compensate the item movement by calculating the negative offset needed between the old and new bucket coordinates
-          const oldBucketCoordinates = currBucket.coordinates
-          const newBucketCoordinates = nextBucket.coordinates
-          const offset = {
-            x: oldBucketCoordinates.x - newBucketCoordinates.x,
-            y: oldBucketCoordinates.y - newBucketCoordinates.y,
-          }
-
           // Move the contents from the current bucket to the next bucket
-          nextBucket.setItemId(currentBucketItemId)
           currBucket.setItemId(null)
+          nextBucket.setItemId(currentBucketItemId)
 
           // Get handle on the item state
           const { setCoordinates, setLocationIndex } = nextBucket
             .item()
             .getState()
 
-          // Update the item offset coordinates to compensate for the new position
-          setCoordinates(offset)
+          // Update the item coordinates to the bucket position
+          setCoordinates(nextBucket.coordinates)
 
           // Update the item location
           setLocationIndex(i + 1)

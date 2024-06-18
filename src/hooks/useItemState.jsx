@@ -2,12 +2,12 @@ import getItemStore from '../stores/item'
 import { useEffect, useState } from 'react'
 
 /**
- * A custom hook that provides access to the item store.
+ * A custom hook that provides access to the item state.
  *
  * @param {string} props - The props defining the item store bucket.
- * @returns {Object} - The current state of the item store.
+ * @returns {Object} - The current state of the item.
  */
-const useItemStore = props => {
+const useItemState = props => {
   // Get the store for the given props
   const itemStore = getItemStore(props)
 
@@ -27,4 +27,4 @@ const useItemStore = props => {
   return reactState
 }
 
-export default useItemStore
+export default useItemState

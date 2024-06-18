@@ -26,7 +26,7 @@ const createTransportBeltBucketStore = ({
       transportBeltId,
       transportBeltIndex,
 
-      // Item id is the unique identifier for the item stored in the bucket.
+      // Item id is the unique identifier for the item held in the bucket.
       itemId: null,
 
       // Item returns the reference to the item store.
