@@ -1,5 +1,6 @@
 import { decompressData } from './decompressData'
 import { compressData } from './compressData'
+import { jsonrepair } from 'jsonrepair'
 
 export const copyToClipboard = async data => {
   try {
@@ -28,8 +29,37 @@ export const handleCopyPasteKeypress = ({ event, onCopy, onPaste }) => {
 }
 
 export const readClipboardData = async () => {
-  const clipboardData = await navigator.clipboard.readText()
-  return JSON.parse(clipboardData)
+  let clipboardData = await navigator.clipboard.readText()
+
+  // If we're pasting a youtube video, use it as a node
+  if (
+    clipboardData?.startsWith('https://www.youtube.com/watch?v=') ||
+    clipboardData?.startsWith('https://youtu.be/')
+  ) {
+    // Generate a random ID for the new node
+    const randomId = Array.from({ length: 3 }, () =>
+      String.fromCharCode(Math.floor(Math.random() * 52) + 65)
+    ).join('')
+
+    // Replace the pasted data with a YouTube node
+    const newObject = {
+      n: {
+        [randomId]: [
+          [],
+          Math.floor(Math.random() * 100),
+          Math.floor(Math.random() * 100),
+          'youTube',
+        ],
+      },
+      e: [],
+    }
+
+    console.log('using random', newObject)
+
+    clipboardData = JSON.stringify(newObject)
+  }
+
+  return JSON.parse(jsonrepair(clipboardData))
 }
 
 export const fetchDataFromClipboard = async () => {
